@@ -1,0 +1,39 @@
+module Braingasm
+
+  # A Machine keeps the state of a running program, and exposes various
+  # operations to modify this state
+  class Machine
+    attr_accessor :tape, :dp, :program, :ip
+
+    def initialize
+      @tape = Array.new(10) { 0 }
+      @dp = 0           # data pointer
+      @ip = 0           # instruction pointer
+    end
+
+    def run
+      loop do
+        continue = step
+        break unless continue && @ip < @program.size
+      end
+    end
+
+    def step
+      move = @program[@ip].call(self)
+      @ip = move
+    end
+
+    # Implementations of the braingasm language instructions:
+
+    def print_tape
+      p @tape
+      @ip + 1
+    end
+
+    def inc(n=1)
+      @tape[@dp] += n
+      @ip + 1
+    end
+
+  end
+end

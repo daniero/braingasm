@@ -1,5 +1,11 @@
-require "braingasm/version"
+require "braingasm/parser"
+require "braingasm/machine"
 
 module Braingasm
-  # Your code goes here...
+  def self.initialize_machine(code)
+    program = Parser.new(code).parse
+    machine = Machine.new
+    machine.program = program
+    machine
+  end
 end

@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'braingasm'
+
+machine = Braingasm.initialize_machine(ARGF)
+machine.run
