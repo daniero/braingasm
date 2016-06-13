@@ -23,14 +23,12 @@ module Braingasm
       @ip = move
     end
 
-    # Implementations of the braingasm language instructions:
-
-    def print_tape
+    def inst_print_tape
       p @tape
       @ip + 1
     end
 
-    def inc(n=1)
+    def inst_inc(n=1)
       @tape[@dp] += n
       @ip + 1
     end

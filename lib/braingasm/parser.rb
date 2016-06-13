@@ -17,12 +17,12 @@ module Braingasm
 
     # Nullary instructions:
 
-    @@dump = -> m { m.print_tape }
+    @@dump = -> m { m.inst_print_tape }
 
     # Instructions taking parameters
 
     def inc(n)
-      -> m { m.inc(n) }
+      -> m { m.inst_inc(n) }
     end
 
   end

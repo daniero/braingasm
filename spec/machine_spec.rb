@@ -33,8 +33,8 @@ describe Braingasm::Machine do
     it "return new value for instruction pointer" do
       # Kinda ugly, but it automatically tests methods added to the class,
       # unless they are explicitly excluded here:
-      instruction_methods = subject.class.instance_methods(false).grep_v(/=/) -
-        [:step, :run, :ip, :program, :tape, :dp, :print_tape]
+      instruction_methods = subject.class.instance_methods(false).
+        grep(/^inst_/) - [:inst_print_tape]
 
       instruction_methods.each do |name|
         subject.ip = current_ip = rand 10
@@ -46,11 +46,11 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inc do
+    describe :inst_inc do
       it "increases the value of the cell under the pointer" do
         subject.dp = 3
 
-        subject.inc
+        subject.inst_inc
 
         expect(subject.tape[3]).to be 1
       end
