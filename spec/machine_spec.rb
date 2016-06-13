@@ -46,6 +46,26 @@ describe Braingasm::Machine do
       end
     end
 
+    describe :inst_right do
+      it "increases the data pointer" do
+        subject.dp = 3
+
+        subject.inst_right
+
+        expect(subject.dp).to be 4
+      end
+    end
+
+    describe :inst_left do
+      it "decreases the data pointer" do
+        subject.dp = 6
+
+        subject.inst_left
+
+        expect(subject.dp).to be 5
+      end
+    end
+
     describe :inst_inc do
       it "increases the value of the cell under the pointer" do
         subject.dp = 3

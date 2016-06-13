@@ -12,6 +12,10 @@ module Braingasm
 
       tokens.each do |token|
         case token
+        when '>'
+          @program.push right
+        when '<'
+          @program.push left
         when '+'
           @program.push inc
         when '-'
@@ -26,6 +30,14 @@ module Braingasm
     @@dump = -> m { m.inst_print_tape }
 
     # Instructions taking parameters
+
+    def right(n=1)
+      -> m { m.inst_right(n) }
+    end
+
+    def left(n=1)
+      -> m { m.inst_left(n) }
+    end
 
     def inc(n=1)
       -> m { m.inst_inc(n) }

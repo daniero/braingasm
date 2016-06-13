@@ -23,6 +23,16 @@ module Braingasm
       @ip = move
     end
 
+    def inst_right(n=1)
+      @dp += 1
+      @ip + 1
+    end
+
+    def inst_left(n=1)
+      @dp -= 1
+      @ip + 1
+    end
+
     def inst_print_tape
       p @tape
       @ip + 1
