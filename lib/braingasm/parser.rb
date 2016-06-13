@@ -8,12 +8,17 @@ module Braingasm
     end
 
     def parse
-      # TODO actally parse @input
-      @program.push inc(5)
+      tokens = @input.chars
+
+      tokens.each do |token|
+        case token
+        when '+'
+          @program.push inc
+        when '-'
+          @program.push dec
+        end
+      end
       @program.push @@dump
-      @program.push dec(3)
-      @program.push @@dump
-      @program
     end
 
     # Nullary instructions:
@@ -22,11 +27,11 @@ module Braingasm
 
     # Instructions taking parameters
 
-    def inc(n)
+    def inc(n=1)
       -> m { m.inst_inc(n) }
     end
 
-    def dec(n)
+    def dec(n=1)
       -> m { m.inst_dec(n) }
     end
 
