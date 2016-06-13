@@ -33,5 +33,10 @@ module Braingasm
       @ip + 1
     end
 
+    def inst_dec(n=1)
+      @tape[@dp] -= n
+      @ip + 1
+    end
+
   end
 end

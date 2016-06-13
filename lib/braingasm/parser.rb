@@ -9,8 +9,9 @@ module Braingasm
 
     def parse
       # TODO actally parse @input
-      @program.push @@dump
       @program.push inc(5)
+      @program.push @@dump
+      @program.push dec(3)
       @program.push @@dump
       @program
     end
@@ -23,6 +24,10 @@ module Braingasm
 
     def inc(n)
       -> m { m.inst_inc(n) }
+    end
+
+    def dec(n)
+      -> m { m.inst_dec(n) }
     end
 
   end

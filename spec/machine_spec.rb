@@ -55,6 +55,17 @@ describe Braingasm::Machine do
         expect(subject.tape[3]).to be 1
       end
     end
-  end
 
+    describe :inst_dec do
+      it "decreases the value of the cell under the pointer" do
+        subject.tape = [ 0, 0, 7 ]
+        subject.dp = 2
+
+        subject.inst_dec
+
+        expect(subject.tape[2]).to be 6
+      end
+    end
+
+  end
 end
