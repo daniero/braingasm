@@ -20,14 +20,17 @@ module Braingasm
           @program.push inc
         when '-'
           @program.push dec
+        when '.'
+          @program.push @@print
         end
       end
-      @program.push @@dump
+      @program
     end
 
     # Nullary instructions:
 
     @@dump = -> m { m.inst_print_tape }
+    @@print = -> m { m.inst_print_cell }
 
     # Instructions taking parameters
 

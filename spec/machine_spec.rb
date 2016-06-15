@@ -87,5 +87,13 @@ describe Braingasm::Machine do
       end
     end
 
+    describe :inst_print_cell do
+      it "outputs the value of the current cell as a byte" do
+        subject.tape = [ 70 ]
+
+        expect { subject.inst_print_cell }.to output('F').to_stdout
+      end
+    end
+
   end
 end

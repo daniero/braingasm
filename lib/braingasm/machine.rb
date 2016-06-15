@@ -48,5 +48,10 @@ module Braingasm
       @ip + 1
     end
 
+    def inst_print_cell
+      print @tape[dp].chr
+      @ip + 1
+    end
+
   end
 end
