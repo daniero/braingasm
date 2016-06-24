@@ -34,7 +34,7 @@ describe Braingasm::Machine do
       # Kinda ugly, but it automatically tests methods added to the class,
       # unless they are explicitly excluded here:
       instruction_methods = subject.class.instance_methods(false).
-        grep(/^inst_/) - [:inst_print_tape]
+        grep(/^inst_/).grep_v(/jump/) - [:inst_print_tape]
 
       instruction_methods.each do |name|
         subject.ip = current_ip = rand 10
@@ -84,6 +84,31 @@ describe Braingasm::Machine do
         subject.inst_dec
 
         expect(subject.tape[2]).to be 6
+      end
+    end
+
+    describe :inst_jump do
+      it "returns the given value, signifying the new instruction pointer" do
+        expect(subject.inst_jump(9)).to be 9
+        expect(subject.inst_jump(4)).to be 4
+      end
+    end
+
+    describe :inst_jump_if_zero do
+
+      it "returns the given value if value of current cell is 0" do
+        expect(subject.inst_jump_if_zero(11)).to be 11
+        expect(subject.inst_jump_if_zero(7)).to be 7
+      end
+
+      it "returns one plus IP if value of current cell is not 0" do
+        subject.ip = 99
+        subject.tape = [ 1, 0, 7 ]
+        subject.dp = 2
+
+        expect(subject.inst_jump_if_zero(1)).to be 100
+        # expect(subject.inst_jump_if_zero(14)).to be 100
+        # expect(subject.inst_jump_if_zero(42)).to be 100
       end
     end
 

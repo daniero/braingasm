@@ -48,6 +48,14 @@ module Braingasm
       @ip + 1
     end
 
+    def inst_jump(to)
+      to
+    end
+
+    def inst_jump_if_zero(to)
+      @tape[@dp] == 0 ? to : @ip + 1
+    end
+
     def inst_print_cell
       print @tape[dp].chr
       @ip + 1
