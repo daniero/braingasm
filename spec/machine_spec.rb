@@ -48,12 +48,36 @@ describe Braingasm::Machine do
     end
 
     describe :inst_right do
+      before { subject.tape = [] }
+
       it "increases the data pointer" do
         subject.dp = 3
 
         subject.inst_right
 
         expect(subject.dp).to be 4
+      end
+
+      it "can go more than one at a time" do
+        subject.inst_right(123)
+
+        expect(subject.dp).to be 123
+      end
+
+      it "can go beyond the current end of the tape" do
+        100.times do |i|
+          subject.inst_right
+
+          expect(subject.tape.length).to be > i + 1
+        end
+      end
+
+      it "initializes new cells" do
+        expect(subject.dp).to be 0
+        subject.inst_right(78)
+
+        expect(subject.tape).to all be 0
+        expect(subject.tape.length).to be > 78
       end
     end
 

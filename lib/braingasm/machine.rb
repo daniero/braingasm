@@ -24,7 +24,15 @@ module Braingasm
     end
 
     def inst_right(n=1)
-      @dp += 1
+      new_dp = @dp + n
+      no_cells = @tape.length
+
+      if new_dp >= no_cells
+        grow = new_dp * 3 / 2
+        @tape.fill(0, no_cells..grow)
+      end
+
+      @dp = new_dp
       @ip + 1
     end
 
