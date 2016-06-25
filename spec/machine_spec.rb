@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 require "braingasm/machine"
 
@@ -34,7 +35,7 @@ describe Braingasm::Machine do
       # Kinda ugly, but it automatically tests methods added to the class,
       # unless they are explicitly excluded here:
       instruction_methods = subject.class.instance_methods(false).
-        grep(/^inst_/).grep_v(/jump/) - [:inst_print_tape]
+        grep(/^inst_/).grep_v(/jump/) - [:inst_print_tape, :inst_read_byte]
 
       instruction_methods.each do |name|
         subject.ip = current_ip = rand 10
@@ -120,5 +121,34 @@ describe Braingasm::Machine do
       end
     end
 
+    describe :inst_read_byte do
+      before do
+        $stdin = StringIO.new("Hiæ")
+      end
+
+      after do
+        $stdin = STDIN
+      end
+
+      it "reads one byte from input and stores in the current cell"  do
+        subject.inst_read_byte
+        expect(subject.tape[0]).to be 'H'.ord
+
+        subject.inst_read_byte
+        expect(subject.tape[0]).to be 'i'.ord
+
+        subject.inst_read_byte
+        expect(subject.tape[0]).to be 195
+
+        subject.inst_read_byte
+        expect(subject.tape[0]).to be 166
+      end
+
+      it "returns one plus IP, allowing the program to advance" do
+        subject.ip = 9
+
+        expect(subject.inst_read_byte).to be 10
+      end
+    end
   end
 end

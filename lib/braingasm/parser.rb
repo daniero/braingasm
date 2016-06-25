@@ -23,6 +23,8 @@ module Braingasm
           @program.push dec
         when '.'
           @program.push @@print
+        when ','
+          @program.push @@read
         when '['
           new_loop = Loop.new
           new_loop.start_index = index
@@ -41,6 +43,7 @@ module Braingasm
 
     @@dump = -> m { m.inst_print_tape }
     @@print = -> m { m.inst_print_cell }
+    @@read = -> m { m.inst_read_byte }
 
     # Instructions taking parameters
 

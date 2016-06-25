@@ -2,5 +2,7 @@
 
 require 'braingasm'
 
-machine = Braingasm.initialize_machine(ARGF.read)
+program = IO.read(ARGV[0])
+
+machine = Braingasm.initialize_machine(program)
 machine.run
