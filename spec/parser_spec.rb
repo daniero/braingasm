@@ -27,6 +27,8 @@ describe Braingasm::Parser do
                  ',' => :read }
 
       inputs.each do |input, instruction|
+        it { should respond_to instruction }
+
         it "pushes an instruction '#{instruction}' given a '#{input}'" do
           @input = input
           return_value = "#{instruction}_mock_return"
@@ -35,6 +37,7 @@ describe Braingasm::Parser do
 
           subject.parse
         end
+
       end
     end
 
