@@ -67,14 +67,13 @@ module Braingasm
       -> m { m.inst_jump(to) }
     end
 
-  end
+    class Loop
+      attr_accessor :start_index, :stop_index
 
-  class Loop
-    attr_accessor :start_index, :stop_index
+      def call(machine)
+        machine.inst_jump_if_zero(stop_index + 1)
+      end
 
-    def call(machine)
-      machine.inst_jump_if_zero(stop_index + 1)
     end
-
   end
 end
