@@ -14,17 +14,17 @@ module Braingasm
       tokens.each_with_index do |token, index|
         case token
         when '>'
-          @program.push right
+          @program.push right()
         when '<'
-          @program.push left
+          @program.push left()
         when '+'
-          @program.push inc
+          @program.push inc()
         when '-'
-          @program.push dec
+          @program.push dec()
         when '.'
-          @program.push @@print
+          @program.push print()
         when ','
-          @program.push @@read
+          @program.push read()
         when '['
           new_loop = Loop.new
           new_loop.start_index = index
@@ -38,14 +38,6 @@ module Braingasm
       end
       @program
     end
-
-    # Nullary instructions:
-
-    @@dump = -> m { m.inst_print_tape }
-    @@print = -> m { m.inst_print_cell }
-    @@read = -> m { m.inst_read_byte }
-
-    # Instructions taking parameters
 
     def right(n=1)
       -> m { m.inst_right(n) }
@@ -61,6 +53,14 @@ module Braingasm
 
     def dec(n=1)
       -> m { m.inst_dec(n) }
+    end
+
+    def print()
+      -> m { m.inst_print_cell }
+    end
+
+    def read()
+      -> m { m.inst_read_byte }
     end
 
     def jump(to)
