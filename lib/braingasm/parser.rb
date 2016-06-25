@@ -2,6 +2,8 @@ module Braingasm
 
   # Takes some input code and generates the program
   class Parser
+    attr_accessor :program, :loop_stack
+
     def initialize(input)
       @input = input
       @program = []
@@ -11,32 +13,38 @@ module Braingasm
     def parse
       tokens = @input.scan(/\S/)
 
-      tokens.each_with_index do |token, index|
+      tokens.each do |token|
         case token
         when '>'
-          @program.push right()
+          push_instruction right()
         when '<'
-          @program.push left()
+          push_instruction left()
         when '+'
-          @program.push inc()
+          push_instruction inc()
         when '-'
-          @program.push dec()
+          push_instruction dec()
         when '.'
-          @program.push print()
+          push_instruction print()
         when ','
-          @program.push read()
+          push_instruction read()
         when '['
           new_loop = Loop.new
+          @loop_stack.push(new_loop)
+          index = push_instruction(new_loop)
           new_loop.start_index = index
-          @program.push new_loop
-          @loop_stack.push new_loop
         when ']'
           current_loop = @loop_stack.pop
+          instruction = jump(current_loop.start_index)
+          index = push_instruction(instruction)
           current_loop.stop_index = index
-          @program.push jump(current_loop.start_index)
         end
       end
       @program
+    end
+
+    def push_instruction(instruction)
+      @program.push instruction
+      @program.size - 1
     end
 
     def right(n=1)
