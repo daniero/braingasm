@@ -89,6 +89,10 @@ describe Braingasm::Machine do
 
         expect(subject.dp).to be 5
       end
+
+      it "does not allow moving below the first cell" do
+        expect{ subject.inst_left }.to raise_error(Braingasm::BraingasmError)
+      end
     end
 
     describe :inst_inc do
