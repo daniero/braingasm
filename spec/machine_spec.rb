@@ -124,7 +124,6 @@ describe Braingasm::Machine do
     end
 
     describe :inst_jump_if_zero do
-
       it "returns the given value if value of current cell is 0" do
         expect(subject.inst_jump_if_zero(11)).to be 11
         expect(subject.inst_jump_if_zero(7)).to be 7
@@ -170,6 +169,15 @@ describe Braingasm::Machine do
 
         subject.inst_read_byte
         expect(subject.tape[0]).to be 166
+      end
+
+      it "stores 0 in current cell if there is no more input" do
+        subject.tape[0] = 77
+        $stdin = StringIO.new("")
+
+        subject.inst_read_byte
+
+        expect(subject.tape[0]).to be 0
       end
 
       it "returns one plus IP, allowing the program to advance" do

@@ -73,7 +73,7 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = $stdin.getbyte
+      @tape[@dp] = $stdin.getbyte || 0
       @ip + 1
     end
 
