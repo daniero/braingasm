@@ -60,8 +60,7 @@ module Braingasm
         end
 
         it "pushes the loop to the loop stack" do
-          new_loop = nil
-          expect(subject.loop_stack).to receive(:push) { |inst| new_loop = inst }
+          expect(subject.loop_stack).to receive(:push).with(instance_of(Parser::Loop))
 
           subject.parse
         end
