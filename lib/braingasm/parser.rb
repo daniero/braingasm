@@ -1,5 +1,7 @@
 module Braingasm
 
+  ParsingError = Class.new(RuntimeError)
+
   # Takes some input code and generates the program
   class Parser
     attr_accessor :program, :loop_stack
@@ -34,6 +36,7 @@ module Braingasm
           new_loop.start_index = index
         when ']'
           current_loop = @loop_stack.pop
+          raise ParsingError, "Unmatched `]`" unless current_loop
           instruction = jump(current_loop.start_index)
           index = push_instruction(instruction)
           current_loop.stop_index = index

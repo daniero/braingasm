@@ -73,6 +73,12 @@ module Braingasm
           subject.loop_stack = [current_loop]
         end
 
+        it "fails if there is no loop object on the stack" do
+          subject.loop_stack = []
+
+          expect { subject.parse }.to raise_error(ParsingError)
+        end
+
         it "pushes a jump instruction" do
           expect(subject).to receive(:jump).and_return("jump_return_value")
           expect(subject).to receive(:push_instruction).with("jump_return_value")
