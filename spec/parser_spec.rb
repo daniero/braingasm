@@ -38,7 +38,6 @@ module Braingasm
 
             subject.parse
           end
-
         end
       end
 
@@ -67,10 +66,11 @@ module Braingasm
       end
 
       describe "loop end" do
+        let(:current_loop) { Parser::Loop.new }
+
         before do
           @input = ']'
-          @current_loop = Parser::Loop.new 
-          subject.loop_stack = [@current_loop]
+          subject.loop_stack = [current_loop]
         end
 
         it "pushes a jump instruction" do
@@ -85,7 +85,7 @@ module Braingasm
 
           subject.parse
 
-          expect(@current_loop.stop_index).to be 13
+          expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
