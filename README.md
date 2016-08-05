@@ -1,8 +1,30 @@
 # Braingasm
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/braingasm`. To experiment with that code, run `bin/console` for an interactive prompt.
+Braingasm is a super-set of [brainfuck](https://esolangs.org/wiki/brainfuck), 
+and extends the 8 original instructions with the concept of *prefixes* and 
+*registers*.
 
-TODO: Delete this and the text above, and describe your gem
+The original idea for the language was to combine brainfuck and assembly code 
+(asm), hence the name.
+
+### Prefixes
+A prefix may alter the effect of an instruction in different ways. The simplest 
+kind of prefix is a numeric literal, which makes the succeeding instruction 
+repeat a certain number of times:
+
+* `5+` increases the value of the current cell by 5.
+* `7[X]` Runs the loop, containing some code `X`, exactly 7 times.
+
+### Registers
+Registers can also be used as prefixes. Registers are typically updated when 
+other instructions are executed:
+
+* The `z` register holds the value `1` if the previous update of a cell caused 
+  it the reach the value 0. Otherwise the `z` register holds the value `0`.
+* The `#` register holds the current position in the data tape. `#>` will move 
+  to cell 12 if the current cell is 6.
+
+More information about the different prefixes and registers will come.
 
 ## Installation
 
