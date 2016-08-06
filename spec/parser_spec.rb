@@ -6,17 +6,17 @@ module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
 
-    describe "parsing" do
+    describe :parse_program do
       it "returns an empty program for empty input" do
         @input = ""
 
-        expect(subject.parse).to be == []
+        expect(subject.parse_program).to be == []
       end
 
       it "ignores unknown characters in the input" do
         @input = "x yz_*@^æøå"
 
-        expect(subject.parse).to be == []
+        expect(subject.parse_program).to be == []
       end
 
       describe "simple instructions" do
@@ -36,7 +36,7 @@ module Braingasm
             expect(subject).to receive(instruction).and_return(return_value)
             expect(subject).to receive(:push_instruction).with(return_value)
 
-            subject.parse
+            subject.parse_program
           end
         end
       end
@@ -52,7 +52,7 @@ module Braingasm
             to receive(:push_instruction) { |inst| new_loop = inst }.
             and_return(17)
 
-          subject.parse
+          subject.parse_program
 
           expect(new_loop).to be_a Parser::Loop
           expect(new_loop.start_index).to be 17
@@ -61,7 +61,7 @@ module Braingasm
         it "pushes the loop to the loop stack" do
           expect(subject.loop_stack).to receive(:push).with(instance_of(Parser::Loop))
 
-          subject.parse
+          subject.parse_program
         end
       end
 
@@ -76,26 +76,26 @@ module Braingasm
         it "fails if there is no loop object on the stack" do
           subject.loop_stack = []
 
-          expect { subject.parse }.to raise_error(ParsingError)
+          expect { subject.parse_program }.to raise_error(ParsingError)
         end
 
         it "pushes a jump instruction" do
           expect(subject).to receive(:jump).and_return("jump_return_value")
           expect(subject).to receive(:push_instruction).with("jump_return_value")
 
-          subject.parse
+          subject.parse_program
         end
 
         it "sets the stop_index of the current loop" do
           expect(subject).to receive(:push_instruction).and_return(13)
 
-          subject.parse
+          subject.parse_program
 
           expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
-          subject.parse
+          subject.parse_program
 
           expect(subject.loop_stack).to be_empty
         end

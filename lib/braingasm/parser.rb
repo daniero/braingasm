@@ -12,7 +12,7 @@ module Braingasm
       @loop_stack = []
     end
 
-    def parse
+    def parse_program
       tokens = @input.scan(/\S/)
 
       tokens.each do |token|
