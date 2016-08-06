@@ -48,9 +48,8 @@ module Braingasm
 
         it "adds a loop to the program with correct start index" do
           new_loop = nil
-          expect(subject).
-            to receive(:push_instruction) { |inst| new_loop = inst }.
-            and_return(17)
+          expect(subject).to receive(:push_instruction) { |inst| new_loop = inst }
+          subject.program = [nil] * 17
 
           subject.parse_program
 
@@ -87,7 +86,7 @@ module Braingasm
         end
 
         it "sets the stop_index of the current loop" do
-          expect(subject).to receive(:push_instruction).and_return(13)
+          subject.program = [nil] * 13
 
           subject.parse_program
 

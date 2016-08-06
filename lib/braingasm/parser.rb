@@ -13,39 +13,46 @@ module Braingasm
     end
 
     def parse_program
-      tokens = @input.scan(/\S/)
+      tokens = @input.scan(/\S/).to_enum
 
-      tokens.each do |token|
-        case token
-        when '>'
-          push_instruction right()
-        when '<'
-          push_instruction left()
-        when '+'
-          push_instruction inc()
-        when '-'
-          push_instruction dec()
-        when '.'
-          push_instruction print()
-        when ','
-          push_instruction read()
-        when '['
-          new_loop = Loop.new
-          @loop_stack.push(new_loop)
-          index = push_instruction(new_loop)
-          new_loop.start_index = index
-        when ']'
-          current_loop = @loop_stack.pop
-          raise ParsingError, "Unmatched `]`" unless current_loop
-          instruction = jump(current_loop.start_index)
-          index = push_instruction(instruction)
-          current_loop.stop_index = index
-        end
+      loop do
+        push_instruction parse_next(tokens)
       end
+
       @program
     end
 
+    def parse_next(tokens)
+      case tokens.next
+      when '>'
+        right()
+      when '<'
+        left()
+      when '+'
+        inc()
+      when '-'
+        dec()
+      when '.'
+        print()
+      when ','
+        read()
+      when '['
+        new_loop = Loop.new
+        @loop_stack.push(new_loop)
+        new_loop.start_index = @program.size
+        new_loop
+      when ']'
+        current_loop = @loop_stack.pop
+        raise ParsingError, "Unmatched `]`" unless current_loop
+        instruction = jump(current_loop.start_index)
+        index = @program.size
+        current_loop.stop_index = index
+        instruction
+      end
+    end
+
     def push_instruction(instruction)
+      return unless instruction
       @program.push instruction
       @program.size - 1
     end
