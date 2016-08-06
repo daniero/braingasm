@@ -91,7 +91,7 @@ describe Braingasm::Machine do
       end
 
       it "does not allow moving below the first cell" do
-        expect{ subject.inst_left }.to raise_error(Braingasm::BraingasmError)
+        expect{ subject.inst_left }.to raise_error(Braingasm::VMError)
       end
     end
 

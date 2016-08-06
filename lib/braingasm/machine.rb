@@ -1,6 +1,6 @@
 module Braingasm
 
-  BraingasmError = Class.new(RuntimeError)
+  VMError = Class.new(RuntimeError)
 
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
@@ -40,7 +40,7 @@ module Braingasm
 
     def inst_left(n=1)
       @dp -= 1
-      raise BraingasmError, "Moved outside the tape" if @dp < 0
+      raise VMError, "Moved outside the tape" if @dp < 0
       @ip + 1
     end
 
