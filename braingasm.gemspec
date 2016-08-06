@@ -6,8 +6,8 @@ require 'braingasm/version'
 Gem::Specification.new do |spec|
   spec.name          = "braingasm"
   spec.version       = Braingasm::VERSION
-  spec.authors       = ["Daniel Rødskog"]
-  spec.email         = ["danielmero@gmail.com"]
+  spec.author        = "Daniel Rødskog"
+  spec.email         = "danielmero@gmail.com"
 
   spec.summary       = %q{It's liek brainfuck and assembly in one!}
   spec.description   = %q{braingasm combines the readability of brainfuck with the high-level functionality of assembly}
