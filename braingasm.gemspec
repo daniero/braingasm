@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{It's liek brainfuck and assembly in one!}
   spec.description   = %q{braingasm combines the readability of brainfuck with the high-level functionality of assembly}
-  spec.homepage      = "https://to.do"
+  spec.homepage      = "https://github.com/daniero/braingasm"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
