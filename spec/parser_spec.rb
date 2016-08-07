@@ -55,6 +55,12 @@ module Braingasm
 
         expect(subject.parse_program).to be == []
       end
+
+      it "fails if there are unclosed loops in the input" do
+        @input = "["
+
+        expect { subject.parse_program }.to raise_error(ParsingError)
+      end
     end
 
     describe :parse_next do

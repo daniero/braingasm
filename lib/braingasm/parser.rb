@@ -19,6 +19,7 @@ module Braingasm
         push_instruction parse_next(tokens)
       end
 
+      raise ParsingError, "Unmatched `[`" unless @loop_stack.empty?
       @program
     end
 
