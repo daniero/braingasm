@@ -55,6 +55,12 @@ module Braingasm
 
         expect(subject.parse_program).to be == []
       end
+    end
+
+    describe :parse_next do
+      def input_as_token_enum(input)
+        input.chars.to_enum
+      end
 
       describe "simple instructions" do
         inputs = { '+' => :inc,
@@ -67,71 +73,61 @@ module Braingasm
         inputs.each do |input, instruction|
           it { should respond_to instruction }
 
-          it "pushes an instruction '#{instruction}' given a '#{input}'" do
-            @input = input
-            return_value = "#{instruction}_mock_return"
-            expect(subject).to receive(instruction).and_return(return_value)
-            expect(subject).to receive(:push_instruction).with(return_value)
+          it "returns instruction '#{instruction}' given a '#{input}'" do
+            mock_generated_instruction = "#{instruction}_mock_return"
+            expect(subject).to receive(instruction).and_return(mock_generated_instruction)
 
-            subject.parse_program
+            response = subject.parse_next(input_as_token_enum(input))
+
+            expect(response).to be(mock_generated_instruction)
           end
         end
       end
 
       describe "loop start" do
-        before do
-          @input = '['
-        end
+        let(:input) { input_as_token_enum('[') }
 
-        it "adds a loop to the program with correct start index" do
-          new_loop = nil
-          expect(subject).to receive(:push_instruction) { |inst| new_loop = inst }
+        it "returns a loop with correct start index" do
           subject.program = [nil] * 17
 
-          subject.parse_program
+          response = subject.parse_next(input)
 
-          expect(new_loop).to be_a Parser::Loop
-          expect(new_loop.start_index).to be 17
-        end
-
-        it "pushes the loop to the loop stack" do
-          expect(subject.loop_stack).to receive(:push).with(instance_of(Parser::Loop))
-
-          subject.parse_program
+          expect(response).to be_a Parser::Loop
+          expect(response.start_index).to be 17
         end
       end
 
       describe "loop end" do
+        let(:input) { input_as_token_enum(']') }
         let(:current_loop) { Parser::Loop.new }
 
         before do
-          @input = ']'
           subject.loop_stack = [current_loop]
         end
 
         it "fails if there is no loop object on the stack" do
           subject.loop_stack = []
 
-          expect { subject.parse_program }.to raise_error(ParsingError)
+          expect { subject.parse_next(input) }.to raise_error(ParsingError)
         end
 
-        it "pushes a jump instruction" do
-          expect(subject).to receive(:jump).and_return("jump_return_value")
-          expect(subject).to receive(:push_instruction).with("jump_return_value")
+        it "returns a jump instruction back to the start of the current loop" do
+          current_loop.start_index = 42
+          expect(subject).to receive(:jump).with(42).and_return("jump_return_value")
 
-          subject.parse_program
+          expect(subject.parse_next(input)).to eq("jump_return_value")
         end
 
         it "sets the stop_index of the current loop" do
           subject.program = [nil] * 13
 
-          subject.parse_program
+          subject.parse_next(input)
 
           expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
-          subject.parse_program
+          subject.parse_next(input)
 
           expect(subject.loop_stack).to be_empty
         end
