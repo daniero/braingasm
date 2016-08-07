@@ -95,6 +95,12 @@ module Braingasm
           expect(response).to be_a Parser::Loop
           expect(response.start_index).to be 17
         end
+
+        it "pushes the loop to the loop stack" do
+          response = subject.parse_next(input)
+
+          expect(subject.loop_stack.pop).to be response
+        end
       end
 
       describe "loop end" do
@@ -105,7 +111,7 @@ module Braingasm
           subject.loop_stack = [current_loop]
         end
 
-        it "fails if there is no loop object on the stack" do
+        it "fails if there is no loop object on the loop stack" do
           subject.loop_stack = []
 
           expect { subject.parse_next(input) }.to raise_error(ParsingError)
