@@ -6,14 +6,51 @@ module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
 
+    describe :tokenize_input do
+      before { @input = "abc _\t\n+-<> " }
+
+      it "returns an enumerator with all non-whitespace characters" do
+        tokens = subject.tokenize_input()
+
+        expect(tokens.next).to be == 'a'
+        expect(tokens.next).to be == 'b'
+        expect(tokens.next).to be == 'c'
+        expect(tokens.next).to be == '_'
+        expect(tokens.next).to be == '+'
+        expect(tokens.next).to be == '-'
+        expect(tokens.next).to be == '<'
+        expect(tokens.next).to be == '>'
+        expect { tokens.next }.to raise_error StopIteration
+      end
+    end
+
     describe :parse_program do
+      it "feeds tokenized input to #parse_next" do
+        tokens = [:foobar]
+        expect(subject).to receive(:tokenize_input).and_return(tokens)
+        expect(subject).to receive(:parse_next).with(tokens).and_raise(StopIteration)
+
+        subject.parse_program
+      end
+
+      it "pushes each value returned by #parse_next individually" do
+        tokens = [1, 2, 3].to_enum
+        allow(subject).to receive(:tokenize_input).and_return(tokens)
+        allow(subject).to receive(:parse_next).with(tokens) { tokens.next * 10 }
+        expect(subject).to receive(:push_instruction).with(10).ordered
+        expect(subject).to receive(:push_instruction).with(20).ordered
+        expect(subject).to receive(:push_instruction).with(30).ordered
+
+        subject.parse_program
+      end
+
       it "returns an empty program for empty input" do
         @input = ""
 
         expect(subject.parse_program).to be == []
       end
 
-      it "ignores unknown characters in the input" do
+      it "ignores unknown tokens in the input" do
         @input = "x yz_*@^æøå"
 
         expect(subject.parse_program).to be == []

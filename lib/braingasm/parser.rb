@@ -13,13 +13,17 @@ module Braingasm
     end
 
     def parse_program
-      tokens = @input.scan(/\S/).to_enum
+      tokens = tokenize_input()
 
       loop do
         push_instruction parse_next(tokens)
       end
 
       @program
+    end
+
+    def tokenize_input()
+      @input.scan(/\S/).to_enum
     end
 
     def parse_next(tokens)
