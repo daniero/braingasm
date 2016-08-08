@@ -13,18 +13,12 @@ module Braingasm
     end
 
     def parse_program
-      tokens = tokenize_input()
-
       loop do
-        push_instruction parse_next(tokens)
+        push_instruction parse_next(@input)
       end
 
       raise ParsingError, "Unmatched `[`" unless @loop_stack.empty?
       @program
-    end
-
-    def tokenize_input()
-      @input.scan(/\S/).to_enum
     end
 
     def parse_next(tokens)
