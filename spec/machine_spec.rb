@@ -143,8 +143,8 @@ describe Braingasm::Machine do
         subject.dp = 2
 
         expect(subject.inst_jump_if_zero(1)).to be 100
-        # expect(subject.inst_jump_if_zero(14)).to be 100
-        # expect(subject.inst_jump_if_zero(42)).to be 100
+        expect(subject.inst_jump_if_zero(14)).to be 100
+        expect(subject.inst_jump_if_zero(42)).to be 100
       end
     end
 
