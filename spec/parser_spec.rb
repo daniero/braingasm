@@ -2,6 +2,10 @@
 require 'spec_helper'
 require "braingasm/machine"
 
+def provide_tokens(input)
+  input.chars.to_enum
+end
+
 module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
@@ -64,12 +68,8 @@ module Braingasm
     end
 
     describe :parse_next do
-      def input_as_token_enum(input)
-        input.chars.to_enum
-      end
-
       it "raises StopIteration on end of input" do
-        expect { subject.parse_next(input_as_token_enum('')) }.to raise_error StopIteration
+        expect { subject.parse_next(provide_tokens('')) }.to raise_error StopIteration
       end
 
       describe "simple instructions" do
@@ -87,7 +87,7 @@ module Braingasm
             mock_generated_instruction = "#{instruction}_mock_return"
             expect(subject).to receive(instruction).and_return(mock_generated_instruction)
 
-            response = subject.parse_next(input_as_token_enum(input))
+            response = subject.parse_next(provide_tokens(input))
 
             expect(response).to be(mock_generated_instruction)
           end
@@ -95,7 +95,7 @@ module Braingasm
       end
 
       describe "loop start" do
-        let(:input) { input_as_token_enum('[') }
+        let(:input) { provide_tokens('[') }
 
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
@@ -114,7 +114,7 @@ module Braingasm
       end
 
       describe "loop end" do
-        let(:input) { input_as_token_enum(']') }
+        let(:input) { provide_tokens(']') }
         let(:current_loop) { Parser::Loop.new }
 
         before do
