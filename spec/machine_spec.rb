@@ -13,6 +13,14 @@ describe Braingasm::Machine do
     expect(subject.ip).to be 0
   end
 
+  describe :run do
+    it "can handle an empty program" do
+      subject.program = []
+
+      subject.run
+    end
+  end
+
   describe :step do
     before(:each) do
       subject.ip = 1

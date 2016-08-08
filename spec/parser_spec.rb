@@ -68,6 +68,10 @@ module Braingasm
         input.chars.to_enum
       end
 
+      it "raises StopIteration on end of input" do
+        expect { subject.parse_next(input_as_token_enum('')) }.to raise_error StopIteration
+      end
+
       describe "simple instructions" do
         inputs = { '+' => :inc,
                    '-' => :dec,
