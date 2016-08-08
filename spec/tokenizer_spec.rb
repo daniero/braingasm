@@ -39,6 +39,21 @@ module Braingasm
           expect(subject.line_numer).to be 3
         end
       end
+
+      describe :column_number do
+        it "returns the column number from which the previous tokens was read" do
+          @input = " a \nb c\n   d"
+
+          subject.next
+          expect(subject.column_number).to be 2
+          subject.next
+          expect(subject.column_number).to be 1
+          subject.next
+          expect(subject.column_number).to be 3
+          subject.next
+          expect(subject.column_number).to be 4
+        end
+      end
   end
 
 end
