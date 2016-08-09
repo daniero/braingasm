@@ -2,18 +2,22 @@
 require 'spec_helper'
 require "braingasm/machine"
 
-def provide_tokens(input)
-  input.chars.to_enum
-end
-
 module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
 
+    def provide_input(*tokens)
+      tokenizer = instance_double(Tokenizer)
+      enum = tokens.to_enum
+      allow(tokenizer).to receive(:next) { enum.next }
+      @input = tokenizer
+    end
+
     describe :parse_program do
-      it "feeds the input to #parse_next" do
-        @input = "foo"
-        expect(subject).to receive(:parse_next).with("foo").and_raise(StopIteration)
+
+      it "calls #parse_next with the tokenizer input until it raises StopIteration" do
+        tokenizer = provide_input :foo
+        expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)
 
         subject.parse_program
       end
@@ -35,13 +39,13 @@ module Braingasm
       end
 
       it "ignores unknown tokens in the input" do
-        @input = provide_tokens("x yz_*@^æøå")
+        provide_input(:unknown, :foo, :bar)
 
         expect(subject.parse_program).to be == []
       end
 
       it "fails if there are unclosed loops in the input" do
-        @input = provide_tokens("[")
+        provide_input(:loop_start)
         allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
         expect { subject.parse_program }.to raise_error(ParsingError)
@@ -49,26 +53,30 @@ module Braingasm
     end
 
     describe :parse_next do
+      subject { Parser.new(nil) }
+
       it "raises StopIteration on end of input" do
-        expect { subject.parse_next(provide_tokens('')) }.to raise_error StopIteration
+        empty = [].to_enum
+
+        expect { subject.parse_next(empty) }.to raise_error StopIteration
       end
 
       describe "simple instructions" do
-        inputs = { '+' => :inc,
-                   '-' => :dec,
-                   '>' => :right,
-                   '<' => :left,
-                   '.' => :print,
-                   ',' => :read }
+        inputs = { :plus => :inc,
+                   :minus => :dec,
+                   :right => :right,
+                   :left => :left,
+                   :period => :print,
+                   :comma => :read }
 
-        inputs.each do |input, instruction|
+        inputs.each do |token, instruction|
           it { should respond_to instruction }
 
-          it "returns instruction '#{instruction}' given a '#{input}'" do
+          it "returns instruction '#{instruction}' given a :#{token}" do
             mock_generated_instruction = "#{instruction}_mock_return"
             expect(subject).to receive(instruction).and_return(mock_generated_instruction)
 
-            response = subject.parse_next(provide_tokens(input))
+            response = subject.parse_next(provide_input(token))
 
             expect(response).to be(mock_generated_instruction)
           end
@@ -76,7 +84,7 @@ module Braingasm
       end
 
       describe "loop start" do
-        let(:input) { provide_tokens('[') }
+        let(:input) { provide_input(:loop_start) }
 
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
@@ -95,7 +103,7 @@ module Braingasm
       end
 
       describe "loop end" do
-        let(:input) { provide_tokens(']') }
+        let(:input) { provide_input(:loop_end) }
         let(:current_loop) { Parser::Loop.new }
 
         before do

@@ -23,24 +23,24 @@ module Braingasm
 
     def parse_next(tokens)
       case tokens.next
-      when '>'
+      when :right
         right()
-      when '<'
+      when :left
         left()
-      when '+'
+      when :plus
         inc()
-      when '-'
+      when :minus
         dec()
-      when '.'
+      when :period
         print()
-      when ','
+      when :comma
         read()
-      when '['
+      when :loop_start
         new_loop = Loop.new
         @loop_stack.push(new_loop)
         new_loop.start_index = @program.size
         new_loop
-      when ']'
+      when :loop_end
         current_loop = @loop_stack.pop
         raise_parsing_error("Unmatched `]`") unless current_loop
         instruction = jump(current_loop.start_index)

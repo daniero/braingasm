@@ -28,10 +28,24 @@ module Braingasm
 
           column_number += 1
           @line_numer, @column_number = line_numer, column_number
-          y << scanner.scan(/\S/)
+          y << read_token(scanner)
         end
       end
     end
+
+    private
+    def read_token(scanner)
+        tokens = { '+' => :plus,
+                   '-' => :minus,
+                   '<' => :left,
+                   '>' => :right,
+                   '.' => :period,
+                   ',' => :comma,
+                   '[' => :loop_start,
+                   ']' => :loop_end }
+        tokens[scanner.scan(/\S/)] || :unknown
+    end
+
   end
 end
 

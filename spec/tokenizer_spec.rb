@@ -4,18 +4,10 @@ require "braingasm/tokenizer"
 module Braingasm
   describe Tokenizer do
     subject { Tokenizer.new(@input) }
-
       it "is an enumerator over all non-whitespace characters in the input" do
         @input = "abc _\t\n+-<> "
 
-        expect(subject.next).to be == 'a'
-        expect(subject.next).to be == 'b'
-        expect(subject.next).to be == 'c'
-        expect(subject.next).to be == '_'
-        expect(subject.next).to be == '+'
-        expect(subject.next).to be == '-'
-        expect(subject.next).to be == '<'
-        expect(subject.next).to be == '>'
+        8.times { subject.next } # 8 none-whitespace characters in input
         expect { subject.next }.to raise_error StopIteration
       end
 
@@ -23,6 +15,31 @@ module Braingasm
         @input = ""
 
         expect { subject.next }.to raise_error StopIteration
+      end
+
+      describe :next do
+        tokens = { '+' => :plus,
+                   '-' => :minus,
+                   '<' => :left,
+                   '>' => :right,
+                   '.' => :period,
+                   ',' => :comma,
+                   '[' => :loop_start,
+                   ']' => :loop_end }
+
+        tokens.each do |char, token|
+          it "returns :#{token} when input is '#{char}'" do
+            @input = char
+
+            expect(subject.next).to eq(token)
+          end
+        end
+
+        it "returns :unknown for any other input" do
+          @input = "*?`#"
+
+          4.times { expect(subject.next).to be :unknown }
+        end
       end
 
       describe :line_numer do
