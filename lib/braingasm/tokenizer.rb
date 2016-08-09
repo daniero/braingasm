@@ -7,24 +7,28 @@ module Braingasm
 
     def initialize(input)
       @line_numer = 1
-      @column_number = 1
+      @column_number = 0
 
       scanner = StringScanner.new(input)
 
       super() do |y|
         loop do
+          line_numer, column_number = @line_numer, @column_number
+
           while scanner.skip(/\s/)
             if scanner.beginning_of_line?
-              @line_numer += 1
-              @column_number = 1
+              line_numer += 1
+              column_number = 0
             else
-              @column_number += 1
+              column_number += 1
             end
           end
 
           break if scanner.eos?
+
+          column_number += 1
+          @line_numer, @column_number = line_numer, column_number
           y << scanner.scan(/\S/)
-          @column_number += 1
         end
       end
     end

@@ -38,6 +38,15 @@ module Braingasm
           subject.next
           expect(subject.line_numer).to be 3
         end
+
+        it "is not changed if tokenizer must read more after last valid token" do
+          @input = "x\n"
+
+          subject.next
+          expect(subject.line_numer).to be 1
+          expect { subject.next }.to raise_error StopIteration
+          expect(subject.line_numer).to be 1
+        end
       end
 
       describe :column_number do
@@ -52,6 +61,15 @@ module Braingasm
           expect(subject.column_number).to be 3
           subject.next
           expect(subject.column_number).to be 4
+        end
+
+        it "is not changed if tokenizer must read more after last valid token" do
+          @input = "x "
+
+          subject.next
+          expect(subject.column_number).to be 1
+          expect { subject.next }.to raise_error StopIteration
+          expect(subject.column_number).to be 1
         end
       end
   end
