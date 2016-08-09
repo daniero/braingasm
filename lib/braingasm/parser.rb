@@ -1,6 +1,14 @@
 module Braingasm
 
-  ParsingError = Class.new(RuntimeError)
+  class ParsingError < RuntimeError
+    def initialize(input)
+      @input = input
+    end
+
+    def to_s
+      "[line #{@input.line_numer}, col #{@input.column_number}] #{super}"
+    end
+  end
 
   # Takes some input code and generates the program
   class Parser
@@ -17,7 +25,7 @@ module Braingasm
         push_instruction parse_next(@input)
       end
 
-      raise ParsingError, "Unmatched `[`" unless @loop_stack.empty?
+      raise_parsing_error("Unmatched `[`") unless @loop_stack.empty?
       @program
     end
 
@@ -42,7 +50,7 @@ module Braingasm
         new_loop
       when ']'
         current_loop = @loop_stack.pop
-        raise ParsingError, "Unmatched `]`" unless current_loop
+        raise_parsing_error("Unmatched `]`") unless current_loop
         instruction = jump(current_loop.start_index)
         index = @program.size
         current_loop.stop_index = index
@@ -91,6 +99,11 @@ module Braingasm
         machine.inst_jump_if_zero(stop_index + 1)
       end
 
+    end
+
+    private
+    def raise_parsing_error(message)
+      raise ParsingError.new(@input), message
     end
   end
 end
