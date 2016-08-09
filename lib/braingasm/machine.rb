@@ -75,7 +75,7 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = $stdin.getbyte || 0
+      @tape[@dp] = ARGF.getbyte || 0
       @ip + 1
     end
 

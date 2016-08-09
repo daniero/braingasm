@@ -3,7 +3,7 @@
 require 'braingasm'
 require 'braingasm/errors'
 
-input = IO.read(ARGV[0])
+input = IO.read(ARGV.shift)
 
 begin
   machine = Braingasm.initialize_machine(input)

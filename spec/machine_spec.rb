@@ -158,14 +158,10 @@ describe Braingasm::Machine do
 
     describe :inst_read_byte do
       before do
-        $stdin = StringIO.new("Hiæ")
+        stub_const('ARGF', StringIO.new("Hiæ"))
       end
 
-      after do
-        $stdin = STDIN
-      end
-
-      it "reads one byte from input and stores in the current cell"  do
+      it "reads one byte from ARGF and stores in the current cell"  do
         subject.inst_read_byte
         expect(subject.tape[0]).to be 'H'.ord
 
@@ -181,7 +177,7 @@ describe Braingasm::Machine do
 
       it "stores 0 in current cell if there is no more input" do
         subject.tape[0] = 77
-        $stdin = StringIO.new("")
+        stub_const('ARGF', StringIO.new(""))
 
         subject.inst_read_byte
 
