@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'braingasm'
+require 'braingasm/errors'
+
+input = IO.read(ARGV.shift)
+
+begin
+  machine = Braingasm.initialize_machine(input)
+  machine.run
+rescue Braingasm::BraingasmError => e
+  $stderr.puts "#{e.type}: #{e.message}"
+  exit 1
+end
