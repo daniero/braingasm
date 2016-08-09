@@ -95,7 +95,7 @@ module Braingasm
 
     private
     def raise_parsing_error(message)
-      raise ParsingError.new(@input), message
+      raise ParsingError.new(@input.line_numer, @input.column_number), message
     end
   end
 end

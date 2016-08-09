@@ -104,6 +104,7 @@ module Braingasm
 
         it "fails if there is no loop object on the loop stack" do
           subject.loop_stack = []
+          allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
           expect { subject.parse_next(input) }.to raise_error(ParsingError)
         end

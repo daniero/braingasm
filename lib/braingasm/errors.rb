@@ -1,8 +1,14 @@
 module Braingasm
-  class ParsingError < RuntimeError
-    def initialize(input = nil)
-      @line = input.line if input
-      @column = input.column if input
+  class BraingasmError < RuntimeError
+    def type
+      self.class.to_s
+    end
+  end
+
+  class ParsingError < BraingasmError
+    def initialize(line=nil, column=nil)
+      @line = line
+      @column = column
     end
 
     def type
@@ -10,6 +16,6 @@ module Braingasm
     end
   end
 
-  class VMError < RuntimeError
+  class VMError < BraingasmError
   end
 end
