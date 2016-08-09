@@ -1,6 +1,6 @@
-module Braingasm
+require "braingasm/errors"
 
-  VMError = Class.new(RuntimeError)
+module Braingasm
 
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state

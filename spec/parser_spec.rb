@@ -42,6 +42,7 @@ module Braingasm
 
       it "fails if there are unclosed loops in the input" do
         @input = provide_tokens("[")
+        allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
         expect { subject.parse_program }.to raise_error(ParsingError)
       end

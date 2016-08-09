@@ -1,14 +1,6 @@
+require "braingasm/errors"
+
 module Braingasm
-
-  class ParsingError < RuntimeError
-    def initialize(input)
-      @input = input
-    end
-
-    def to_s
-      "[line #{@input.line_numer}, col #{@input.column_number}] #{super}"
-    end
-  end
 
   # Takes some input code and generates the program
   class Parser
