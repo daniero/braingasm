@@ -6,6 +6,7 @@ module Braingasm
   end
 
   class ParsingError < BraingasmError
+    attr_reader :line, :column
     def initialize(line=nil, column=nil)
       @line = line
       @column = column

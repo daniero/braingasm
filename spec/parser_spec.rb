@@ -140,6 +140,19 @@ module Braingasm
       end
     end
 
+    describe :raise_parsing_error do
+      it "raises a ParsingError with the correct line and column numbers" do
+        tokenizer = provide_input :foo
+        expect(tokenizer).to receive(:line_numer).and_return 100
+        expect(tokenizer).to receive(:column_number).and_return 200
+        error = nil
+
+        expect { subject.raise_parsing_error("foobar") }.to raise_error(ParsingError) { |e| error = e }
+        expect(error.line).to be 100
+        expect(error.column).to be 200
+      end
+    end
+
     describe :push_instruction do
       it "pushes the instruction onto the program" do
         subject.push_instruction(1)
