@@ -14,7 +14,6 @@ module Braingasm
     end
 
     describe :parse_program do
-
       it "calls #parse_next with the tokenizer input until it raises StopIteration" do
         tokenizer = provide_input :foo
         expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)

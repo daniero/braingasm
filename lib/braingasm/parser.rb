@@ -90,7 +90,6 @@ module Braingasm
       def call(machine)
         machine.inst_jump_if_zero(stop_index + 1)
       end
-
     end
 
     def raise_parsing_error(message)
