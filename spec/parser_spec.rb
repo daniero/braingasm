@@ -66,7 +66,9 @@ module Braingasm
                    :right => :right,
                    :left => :left,
                    :period => :print,
-                   :comma => :read }
+                   :comma => :read,
+                   :loop_start => :loop_start,
+                   :loop_end => :loop_end }
 
         inputs.each do |token, instruction|
           it { should respond_to instruction }
@@ -81,28 +83,27 @@ module Braingasm
           end
         end
       end
+    end
 
-      describe "loop start" do
-        let(:input) { provide_input(:loop_start) }
-
+    describe "generating instructions" do
+      describe :loop_start do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
 
-          response = subject.parse_next(input)
+          response = subject.loop_start()
 
           expect(response).to be_a Parser::Loop
           expect(response.start_index).to be 17
         end
 
         it "pushes the loop to the loop stack" do
-          response = subject.parse_next(input)
+          response = subject.loop_start()
 
           expect(subject.loop_stack.pop).to be response
         end
       end
 
-      describe "loop end" do
-        let(:input) { provide_input(:loop_end) }
+      describe :loop_end do
         let(:current_loop) { Parser::Loop.new }
 
         before do
@@ -113,26 +114,26 @@ module Braingasm
           subject.loop_stack = []
           allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
-          expect { subject.parse_next(input) }.to raise_error(ParsingError)
+          expect { subject.loop_end() }.to raise_error(ParsingError)
         end
 
         it "returns a jump instruction back to the start of the current loop" do
           current_loop.start_index = 42
           expect(subject).to receive(:jump).with(42).and_return("jump_return_value")
 
-          expect(subject.parse_next(input)).to eq("jump_return_value")
+          expect(subject.loop_end()).to eq("jump_return_value")
         end
 
         it "sets the stop_index of the current loop" do
           subject.program = [nil] * 13
 
-          subject.parse_next(input)
+          subject.loop_end()
 
           expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
-          subject.parse_next(input)
+          subject.loop_end()
 
           expect(subject.loop_stack).to be_empty
         end
