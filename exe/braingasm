@@ -2,15 +2,26 @@
 
 require 'braingasm'
 require 'braingasm/errors'
+require 'braingasm/options'
+require 'trollop'
 
 def err(message)
   $stderr.puts message
   exit 1
 end
 
+opts = Trollop::options do
+  opt :zero,      "EOF returns 0 (default)"
+  opt :negative,  "EOF returns -1"
+  opt :as_is,     "EOF leaves cell unchanged", :short => '-u'
+  conflicts :zero, :negative, :as_is
+end
+
+Braingasm.handle_options(opts)
+
 filename = ARGV.shift
-err "No filname given" unless filename
-err "No such file: #{filename}" unless File.exists?(filename)
+err "Error: No filname given" unless filename
+err "Error: No such file: #{filename}" unless File.exists?(filename)
 
 begin
   input = IO.read(filename)

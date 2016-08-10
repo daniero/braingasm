@@ -175,13 +175,34 @@ describe Braingasm::Machine do
         expect(subject.tape[0]).to be 166
       end
 
-      it "stores 0 in current cell if there is no more input" do
-        subject.tape[0] = 77
-        stub_const('ARGF', StringIO.new(""))
+      context "on EOF" do
+        before(:each) { stub_const 'ARGF', StringIO.new("") }
 
-        subject.inst_read_byte
+        context "if Options[:eof] is nil" do
+          before { Braingasm::Options[:eof] = nil }
 
-        expect(subject.tape[0]).to be 0
+          it "leaves the value of the current cell unchanged" do
+              subject.tape[0] = 13
+
+              subject.inst_read_byte
+
+              expect(subject.tape[0]).to be 13
+          end
+        end
+
+        [-1, 0].each do |option_value|
+          context "if Options[:eof] is #{option_value}" do
+            before { Braingasm::Options[:eof] = option_value }
+
+            it "changes the value of the current cell to #{option_value}" do
+              subject.tape[0] = 77
+
+              subject.inst_read_byte
+
+              expect(subject.tape[0]).to be option_value
+            end
+          end
+        end
       end
 
       it "returns one plus IP, allowing the program to advance" do

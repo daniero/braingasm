@@ -1,4 +1,5 @@
 require "braingasm/errors"
+require "braingasm/options"
 
 module Braingasm
 
@@ -75,7 +76,7 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = ARGF.getbyte || 0
+      @tape[@dp] = ARGF.getbyte || Options[:eof] || @tape[@dp]
       @ip + 1
     end
 
