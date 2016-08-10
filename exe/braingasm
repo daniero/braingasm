@@ -3,12 +3,19 @@
 require 'braingasm'
 require 'braingasm/errors'
 
-input = IO.read(ARGV.shift)
+def err(message)
+  $stderr.puts message
+  exit 1
+end
+
+filename = ARGV.shift
+err "No filname given" unless filename
+err "No such file: #{filename}" unless File.exists?(filename)
 
 begin
+  input = IO.read(filename)
   machine = Braingasm.initialize_machine(input)
   machine.run
 rescue Braingasm::BraingasmError => e
-  $stderr.puts "#{e.type}: #{e.message}"
-  exit 1
+  err "#{e.type}: #{e.message}"
 end
