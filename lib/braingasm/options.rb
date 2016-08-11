@@ -22,9 +22,9 @@ module Braingasm
     end
   end
 
-  def self.handle_options(options)
-    Options[:eof] = 0 if options[:zero]
-    Options[:eof] = -1 if options[:negative]
-    Options[:eof] = nil if options[:as_is]
+  def self.handle_options(command_line_options)
+    Options[:eof] = 0 if command_line_options[:zero]
+    Options[:eof] = -1 if command_line_options[:negative]
+    Options[:eof] = nil if command_line_options[:as_is]
   end
 end
