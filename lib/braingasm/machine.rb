@@ -54,11 +54,13 @@ module Braingasm
 
     def inst_inc(n=1)
       @tape[@dp] += n
+      wrap_cell
       @ip + 1
     end
 
     def inst_dec(n=1)
       @tape[@dp] -= n
+      wrap_cell
       @ip + 1
     end
 
@@ -80,5 +82,9 @@ module Braingasm
       @ip + 1
     end
 
+    private
+    def wrap_cell
+      @tape[@dp] %= Options[:cell_limit] if Options[:wrap_cells]
+    end
   end
 end

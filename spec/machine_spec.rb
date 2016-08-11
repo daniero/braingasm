@@ -111,6 +111,36 @@ describe Braingasm::Machine do
 
         expect(subject.tape[3]).to be 1
       end
+
+      context "with cell wrapping off" do
+        before do
+          Braingasm::Options[:wrap_cells] = false
+          Braingasm::Options[:cell_limit] = 256
+        end
+
+        it "increases the cell values beyond :cell_limit" do
+          subject.tape[0] = 255
+
+          subject.inst_inc
+
+          expect(subject.tape[0]).to be 256
+        end
+      end
+
+      context "with cell wrapping on" do
+        before do
+          Braingasm::Options[:wrap_cells] = true
+          Braingasm::Options[:cell_limit] = 256
+        end
+
+        it "wraps the cell values around before reaching :cell_limit" do
+          subject.tape[0] = 255
+
+          subject.inst_inc
+
+          expect(subject.tape[0]).to be 0
+        end
+      end
     end
 
     describe :inst_dec do
@@ -121,6 +151,31 @@ describe Braingasm::Machine do
         subject.inst_dec
 
         expect(subject.tape[2]).to be 6
+      end
+
+      context "with cell wrapping off" do
+        before do
+          Braingasm::Options[:wrap_cells] = false
+        end
+
+        it "goes under zero" do
+          subject.inst_dec
+
+          expect(subject.tape[0]).to be -1
+        end
+      end
+
+      context "with cell wrapping on" do
+        before do
+          Braingasm::Options[:wrap_cells] = true
+          Braingasm::Options[:cell_limit] = 256
+        end
+
+        it "wraps around after zero" do
+          subject.inst_dec
+
+          expect(subject.tape[0]).to be 255
+        end
       end
     end
 

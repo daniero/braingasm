@@ -11,10 +11,16 @@ def err(message)
 end
 
 opts = Trollop::options do
-  opt :zero,      "EOF returns 0 (default)"
-  opt :negative,  "EOF returns -1"
-  opt :as_is,     "EOF leaves cell unchanged", :short => '-u'
+  opt :zero,          "EOF returns 0 (default)"
+  opt :negative,      "EOF returns -1"
+  opt :as_is,         "EOF leaves cell unchanged",
+                      :short => '-u'
   conflicts :zero, :negative, :as_is
+
+  opt :wrap_cells,    "Limit cell values to stay within the given size"
+  opt :cell_size,     "Cell size in bits. Automatically turns on --wrap-cells.",
+                      :short => '-s',
+                      :default => 8
 end
 
 Braingasm.handle_options(opts)
