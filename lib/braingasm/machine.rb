@@ -73,7 +73,7 @@ module Braingasm
     end
 
     def inst_print_cell
-      print @tape[@dp].chr
+      putc @tape[@dp]
       @ip + 1
     end
 
