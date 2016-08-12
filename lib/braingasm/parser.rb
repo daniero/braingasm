@@ -86,10 +86,9 @@ module Braingasm
     def loop_end
         current_loop = @loop_stack.pop
         raise_parsing_error("Unmatched `]`") unless current_loop
-        instruction = jump(current_loop.start_index)
         index = @program.size
         current_loop.stop_index = index
-        instruction
+        jump(current_loop.start_index)
     end
 
     class Loop
