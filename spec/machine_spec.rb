@@ -161,7 +161,7 @@ describe Braingasm::Machine do
         it "goes under zero" do
           subject.inst_dec
 
-          expect(subject.tape[0]).to be -1
+          expect(subject.tape[0]).to be (-1)
         end
       end
 

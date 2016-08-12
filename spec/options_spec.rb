@@ -8,7 +8,7 @@ module Braingasm
       expect(Options[:eof]).to be 0
 
       Braingasm.handle_options(:negative => true)
-      expect(Options[:eof]).to be -1
+      expect(Options[:eof]).to be (-1)
 
       Braingasm.handle_options(:as_is => true)
       expect(Options[:eof]).to be nil
