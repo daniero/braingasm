@@ -104,7 +104,7 @@ describe Braingasm::Machine do
       context "at the leftmost cell" do
         before(:each) { subject.dp = 0 }
 
-        it "shifts new cells onto the tape to the right, keeping a positive data pointer index" do
+        it "shifts new cells onto the start of the tape, keeping a positive data pointer index" do
           subject.inst_left
 
           expect(subject.dp).to be >= 0
