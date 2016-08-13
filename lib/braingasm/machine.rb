@@ -50,7 +50,6 @@ module Braingasm
           @tape.unshift 0
         end
         new_dp = 0
-      else
       end
 
       @dp = new_dp
