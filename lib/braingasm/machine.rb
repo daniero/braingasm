@@ -42,8 +42,18 @@ module Braingasm
     end
 
     def inst_left(n=1)
-      @dp -= 1
-      raise VMError, "Moved outside the tape" if @dp < 0
+      new_dp = @dp - n
+      no_cells = @tape.length
+
+      if new_dp < 0
+        n.times do
+          @tape.unshift 0
+        end
+        new_dp = 0
+      else
+      end
+
+      @dp = new_dp
       @ip + 1
     end
 

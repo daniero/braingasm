@@ -90,16 +90,39 @@ describe Braingasm::Machine do
     end
 
     describe :inst_left do
-      it "decreases the data pointer" do
+      before(:each) do
+        subject.tape = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         subject.dp = 6
+      end
 
+      it "decreases the data pointer" do
         subject.inst_left
 
         expect(subject.dp).to be 5
       end
 
-      it "does not allow moving below the first cell" do
-        expect{ subject.inst_left }.to raise_error(Braingasm::VMError)
+      context "at the leftmost cell" do
+        before(:each) { subject.dp = 0 }
+
+        it "shifts new cells onto the tape to the right, keeping a positive data pointer index" do
+          subject.inst_left
+
+          expect(subject.dp).to be >= 0
+        end
+
+        it "preserves the original values on the tape" do
+          subject.inst_left
+
+          (1..10).each do |i|
+            expect(subject.tape[subject.dp + i]).to be i
+          end
+        end
+
+        it "initializes the newly created cells" do
+          subject.inst_left
+
+          expect(subject.tape[0..subject.dp]).to all be 0
+        end
       end
     end
 
