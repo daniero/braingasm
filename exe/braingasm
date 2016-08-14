@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'braingasm'
+require 'braingasm/version'
 require 'braingasm/errors'
 require 'braingasm/options'
 require 'trollop'
@@ -11,6 +12,8 @@ def err(message)
 end
 
 opts = Trollop::options do
+  version "Braingasm v#{Braingasm::VERSION}"
+
   opt :zero,          "EOF returns 0 (default)"
   opt :negative,      "EOF returns -1"
   opt :as_is,         "EOF leaves cell unchanged",
