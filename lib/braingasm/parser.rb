@@ -4,12 +4,13 @@ module Braingasm
 
   # Takes some input code and generates the program
   class Parser
-    attr_accessor :program, :loop_stack
+    attr_accessor :input, :program, :loop_stack, :prefixes
 
     def initialize(input)
       @input = input
       @program = []
       @loop_stack = []
+      @prefixes = []
     end
 
     def parse_program
@@ -22,7 +23,12 @@ module Braingasm
     end
 
     def parse_next(tokens)
-      case tokens.next
+      token = tokens.next
+
+      case token
+      when Integer
+        @prefixes.push token
+        false
       when :right
         right()
       when :left

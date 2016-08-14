@@ -6,6 +6,18 @@ module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
 
+    it "initializes all necessary fields" do
+      @input = :something
+
+      expect(subject.input).to be :something
+      expect(subject.program).to be_an Array
+      expect(subject.program).to be_empty
+      expect(subject.loop_stack).to be_an Array
+      expect(subject.loop_stack).to be_empty
+      expect(subject.prefixes).to be_an Array
+      expect(subject.prefixes).to be_empty
+    end
+
     def provide_input(*tokens)
       tokenizer = instance_double(Tokenizer)
       enum = tokens.to_enum
@@ -83,6 +95,20 @@ module Braingasm
           end
         end
       end
+
+      describe "prefixes" do
+        context "when given an Integer" do
+          it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+            expect(subject.parse_next(provide_input(1))).to be_falsy
+          end
+
+          it "adds the Integer as a prefix" do
+            subject.parse_next(provide_input(2))
+
+            expect(subject.prefixes).to be == [2]
+          end
+        end
+      end
     end
 
     describe "generating instructions" do
@@ -154,6 +180,14 @@ module Braingasm
     end
 
     describe :push_instruction do
+      it "does nothing if the parameter is falsy" do
+        subject.push_instruction(false)
+        expect(subject.program).to be_empty
+
+        subject.push_instruction(nil)
+        expect(subject.program).to be_empty
+      end
+
       it "pushes the instruction onto the program" do
         subject.push_instruction(1)
         subject.push_instruction(2)
