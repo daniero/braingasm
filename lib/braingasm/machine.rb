@@ -43,7 +43,6 @@ module Braingasm
 
     def inst_left(n=1)
       new_dp = @dp - n
-      no_cells = @tape.length
 
       if new_dp < 0
         n.times do
