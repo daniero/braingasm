@@ -24,8 +24,10 @@ module Braingasm
     end
 
     def step
-      move = @program[@ip].call(self)
-      @ip = move
+      @program[@ip].call(self)
+      @ip += 1
+    rescue JumpSignal => jump
+      @ip = jump.to
     end
 
     def inst_right(n=1)
@@ -38,7 +40,6 @@ module Braingasm
       end
 
       @dp = new_dp
-      @ip + 1
     end
 
     def inst_left(n=1)
@@ -52,42 +53,36 @@ module Braingasm
       end
 
       @dp = new_dp
-      @ip + 1
     end
 
     def inst_print_tape
       p @tape
-      @ip + 1
     end
 
     def inst_inc(n=1)
       @tape[@dp] += n
       wrap_cell
-      @ip + 1
     end
 
     def inst_dec(n=1)
       @tape[@dp] -= n
       wrap_cell
-      @ip + 1
     end
 
     def inst_jump(to)
-      to
+      raise JumpSignal.new(to)
     end
 
     def inst_jump_if_zero(to)
-      @tape[@dp] == 0 ? to : @ip + 1
+      raise JumpSignal.new(to) if @tape[@dp] == 0
     end
 
     def inst_print_cell
       putc @tape[@dp]
-      @ip + 1
     end
 
     def inst_read_byte
       @tape[@dp] = ARGF.getbyte || Options[:eof] || @tape[@dp]
-      @ip + 1
     end
 
     private

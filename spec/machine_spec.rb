@@ -23,38 +23,34 @@ describe Braingasm::Machine do
 
   describe :step do
     before(:each) do
-      subject.ip = 1
-      instruction = double()
-      allow(instruction).to receive(:call).and_return(4, 2)
-      subject.program = [nil, instruction, nil, nil, instruction]
+      subject.program = []
+      subject.ip = 0
     end
 
-    it "calls the next instruction and sets IP to its return value" do
-      subject.step
-      expect(subject.ip).to be 4
+    it "calls the next instruction in the program and advances the instruction pointer" do
+      5.times do |i|
+        instruction = double
+        expect(instruction).to receive(:call).with(subject).ordered
+        subject.program << instruction
+
+        subject.step
+
+        expect(subject.ip).to be == i + 1
+      end
+    end
+
+    it "updates the instruction pointer accordingly if a JumpSignal is raised" do
+      instruction = double
+      expect(instruction).to receive(:call).with(subject).and_raise Braingasm::JumpSignal.new(7)
+      subject.program << instruction
 
       subject.step
-      expect(subject.ip).to be 2
+
+      expect(subject.ip).to be 7
     end
   end
 
   describe "instructions" do
-    it "return new value for instruction pointer" do
-      # Kinda ugly, but it automatically tests methods added to the class,
-      # unless they are explicitly excluded here:
-      instruction_methods = subject.class.instance_methods(false).
-        grep(/^inst_/).grep_v(/jump/) - [:inst_print_tape, :inst_read_byte]
-
-      instruction_methods.each do |name|
-        subject.ip = current_ip = rand 10
-
-        new_ip = subject.method(name).call
-
-        expect(new_ip).to be(current_ip + 1),
-          "return value of instruction `#{name}`"
-      end
-    end
-
     describe :inst_right do
       before { subject.tape = [] }
 
@@ -203,26 +199,29 @@ describe Braingasm::Machine do
     end
 
     describe :inst_jump do
-      it "returns the given value, signifying the new instruction pointer" do
-        expect(subject.inst_jump(9)).to be 9
-        expect(subject.inst_jump(4)).to be 4
+      it "raises a JumpSignal, interupting normal program flow" do
+        expect{ subject.inst_jump(:foo) }.to raise_error Braingasm::JumpSignal
       end
     end
 
     describe :inst_jump_if_zero do
-      it "returns the given value if value of current cell is 0" do
-        expect(subject.inst_jump_if_zero(11)).to be 11
-        expect(subject.inst_jump_if_zero(7)).to be 7
+      before(:each) do
+        subject.tape = [ 0, 0, 7 ]
       end
 
-      it "returns one plus IP if value of current cell is not 0" do
-        subject.ip = 99
-        subject.tape = [ 1, 0, 7 ]
+      it "does nothing if the current cell value if not zero" do
         subject.dp = 2
 
-        expect(subject.inst_jump_if_zero(1)).to be 100
-        expect(subject.inst_jump_if_zero(14)).to be 100
-        expect(subject.inst_jump_if_zero(42)).to be 100
+        subject.inst_jump_if_zero(1000)
+      end
+
+      it "raises a JumpSignal if the current cell value is zero" do
+        subject.dp = 1
+
+        expect{ subject.inst_jump_if_zero(99) }.to raise_error { |error|
+          expect(error).to be_a Braingasm::JumpSignal
+          expect(error.to).to be 99
+        }
       end
     end
 
@@ -281,12 +280,6 @@ describe Braingasm::Machine do
             end
           end
         end
-      end
-
-      it "returns one plus IP, allowing the program to advance" do
-        subject.ip = 9
-
-        expect(subject.inst_read_byte).to be 10
       end
     end
   end
