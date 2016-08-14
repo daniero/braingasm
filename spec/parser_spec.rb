@@ -86,6 +86,34 @@ module Braingasm
     end
 
     describe "generating instructions" do
+      shared_examples "simple instruction" do |method_name, machine_instruction|
+        let(:machine) { instance_double(Machine) }
+
+        it "generates a function which calls the given machine's ##{machine_instruction}" do
+          expect(machine).to receive(machine_instruction)
+
+          generated_instruction = subject.method(method_name).call
+
+          generated_instruction.call(machine)
+        end
+      end
+
+      describe "#inc" do
+        include_examples "simple instruction", :inc, :inst_inc
+      end
+
+      describe "#dec" do
+        include_examples "simple instruction", :dec, :inst_dec
+      end
+
+      describe "#right" do
+        include_examples "simple instruction", :right, :inst_right
+      end
+
+      describe "#left" do
+        include_examples "simple instruction", :left, :inst_left
+      end
+
       describe :loop_start do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
