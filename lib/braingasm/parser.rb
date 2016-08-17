@@ -54,19 +54,23 @@ module Braingasm
       @program.size - 1
     end
 
-    def right(n=1)
+    def right()
+      n = @prefixes.pop || 1
       -> m { m.inst_right(n) }
     end
 
-    def left(n=1)
+    def left()
+      n = @prefixes.pop || 1
       -> m { m.inst_left(n) }
     end
 
-    def inc(n=1)
+    def inc()
+      n = @prefixes.pop || 1
       -> m { m.inst_inc(n) }
     end
 
-    def dec(n=1)
+    def dec()
+      n = @prefixes.pop || 1
       -> m { m.inst_dec(n) }
     end
 

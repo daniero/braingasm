@@ -116,12 +116,26 @@ module Braingasm
         let(:machine) { instance_double(Machine) }
 
         it "generates a function which calls the given machine's ##{machine_instruction}" do
-          expect(machine).to receive(machine_instruction)
+          expect(machine).to receive(machine_instruction).with(1)
 
           generated_instruction = subject.method(method_name).call
 
           generated_instruction.call(machine)
         end
+
+        context "given an integer prefix" do
+          before(:each) { subject.prefixes << 42 }
+
+          it "passes the prefix as an argument to the machine instruction" do
+            expect(machine).to receive(machine_instruction).with(42)
+
+            generated_instruction = subject.method(method_name).call
+
+            generated_instruction.call(machine)
+          end
+        end
+
+        after(:each) { expect(subject.prefixes).to be_empty }
       end
 
       describe "#inc" do
