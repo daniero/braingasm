@@ -112,46 +112,46 @@ module Braingasm
     end
 
     describe "generating instructions" do
-      shared_examples "simple instruction" do |method_name, machine_instruction|
-        let(:machine) { instance_double(Machine) }
+      let(:machine) { instance_double(Machine) }
+      after(:each) { expect(subject.prefixes).to be_empty }
 
+      shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
         it "generates a function which calls the given machine's ##{machine_instruction}" do
-          expect(machine).to receive(machine_instruction).with(1)
+          expect(machine).to receive(machine_instruction).with(arg || no_args)
 
           generated_instruction = subject.method(method_name).call
 
           generated_instruction.call(machine)
         end
+      end
 
+      shared_examples "prefixed instruction" do |method_name, machine_instruction|
         context "given an integer prefix" do
           before(:each) { subject.prefixes << 42 }
 
-          it "passes the prefix as an argument to the machine instruction" do
-            expect(machine).to receive(machine_instruction).with(42)
-
-            generated_instruction = subject.method(method_name).call
-
-            generated_instruction.call(machine)
-          end
+          include_examples "simple instruction", method_name, machine_instruction, arg:42
         end
 
-        after(:each) { expect(subject.prefixes).to be_empty }
       end
 
       describe "#inc" do
-        include_examples "simple instruction", :inc, :inst_inc
+        include_examples "simple instruction", :inc, :inst_inc, arg:1
+        include_examples "prefixed instruction", :inc, :inst_inc
       end
 
       describe "#dec" do
-        include_examples "simple instruction", :dec, :inst_dec
+        include_examples "simple instruction", :dec, :inst_dec, arg:1
+        include_examples "prefixed instruction", :dec, :inst_dec
       end
 
       describe "#right" do
-        include_examples "simple instruction", :right, :inst_right
+        include_examples "simple instruction", :right, :inst_right, arg:1
+        include_examples "prefixed instruction", :right, :inst_right
       end
 
       describe "#left" do
-        include_examples "simple instruction", :left, :inst_left
+        include_examples "simple instruction", :left, :inst_left, arg:1
+        include_examples "prefixed instruction", :left, :inst_left
       end
 
       describe :loop_start do
