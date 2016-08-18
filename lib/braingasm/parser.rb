@@ -75,7 +75,12 @@ module Braingasm
     end
 
     def print()
-      -> m { m.inst_print_cell }
+      n = @prefixes.pop
+      if n
+        -> m { m.inst_print(n) }
+      else
+        -> m { m.inst_print_cell }
+      end
     end
 
     def read()

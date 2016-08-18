@@ -225,6 +225,13 @@ describe Braingasm::Machine do
       end
     end
 
+    describe :inst_print do
+      it "outputs the prints the ASCII value of the given parameter" do
+        expect { subject.inst_print(65) }.to output('A').to_stdout
+        expect { subject.inst_print(66) }.to output('B').to_stdout
+      end
+    end
+
     describe :inst_print_cell do
       it "outputs the value of the current cell as a byte" do
         subject.tape = [ 70 ]
