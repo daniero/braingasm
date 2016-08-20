@@ -84,7 +84,12 @@ module Braingasm
     end
 
     def read()
-      -> m { m.inst_read_byte }
+      n = @prefixes.pop
+      if n
+        -> m { m.inst_set_value(n) }
+      else
+        -> m { m.inst_read_byte }
+      end
     end
 
     def jump(to)

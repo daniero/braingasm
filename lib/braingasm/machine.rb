@@ -85,6 +85,10 @@ module Braingasm
       putc @tape[@dp]
     end
 
+    def inst_set_value(v)
+      @tape[@dp] = v
+    end
+
     def inst_read_byte
       @tape[@dp] = ARGF.getbyte || Options[:eof] || @tape[@dp]
     end

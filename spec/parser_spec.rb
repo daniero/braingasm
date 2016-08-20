@@ -159,6 +159,11 @@ module Braingasm
         include_examples "prefixed instruction", :print, :inst_print
       end
 
+      describe "#read" do
+        include_examples "simple instruction", :read, :inst_read_byte
+        include_examples "prefixed instruction", :read, :inst_set_value
+      end
+
       describe :loop_start do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17

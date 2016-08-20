@@ -240,6 +240,17 @@ describe Braingasm::Machine do
       end
     end
 
+    describe "#inst_set_value" do
+      it "sets the current cell to the given value" do
+        subject.inst_set_value 65
+        expect(subject.tape[0]).to be 65
+
+        subject.dp = 1
+        subject.inst_set_value 66
+        expect(subject.tape[1]).to be 66
+      end
+    end
+
     describe :inst_read_byte do
       before do
         stub_const('ARGF', StringIO.new("Hiæ"))
