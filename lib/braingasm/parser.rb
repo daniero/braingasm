@@ -50,6 +50,8 @@ module Braingasm
 
     def push_instruction(instruction)
       return unless instruction
+
+      @prefixes.clear
       @program.push instruction
       @program.size - 1
     end

@@ -33,7 +33,7 @@ module Braingasm
         subject.parse_program
       end
 
-      it "pushes each value returned by #parse_next individually" do
+      it "pushes each instruction returned by #parse_next individually with #push_instruction" do
         @input = [1, 2, 3].to_enum
         allow(subject).to receive(:parse_next).with(@input) { |arg| arg.next * 10 }
         expect(subject).to receive(:push_instruction).with(10).ordered
@@ -231,20 +231,30 @@ module Braingasm
     end
 
     describe "#push_instruction" do
+      before(:each) { subject.prefixes = [:a, :b, :c] }
+
       it "does nothing if the parameter is falsy" do
         subject.push_instruction(false)
         expect(subject.program).to be_empty
+        expect(subject.prefixes).to eq [:a, :b, :c]
 
         subject.push_instruction(nil)
         expect(subject.program).to be_empty
+        expect(subject.prefixes).to eq [:a, :b, :c]
       end
 
-      it "pushes the instruction onto the program" do
+      it "pushes the given instruction onto the program" do
         subject.push_instruction(1)
         subject.push_instruction(2)
         subject.push_instruction(3)
 
         expect(subject.program).to be == [1, 2, 3]
+      end
+
+      it "clears the prefix stack" do
+        subject.push_instruction(:foo)
+
+        expect(subject.prefixes).to be_empty
       end
 
       it "returns the index of the newly pushed instruction" do
