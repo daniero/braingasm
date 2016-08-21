@@ -2,7 +2,7 @@ require 'spec_helper'
 require "braingasm/options"
 
 module Braingasm
-  describe :handle_options do
+  describe "#handle_options" do
     it "translates command line options to Braingasm options" do
       Braingasm.handle_options(:zero => true)
       expect(Options[:eof]).to be 0
@@ -13,7 +13,7 @@ module Braingasm
       Braingasm.handle_options(:as_is => true)
       expect(Options[:eof]).to be nil
 
-      Options[:wrap_cells] = false
+      expect(Options[:wrap_cells]).to be true
       Braingasm.handle_options(:wrap_cells => true)
       expect(Options[:wrap_cells]).to be true
     end
@@ -30,14 +30,6 @@ module Braingasm
 
         Braingasm.handle_options(**opts, :cell_size => 32)
         expect(Options[:cell_limit]).to be 4294967296
-      end
-
-      it "also sets :wrap_cells to true" do
-        Options[:wrap_cells] = false
-
-        Braingasm.handle_options(**opts, :cell_size => 1)
-
-        expect(Options[:wrap_cells]).to be true
       end
     end
   end
