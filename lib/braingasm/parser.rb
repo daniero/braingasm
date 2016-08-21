@@ -36,17 +36,9 @@ module Braingasm
       when :comma
         read()
       when :loop_start
-        new_loop = Loop.new
-        @loop_stack.push(new_loop)
-        new_loop.start_index = @program.size
-        new_loop
+        loop_start()
       when :loop_end
-        current_loop = @loop_stack.pop
-        raise_parsing_error("Unmatched `]`") unless current_loop
-        instruction = jump(current_loop.start_index)
-        index = @program.size
-        current_loop.stop_index = index
-        instruction
+        loop_end()
       end
     end
 
@@ -84,13 +76,27 @@ module Braingasm
       -> m { m.inst_jump(to) }
     end
 
+    def loop_start()
+        new_loop = Loop.new
+        @loop_stack.push(new_loop)
+        new_loop.start_index = @program.size
+        new_loop
+    end
+
+    def loop_end
+        current_loop = @loop_stack.pop
+        raise_parsing_error("Unmatched `]`") unless current_loop
+        index = @program.size
+        current_loop.stop_index = index
+        jump(current_loop.start_index)
+    end
+
     class Loop
       attr_accessor :start_index, :stop_index
 
       def call(machine)
         machine.inst_jump_if_zero(stop_index + 1)
       end
-
     end
 
     def raise_parsing_error(message)

@@ -13,8 +13,7 @@ module Braingasm
       @input = tokenizer
     end
 
-    describe :parse_program do
-
+    describe "#parse_program" do
       it "calls #parse_next with the tokenizer input until it raises StopIteration" do
         tokenizer = provide_input :foo
         expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)
@@ -52,7 +51,7 @@ module Braingasm
       end
     end
 
-    describe :parse_next do
+    describe "#parse_next" do
       subject { Parser.new(nil) }
 
       it "raises StopIteration on end of input" do
@@ -67,7 +66,9 @@ module Braingasm
                    :right => :right,
                    :left => :left,
                    :period => :print,
-                   :comma => :read }
+                   :comma => :read,
+                   :loop_start => :loop_start,
+                   :loop_end => :loop_end }
 
         inputs.each do |token, instruction|
           it { should respond_to instruction }
@@ -82,28 +83,55 @@ module Braingasm
           end
         end
       end
+    end
 
-      describe "loop start" do
-        let(:input) { provide_input(:loop_start) }
+    describe "generating instructions" do
+      shared_examples "simple instruction" do |method_name, machine_instruction|
+        let(:machine) { instance_double(Machine) }
 
+        it "generates a function which calls the given machine's ##{machine_instruction}" do
+          expect(machine).to receive(machine_instruction)
+
+          generated_instruction = subject.method(method_name).call
+
+          generated_instruction.call(machine)
+        end
+      end
+
+      describe "#inc" do
+        include_examples "simple instruction", :inc, :inst_inc
+      end
+
+      describe "#dec" do
+        include_examples "simple instruction", :dec, :inst_dec
+      end
+
+      describe "#right" do
+        include_examples "simple instruction", :right, :inst_right
+      end
+
+      describe "#left" do
+        include_examples "simple instruction", :left, :inst_left
+      end
+
+      describe "#loop_start" do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
 
-          response = subject.parse_next(input)
+          response = subject.loop_start()
 
           expect(response).to be_a Parser::Loop
           expect(response.start_index).to be 17
         end
 
         it "pushes the loop to the loop stack" do
-          response = subject.parse_next(input)
+          response = subject.loop_start()
 
           expect(subject.loop_stack.pop).to be response
         end
       end
 
-      describe "loop end" do
-        let(:input) { provide_input(:loop_end) }
+      describe "#loop_end" do
         let(:current_loop) { Parser::Loop.new }
 
         before do
@@ -114,33 +142,33 @@ module Braingasm
           subject.loop_stack = []
           allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
-          expect { subject.parse_next(input) }.to raise_error(ParsingError)
+          expect { subject.loop_end() }.to raise_error(ParsingError)
         end
 
         it "returns a jump instruction back to the start of the current loop" do
           current_loop.start_index = 42
           expect(subject).to receive(:jump).with(42).and_return("jump_return_value")
 
-          expect(subject.parse_next(input)).to eq("jump_return_value")
+          expect(subject.loop_end()).to eq("jump_return_value")
         end
 
         it "sets the stop_index of the current loop" do
           subject.program = [nil] * 13
 
-          subject.parse_next(input)
+          subject.loop_end()
 
           expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
-          subject.parse_next(input)
+          subject.loop_end()
 
           expect(subject.loop_stack).to be_empty
         end
       end
     end
 
-    describe :raise_parsing_error do
+    describe "#raise_parsing_error" do
       it "raises a ParsingError with the correct line and column numbers" do
         tokenizer = provide_input :foo
         expect(tokenizer).to receive(:line_numer).and_return 100
@@ -153,7 +181,7 @@ module Braingasm
       end
     end
 
-    describe :push_instruction do
+    describe "#push_instruction" do
       it "pushes the instruction onto the program" do
         subject.push_instruction(1)
         subject.push_instruction(2)

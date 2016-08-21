@@ -19,4 +19,11 @@ module Braingasm
 
   class VMError < BraingasmError
   end
+
+  class JumpSignal < VMError
+    attr_reader :to
+    def initialize(to)
+      @to = to
+    end
+  end
 end
