@@ -3,7 +3,7 @@ module Braingasm
     @options = {}
     @defaults = {
       eof: 0,
-      wrap_cells: false,
+      wrap_cells: true,
       cell_limit: 256
     }.freeze
 
@@ -29,8 +29,7 @@ module Braingasm
     Options[:eof] = -1 if command_line_options[:negative]
     Options[:eof] = nil if command_line_options[:as_is]
 
-    Options[:wrap_cells] = true if command_line_options[:wrap_cells] ||
-                                   command_line_options[:cell_size_given]
+    Options[:wrap_cells] = false if command_line_options[:unbound]
 
     if command_line_options[:cell_size_given]
       cell_size = command_line_options[:cell_size]

@@ -13,7 +13,7 @@ describe Braingasm::Machine do
     expect(subject.ip).to be 0
   end
 
-  describe :run do
+  describe "#run" do
     it "can handle an empty program" do
       subject.program = []
 
@@ -21,7 +21,7 @@ describe Braingasm::Machine do
     end
   end
 
-  describe :step do
+  describe "#step" do
     before(:each) do
       subject.program = []
       subject.ip = 0
@@ -51,7 +51,7 @@ describe Braingasm::Machine do
   end
 
   describe "instructions" do
-    describe :inst_right do
+    describe "#inst_right" do
       before { subject.tape = [] }
 
       it "increases the data pointer" do
@@ -85,7 +85,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_left do
+    describe "#inst_left" do
       before(:each) do
         subject.tape = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         subject.dp = 6
@@ -122,7 +122,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_inc do
+    describe "#inst_inc" do
       it "increases the value of the cell under the pointer" do
         subject.dp = 3
 
@@ -162,7 +162,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_dec do
+    describe "#inst_dec" do
       it "decreases the value of the cell under the pointer" do
         subject.tape = [ 0, 0, 7 ]
         subject.dp = 2
@@ -198,13 +198,13 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_jump do
+    describe "#inst_jump" do
       it "raises a JumpSignal, interupting normal program flow" do
         expect{ subject.inst_jump(:foo) }.to raise_error Braingasm::JumpSignal
       end
     end
 
-    describe :inst_jump_if_zero do
+    describe "#inst_jump_if_zero" do
       before(:each) do
         subject.tape = [ 0, 0, 7 ]
       end
@@ -232,7 +232,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_print_cell do
+    describe "#inst_print_cell" do
       it "outputs the value of the current cell as a byte" do
         subject.tape = [ 70 ]
 
@@ -251,7 +251,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_read_byte do
+    describe "#inst_read_byte" do
       before do
         stub_const('ARGF', StringIO.new("Hiæ"))
       end

@@ -17,7 +17,7 @@ module Braingasm
         expect { subject.next }.to raise_error StopIteration
       end
 
-      describe :next do
+      describe "#next" do
         tokens = { '+' => :plus,
                    '-' => :minus,
                    '<' => :left,
@@ -51,7 +51,7 @@ module Braingasm
         end
       end
 
-      describe :line_numer do
+      describe "#line_numer" do
         it "returns the line number from which the previous token was read" do
           @input = " a \nbc\n d"
 
@@ -75,7 +75,7 @@ module Braingasm
         end
       end
 
-      describe :column_number do
+      describe "#column_number" do
         it "returns the column number from which the previous tokens was read" do
           @input = " a \nb c\n   d"
 

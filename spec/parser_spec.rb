@@ -25,7 +25,7 @@ module Braingasm
       @input = tokenizer
     end
 
-    describe :parse_program do
+    describe "#parse_program" do
       it "calls #parse_next with the tokenizer input until it raises StopIteration" do
         tokenizer = provide_input :foo
         expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)
@@ -63,7 +63,7 @@ module Braingasm
       end
     end
 
-    describe :parse_next do
+    describe "#parse_next" do
       subject { Parser.new(nil) }
 
       it "raises StopIteration on end of input" do
@@ -112,10 +112,9 @@ module Braingasm
     end
 
     describe "generating instructions" do
-      let(:machine) { instance_double(Machine) }
-      after(:each) { expect(subject.prefixes).to be_empty }
-
       shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
+        let(:machine) { instance_double(Machine) }
+
         it "generates a function which calls the given machine's ##{machine_instruction}" do
           expect(machine).to receive(machine_instruction).with(arg || no_args)
 
@@ -164,7 +163,7 @@ module Braingasm
         include_examples "prefixed instruction", :read, :inst_set_value
       end
 
-      describe :loop_start do
+      describe "#loop_start" do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
 
@@ -181,7 +180,7 @@ module Braingasm
         end
       end
 
-      describe :loop_end do
+      describe "#loop_end" do
         let(:current_loop) { Parser::Loop.new }
 
         before do
@@ -218,7 +217,7 @@ module Braingasm
       end
     end
 
-    describe :raise_parsing_error do
+    describe "#raise_parsing_error" do
       it "raises a ParsingError with the correct line and column numbers" do
         tokenizer = provide_input :foo
         expect(tokenizer).to receive(:line_numer).and_return 100
@@ -231,7 +230,7 @@ module Braingasm
       end
     end
 
-    describe :push_instruction do
+    describe "#push_instruction" do
       it "does nothing if the parameter is falsy" do
         subject.push_instruction(false)
         expect(subject.program).to be_empty
