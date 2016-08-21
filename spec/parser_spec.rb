@@ -13,7 +13,7 @@ module Braingasm
       @input = tokenizer
     end
 
-    describe :parse_program do
+    describe "#parse_program" do
       it "calls #parse_next with the tokenizer input until it raises StopIteration" do
         tokenizer = provide_input :foo
         expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)
@@ -51,7 +51,7 @@ module Braingasm
       end
     end
 
-    describe :parse_next do
+    describe "#parse_next" do
       subject { Parser.new(nil) }
 
       it "raises StopIteration on end of input" do
@@ -114,7 +114,7 @@ module Braingasm
         include_examples "simple instruction", :left, :inst_left
       end
 
-      describe :loop_start do
+      describe "#loop_start" do
         it "returns a loop with correct start index" do
           subject.program = [nil] * 17
 
@@ -131,7 +131,7 @@ module Braingasm
         end
       end
 
-      describe :loop_end do
+      describe "#loop_end" do
         let(:current_loop) { Parser::Loop.new }
 
         before do
@@ -168,7 +168,7 @@ module Braingasm
       end
     end
 
-    describe :raise_parsing_error do
+    describe "#raise_parsing_error" do
       it "raises a ParsingError with the correct line and column numbers" do
         tokenizer = provide_input :foo
         expect(tokenizer).to receive(:line_numer).and_return 100
@@ -181,7 +181,7 @@ module Braingasm
       end
     end
 
-    describe :push_instruction do
+    describe "#push_instruction" do
       it "pushes the instruction onto the program" do
         subject.push_instruction(1)
         subject.push_instruction(2)
