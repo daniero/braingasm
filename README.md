@@ -28,7 +28,11 @@ More information about the different prefixes and registers will come.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install Braingasm from the command line with:
+
+    $ gem install braingasm
+
+Or to use it in your application, add this line to your Gemfile:
 
 ```ruby
 gem 'braingasm'
@@ -37,10 +41,6 @@ gem 'braingasm'
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install braingasm
 
 ## Usage
 
