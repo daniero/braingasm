@@ -77,8 +77,16 @@ module Braingasm
       raise JumpSignal.new(to) if @tape[@dp] == 0
     end
 
+    def inst_print(chr)
+      putc chr
+    end
+
     def inst_print_cell
       putc @tape[@dp]
+    end
+
+    def inst_set_value(v)
+      @tape[@dp] = v
     end
 
     def inst_read_byte

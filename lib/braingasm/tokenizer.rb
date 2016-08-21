@@ -35,15 +35,20 @@ module Braingasm
 
     private
     def read_token(scanner)
-        tokens = { '+' => :plus,
-                   '-' => :minus,
-                   '<' => :left,
-                   '>' => :right,
-                   '.' => :period,
-                   ',' => :comma,
-                   '[' => :loop_start,
-                   ']' => :loop_end }
-        tokens[scanner.scan(/\S/)] || :unknown
+      simple_tokens = { '+' => :plus,
+                        '-' => :minus,
+                        '<' => :left,
+                        '>' => :right,
+                        '.' => :period,
+                        ',' => :comma,
+                        '[' => :loop_start,
+                        ']' => :loop_end }
+
+      if scan = scanner.scan(/\d+/)
+        return scan.to_i
+      end
+
+      simple_tokens[scanner.scan(/\S/)] || :unknown
     end
 
   end

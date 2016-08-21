@@ -6,6 +6,18 @@ module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
 
+    it "initializes all necessary fields" do
+      @input = :something
+
+      expect(subject.input).to be :something
+      expect(subject.program).to be_an Array
+      expect(subject.program).to be_empty
+      expect(subject.loop_stack).to be_an Array
+      expect(subject.loop_stack).to be_empty
+      expect(subject.prefixes).to be_an Array
+      expect(subject.prefixes).to be_empty
+    end
+
     def provide_input(*tokens)
       tokenizer = instance_double(Tokenizer)
       enum = tokens.to_enum
@@ -83,14 +95,28 @@ module Braingasm
           end
         end
       end
+
+      describe "prefixes" do
+        context "when given an Integer" do
+          it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+            expect(subject.parse_next(provide_input(1))).to be_falsy
+          end
+
+          it "adds the Integer as a prefix" do
+            subject.parse_next(provide_input(2))
+
+            expect(subject.prefixes).to be == [2]
+          end
+        end
+      end
     end
 
     describe "generating instructions" do
-      shared_examples "simple instruction" do |method_name, machine_instruction|
+      shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
         let(:machine) { instance_double(Machine) }
 
         it "generates a function which calls the given machine's ##{machine_instruction}" do
-          expect(machine).to receive(machine_instruction)
+          expect(machine).to receive(machine_instruction).with(arg || no_args)
 
           generated_instruction = subject.method(method_name).call
 
@@ -98,20 +124,43 @@ module Braingasm
         end
       end
 
+      shared_examples "prefixed instruction" do |method_name, machine_instruction|
+        context "given an integer prefix" do
+          before(:each) { subject.prefixes << 42 }
+
+          include_examples "simple instruction", method_name, machine_instruction, arg:42
+        end
+
+      end
+
       describe "#inc" do
-        include_examples "simple instruction", :inc, :inst_inc
+        include_examples "simple instruction", :inc, :inst_inc, arg:1
+        include_examples "prefixed instruction", :inc, :inst_inc
       end
 
       describe "#dec" do
-        include_examples "simple instruction", :dec, :inst_dec
+        include_examples "simple instruction", :dec, :inst_dec, arg:1
+        include_examples "prefixed instruction", :dec, :inst_dec
       end
 
       describe "#right" do
-        include_examples "simple instruction", :right, :inst_right
+        include_examples "simple instruction", :right, :inst_right, arg:1
+        include_examples "prefixed instruction", :right, :inst_right
       end
 
       describe "#left" do
-        include_examples "simple instruction", :left, :inst_left
+        include_examples "simple instruction", :left, :inst_left, arg:1
+        include_examples "prefixed instruction", :left, :inst_left
+      end
+
+      describe "#print" do
+        include_examples "simple instruction", :print, :inst_print_cell
+        include_examples "prefixed instruction", :print, :inst_print
+      end
+
+      describe "#read" do
+        include_examples "simple instruction", :read, :inst_read_byte
+        include_examples "prefixed instruction", :read, :inst_set_value
       end
 
       describe "#loop_start" do
@@ -182,6 +231,14 @@ module Braingasm
     end
 
     describe "#push_instruction" do
+      it "does nothing if the parameter is falsy" do
+        subject.push_instruction(false)
+        expect(subject.program).to be_empty
+
+        subject.push_instruction(nil)
+        expect(subject.program).to be_empty
+      end
+
       it "pushes the instruction onto the program" do
         subject.push_instruction(1)
         subject.push_instruction(2)
