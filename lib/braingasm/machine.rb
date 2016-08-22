@@ -73,7 +73,7 @@ module Braingasm
       raise JumpSignal.new(to)
     end
 
-    def inst_jump_if_zero(to)
+    def inst_jump_if_data_zero(to)
       raise JumpSignal.new(to) if @tape[@dp] == 0
     end
 

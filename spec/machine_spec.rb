@@ -204,7 +204,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe "#inst_jump_if_zero" do
+    describe "#inst_jump_if_data_zero" do
       before(:each) do
         subject.tape = [ 0, 0, 7 ]
       end
@@ -212,13 +212,13 @@ describe Braingasm::Machine do
       it "does nothing if the current cell value if not zero" do
         subject.dp = 2
 
-        subject.inst_jump_if_zero(1000)
+        subject.inst_jump_if_data_zero(1000)
       end
 
       it "raises a JumpSignal if the current cell value is zero" do
         subject.dp = 1
 
-        expect{ subject.inst_jump_if_zero(99) }.to raise_error { |error|
+        expect{ subject.inst_jump_if_data_zero(99) }.to raise_error { |error|
           expect(error).to be_a Braingasm::JumpSignal
           expect(error.to).to be 99
         }

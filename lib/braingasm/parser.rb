@@ -117,7 +117,7 @@ module Braingasm
       attr_accessor :start_index, :stop_index
 
       def call(machine)
-        machine.inst_jump_if_zero(stop_index + 1)
+        machine.inst_jump_if_data_zero(stop_index + 1)
       end
     end
 
