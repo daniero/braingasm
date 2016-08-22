@@ -44,9 +44,7 @@ module Braingasm
                         '[' => :loop_start,
                         ']' => :loop_end }
 
-      if scan = scanner.scan(/\d+/)
-        return scan.to_i
-      end
+      return scanner.matched.to_i if scanner.scan(/\d+/)
 
       simple_tokens[scanner.scan(/\S/)] || :unknown
     end
