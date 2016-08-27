@@ -52,7 +52,7 @@ module Braingasm
       return unless instruction
 
       @prefixes.clear
-      @program.push instruction
+      @program.push(*instruction)
       @program.size - 1
     end
 

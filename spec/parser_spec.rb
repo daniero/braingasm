@@ -258,6 +258,14 @@ module Braingasm
         expect(subject.program).to be == [1, 2, 3]
       end
 
+      it "pushes each element individually if the parameter is an array" do
+        subject.push_instruction([1, 2])
+        subject.push_instruction(3)
+        subject.push_instruction([4, 5, 6])
+
+        expect(subject.program).to be == [1, 2, 3, 4, 5, 6]
+      end
+
       it "clears the prefix stack" do
         subject.push_instruction(:foo)
 
