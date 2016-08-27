@@ -99,18 +99,18 @@ module Braingasm
     end
 
     def loop_start()
-        new_loop = Loop.new
-        @loop_stack.push(new_loop)
-        new_loop.start_index = @program.size
-        new_loop
+      new_loop = Loop.new
+      @loop_stack.push(new_loop)
+      new_loop.start_index = @program.size
+      new_loop
     end
 
     def loop_end
-        current_loop = @loop_stack.pop
-        raise_parsing_error("Unmatched `]`") unless current_loop
-        index = @program.size
-        current_loop.stop_index = index
-        jump(current_loop.start_index)
+      current_loop = @loop_stack.pop
+      raise_parsing_error("Unmatched `]`") unless current_loop
+      index = @program.size
+      current_loop.stop_index = index
+      jump(current_loop.start_index)
     end
 
     class Loop
