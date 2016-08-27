@@ -226,7 +226,7 @@ describe Braingasm::Machine do
     end
 
     describe :inst_print do
-      it "outputs the prints the ASCII value of the given parameter" do
+      it "prints the ASCII value of the given parameter" do
         expect { subject.inst_print(65) }.to output('A').to_stdout
         expect { subject.inst_print(66) }.to output('B').to_stdout
       end
