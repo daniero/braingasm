@@ -164,27 +164,20 @@ module Braingasm
       end
 
       describe "#loop_start" do
-        shared_examples "generate loop" do |loop_type|
-          it "returns a #{loop_type} with correct start index" do
-            subject.program = [nil] * 17
+        it "returns a loop with correct start index" do
+          subject.program = [nil] * 17
 
-            response = subject.loop_start()
+          response = subject.loop_start()
 
-            expect(response).to be_an_instance_of loop_type
-            expect(response.start_index).to be 17
-          end
-
-          it "pushes the loop to the loop stack" do
-            response = subject.loop_start()
-
-            expect(subject.loop_stack.last).to be response
-          end
+          expect(response).to be_a Parser::Loop
+          expect(response.start_index).to be 17
         end
 
-        context "without prefix" do
-          include_examples "generate loop", Parser::Loop
-        end
+        it "pushes the loop to the loop stack" do
+          response = subject.loop_start()
 
+          expect(subject.loop_stack.pop).to be response
+        end
       end
 
       describe "#loop_end" do
