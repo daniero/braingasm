@@ -99,10 +99,21 @@ module Braingasm
     end
 
     def loop_start()
+      return prefixed_loop() unless @prefixes.empty?
+
       new_loop = Loop.new
       @loop_stack.push(new_loop)
       new_loop.start_index = @program.size
       new_loop
+    end
+
+    def prefixed_loop()
+      loop_count = @prefixes.pop
+      new_loop = FixedLoop.new
+      @loop_stack.push(new_loop)
+      new_loop.start_index = @program.size + 1
+      push_prefix = ->m{ m.inst_push_ctrl(loop_count) }
+      [push_prefix, new_loop]
     end
 
     def loop_end
@@ -118,6 +129,12 @@ module Braingasm
 
       def call(machine)
         machine.inst_jump_if_data_zero(stop_index + 1)
+      end
+    end
+
+    class FixedLoop < Loop
+      def call(machine)
+        machine.inst_jump_if_ctrl_zero(stop_index + 1)
       end
     end
 

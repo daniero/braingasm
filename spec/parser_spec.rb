@@ -112,9 +112,9 @@ module Braingasm
     end
 
     describe "generating instructions" do
-      shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
-        let(:machine) { instance_double(Machine) }
+      let(:machine) { instance_double(Machine) }
 
+      shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
         it "generates a function which calls the given machine's ##{machine_instruction}" do
           expect(machine).to receive(machine_instruction).with(arg || no_args)
 
@@ -164,19 +164,52 @@ module Braingasm
       end
 
       describe "#loop_start" do
-        it "returns a loop with correct start index" do
-          subject.program = [nil] * 17
+        context "without prefix" do
+          it "returns a loop with correct start index" do
+            subject.program = [nil] * 17
 
-          response = subject.loop_start()
+            response = subject.loop_start()
 
-          expect(response).to be_a Parser::Loop
-          expect(response.start_index).to be 17
+            expect(response).to be_a Parser::Loop
+            expect(response.start_index).to be 17
+          end
+
+          it "pushes the loop to the loop stack" do
+            response = subject.loop_start()
+
+            expect(subject.loop_stack).to be == [response]
+          end
         end
 
-        it "pushes the loop to the loop stack" do
-          response = subject.loop_start()
+        context "with number prefix" do
+          before(:each) { subject.prefixes << 100 }
+          let (:return_values) { subject.loop_start() }
 
-          expect(subject.loop_stack.pop).to be response
+          it "returns two instructions" do
+            expect(return_values).to be_an Array
+            expect(return_values.size).to be 2
+          end
+
+          describe "first instruction" do
+            it "calls machine's #inst_push_ctrl with the prefix" do
+              expect(machine).to receive(:inst_push_ctrl).with(100)
+
+              return_values.first.call(machine)
+            end
+          end
+
+          describe "second instruction" do
+            before { subject.program = [nil] * 10 }
+
+            it "is a fixed loop with correct start index" do
+              expect(return_values.last).to be_a Parser::Loop
+              expect(return_values.last.start_index).to be 11
+            end
+
+            it "is pushed to the loop stack" do
+              expect(subject.loop_stack).to be == [return_values.last]
+            end
+          end
         end
       end
 
@@ -272,4 +305,21 @@ module Braingasm
       end
     end
   end
+
+  # describe Parser::Loop do
+  #   subject { Parser::Loop.new }
+  #   before { subject.stop_index = 72 }
+  #   let(:machine) { instance_double(Machine) }
+
+  #   context "when current cell is zero" do
+  #     it "jumps past the end ('stop index') of the loop" do
+  #       expect(machine).to receive(:cell).and_return 0 
+
+  #       subject.call(machine)
+  #     end
+  #   end
+
+  #   context
+  # end
+
 end

@@ -6,12 +6,13 @@ module Braingasm
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
   class Machine
-    attr_accessor :tape, :dp, :program, :ip
+    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack
 
     def initialize
       @tape = Array.new(10) { 0 }
       @dp = 0           # data pointer
       @ip = 0           # instruction pointer
+      @ctrl_stack = []
     end
 
     def run
@@ -75,6 +76,16 @@ module Braingasm
 
     def inst_jump_if_data_zero(to)
       raise JumpSignal.new(to) if @tape[@dp] == 0
+    end
+
+    def inst_jump_if_ctrl_zero(to)
+      ctrl = ctrl_stack.pop
+      raise JumpSignal.new(to) if ctrl == 0
+      ctrl_stack << ctrl - 1
+    end
+
+    def inst_push_ctrl(x)
+      ctrl_stack << x
     end
 
     def inst_print(chr)

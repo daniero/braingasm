@@ -5,12 +5,15 @@ require "braingasm/machine"
 describe Braingasm::Machine do
   subject { Braingasm::Machine.new }
 
-  it "initializes the tape, data pointer and instruction pointer" do
+  it "initializes all fields" do
     expect(subject.tape).to be_an Array
     expect(subject.tape).to all be 0
 
     expect(subject.dp).to be 0
     expect(subject.ip).to be 0
+
+    expect(subject.ctrl_stack).to be_an Array
+    expect(subject.ctrl_stack).to be_empty
   end
 
   describe "#run" do
@@ -222,6 +225,40 @@ describe Braingasm::Machine do
           expect(error).to be_a Braingasm::JumpSignal
           expect(error.to).to be 99
         }
+      end
+    end
+
+    describe "#inst_push_ctrl" do
+      it "pushes the given value to the control stack" do
+        subject.inst_push_ctrl 1
+        expect(subject.ctrl_stack).to eq [1]
+
+        subject.inst_push_ctrl 2
+        expect(subject.ctrl_stack).to eq [1, 2]
+      end
+    end
+
+    describe "#inst_jump_if_ctrl_zero" do
+      context "when the top of the control stack is zero" do
+        before { subject.ctrl_stack << 0 }
+
+        it "pops the top of the control stack and jumps to the given instruction number" do
+          expect { subject.inst_jump_if_ctrl_zero(10) }.to raise_error { |jump_signal|
+            expect(jump_signal.to).to be 10
+          }
+
+          expect(subject.ctrl_stack).to be_empty
+        end
+      end
+
+      context "otherwise" do
+        before(:each) { subject.ctrl_stack << 100 }
+
+        it "decreases the top of the control stack" do
+          subject.inst_jump_if_ctrl_zero(42)
+
+          expect(subject.ctrl_stack).to eq([99])
+        end
       end
     end
 
