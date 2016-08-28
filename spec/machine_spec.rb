@@ -53,6 +53,31 @@ describe Braingasm::Machine do
     end
   end
 
+  describe "#pos" do
+    it "returns the position of the datapointer relative to the initial first cell" do
+      expect(subject.pos).to be(0)
+
+      subject.inst_right
+      expect(subject.pos).to be(1)
+
+      subject.inst_right(7)
+      expect(subject.pos).to be(8)
+
+      subject.inst_left(8)
+      expect(subject.pos).to be(0)
+
+      subject.inst_left
+      expect(subject.pos).to be(-1)
+
+      subject.inst_left(3)
+      expect(subject.pos).to be(-4)
+
+      subject.inst_right(2)
+      subject.inst_left(3)
+      expect(subject.pos).to be(-5)
+    end
+  end
+
   describe "instructions" do
     describe "#inst_right" do
       before { subject.tape = [] }
