@@ -86,10 +86,11 @@ module Braingasm
           it { should respond_to instruction }
 
           it "returns instruction '#{instruction}' given a :#{token}" do
+            provide_input(token)
             mock_generated_instruction = "#{instruction}_mock_return"
             expect(subject).to receive(instruction).and_return(mock_generated_instruction)
 
-            response = subject.parse_next(provide_input(token))
+            response = subject.parse_next(@input)
 
             expect(response).to be(mock_generated_instruction)
           end
@@ -98,14 +99,16 @@ module Braingasm
 
       describe "prefixes" do
         context "when given an Integer" do
+          before(:each) { provide_input(32) }
+
           it "returns nothing, so that it shouldn't be added as an instruction in the program" do
-            expect(subject.parse_next(provide_input(1))).to be_falsy
+            expect(subject.parse_next(@input)).to be_falsy
           end
 
           it "adds the Integer as a prefix" do
-            subject.parse_next(provide_input(2))
+            subject.parse_next(@input)
 
-            expect(subject.prefixes).to be == [2]
+            expect(subject.prefixes).to be == [32]
           end
         end
       end
@@ -304,22 +307,6 @@ module Braingasm
         expect(subject.push_instruction(:baz)).to be 2
       end
     end
+
   end
-
-  # describe Parser::Loop do
-  #   subject { Parser::Loop.new }
-  #   before { subject.stop_index = 72 }
-  #   let(:machine) { instance_double(Machine) }
-
-  #   context "when current cell is zero" do
-  #     it "jumps past the end ('stop index') of the loop" do
-  #       expect(machine).to receive(:cell).and_return 0 
-
-  #       subject.call(machine)
-  #     end
-  #   end
-
-  #   context
-  # end
-
 end
