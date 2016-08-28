@@ -29,6 +29,9 @@ module Braingasm
       when Integer
         @prefixes.push token
         false
+      when :hash
+        @prefixes.push -> m { m.pos }
+        false
       when :right
         right()
       when :left
