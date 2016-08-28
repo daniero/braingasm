@@ -304,22 +304,6 @@ module Braingasm
         expect(subject.push_instruction(:baz)).to be 2
       end
     end
+
   end
-
-  # describe Parser::Loop do
-  #   subject { Parser::Loop.new }
-  #   before { subject.stop_index = 72 }
-  #   let(:machine) { instance_double(Machine) }
-
-  #   context "when current cell is zero" do
-  #     it "jumps past the end ('stop index') of the loop" do
-  #       expect(machine).to receive(:cell).and_return 0 
-
-  #       subject.call(machine)
-  #     end
-  #   end
-
-  #   context
-  # end
-
 end
