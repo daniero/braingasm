@@ -150,7 +150,6 @@ module Braingasm
 
           include_examples "simple instruction", method_name, machine_instruction, arg:42
         end
-
       end
 
       describe "#inc" do
