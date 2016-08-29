@@ -30,7 +30,7 @@ module Braingasm
         @prefixes.push token
         false
       when :hash
-        @prefixes.push -> m { m.pos }
+        @prefixes.push ->(m) { m.pos }
         false
       when :right
         right()
@@ -91,7 +91,7 @@ module Braingasm
 
     def print()
       if @prefixes.empty?
-        ->(m){ m.inst_print_cell }
+        ->(m) { m.inst_print_cell }
       else
         fix_params ->(n, m) { m.inst_print(n) }
       end
