@@ -5,6 +5,7 @@ require "braingasm/machine"
 module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
+    let(:machine) { instance_double(Machine) }
 
     it "initializes all necessary fields" do
       @input = :something
@@ -111,12 +112,28 @@ module Braingasm
             expect(subject.prefixes).to be == [32]
           end
         end
+
+        context "when given a :hash" do
+          before(:each) { provide_input(:hash) }
+
+          it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+            expect(subject.parse_next(@input)).to be_falsy
+          end
+
+          it "pushes an instruction to the prefix list which gets the machine's current position" do
+            expect(machine).to receive(:pos).and_return 69
+
+            subject.parse_next(@input)
+
+            instruction = subject.prefixes.last
+            instruction.call(machine)
+          end
+        end
+
       end
     end
 
     describe "generating instructions" do
-      let(:machine) { instance_double(Machine) }
-
       shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
         it "generates a function which calls the given machine's ##{machine_instruction}" do
           expect(machine).to receive(machine_instruction).with(arg || no_args)
@@ -133,7 +150,6 @@ module Braingasm
 
           include_examples "simple instruction", method_name, machine_instruction, arg:42
         end
-
       end
 
       describe "#inc" do

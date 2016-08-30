@@ -11,6 +11,7 @@ module Braingasm
     def initialize
       @tape = Array.new(10) { 0 }
       @dp = 0           # data pointer
+      @data_offset = 0
       @ip = 0           # instruction pointer
       @ctrl_stack = []
     end
@@ -31,6 +32,10 @@ module Braingasm
       @ip = jump.to
     end
 
+    def pos
+      @dp - @data_offset
+    end
+
     def inst_right(n=1)
       new_dp = @dp + n
       no_cells = @tape.length
@@ -47,9 +52,10 @@ module Braingasm
       new_dp = @dp - n
 
       if new_dp < 0
-        n.times do
-          @tape.unshift 0
-        end
+        new_cells = -new_dp
+        new_cells.times { @tape.unshift 0 }
+        @data_offset += new_cells
+
         new_dp = 0
       end
 

@@ -41,6 +41,7 @@ module Braingasm
                         '>' => :right,
                         '.' => :period,
                         ',' => :comma,
+                        '#' => :hash,
                         '[' => :loop_start,
                         ']' => :loop_end }
 

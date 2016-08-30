@@ -29,6 +29,9 @@ module Braingasm
       when Integer
         @prefixes.push token
         false
+      when :hash
+        @prefixes.push ->(m) { m.pos }
+        false
       when :right
         right()
       when :left
@@ -56,46 +59,54 @@ module Braingasm
       @program.size - 1
     end
 
+    def fix_params(function, default_param=1)
+      prefix = @prefixes.pop || default_param
+
+      case prefix
+      when Integer
+        function.curry[prefix]
+      when Proc
+        Proc.new do |m|
+          n = prefix.call(m)
+          function.call(n, m)
+        end
+      end
+    end
+
     def right()
-      n = @prefixes.pop || 1
-      -> m { m.inst_right(n) }
+      fix_params ->(n, m) { m.inst_right(n) }
     end
 
     def left()
-      n = @prefixes.pop || 1
-      -> m { m.inst_left(n) }
+      fix_params ->(n, m) { m.inst_left(n) }
     end
 
     def inc()
-      n = @prefixes.pop || 1
-      -> m { m.inst_inc(n) }
+      fix_params ->(n, m) { m.inst_inc(n) }
     end
 
     def dec()
-      n = @prefixes.pop || 1
-      -> m { m.inst_dec(n) }
+      fix_params ->(n, m) { m.inst_dec(n) }
     end
 
     def print()
-      n = @prefixes.pop
-      if n
-        -> m { m.inst_print(n) }
+      if @prefixes.empty?
+        ->(m) { m.inst_print_cell }
       else
-        -> m { m.inst_print_cell }
+        fix_params ->(n, m) { m.inst_print(n) }
       end
     end
 
     def read()
-      n = @prefixes.pop
-      if n
-        -> m { m.inst_set_value(n) }
+      if @prefixes.empty?
+        ->(m) { m.inst_read_byte }
       else
-        -> m { m.inst_read_byte }
+        fix_params ->(n, m) { m.inst_set_value(n) }
       end
     end
 
     def jump(to)
-      -> m { m.inst_jump(to) }
+      ->(m) { m.inst_jump(to) }
     end
 
     def loop_start()
@@ -108,12 +119,11 @@ module Braingasm
     end
 
     def prefixed_loop()
-      loop_count = @prefixes.pop
       new_loop = FixedLoop.new
       @loop_stack.push(new_loop)
       new_loop.start_index = @program.size + 1
-      push_prefix = ->m{ m.inst_push_ctrl(loop_count) }
-      [push_prefix, new_loop]
+      push_ctrl = fix_params ->(n, m) { m.inst_push_ctrl(n) }
+      [push_ctrl, new_loop]
     end
 
     def loop_end

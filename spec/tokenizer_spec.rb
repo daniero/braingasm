@@ -24,6 +24,7 @@ module Braingasm
                    '>' => :right,
                    '.' => :period,
                    ',' => :comma,
+                   '#' => :hash,
                    '[' => :loop_start,
                    ']' => :loop_end }
 
@@ -45,7 +46,7 @@ module Braingasm
         end
 
         it "returns :unknown for any other input" do
-          @input = "*?`#"
+          @input = "*?`)"
 
           4.times { expect(subject.next).to be :unknown }
         end
