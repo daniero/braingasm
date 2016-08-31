@@ -72,7 +72,7 @@ module Braingasm
         expect { subject.parse_next(empty) }.to raise_error StopIteration
       end
 
-      describe "simple instructions" do
+      describe "instructions" do
         inputs = { :plus => :inc,
                    :minus => :dec,
                    :right => :right,
@@ -96,37 +96,45 @@ module Braingasm
       end
 
       describe "prefixes" do
-        before(:each) { allow(compiler).to receive(:push_prefix) }
 
-        context "when given an Integer" do
-          before(:each) { provide_input(32) }
+        shared_examples "literals" do |literal_class, literal_example|
+          context "when given a #{literal_class}" do
+            before(:each) { allow(compiler).to receive(:push_prefix) }
+            before(:each) { provide_input(literal_example) }
 
-          it "returns nothing, so that it shouldn't be added as an instruction in the program" do
-            expect(subject.parse_next(@input)).to be_falsy
+            it "pushes the Integer as a prefix to the compiler" do
+              expect(compiler).to receive(:push_prefix).with(literal_example)
+
+              subject.parse_next(@input)
+            end
+
+            it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+              expect(subject.parse_next(@input)).to be_falsy
+            end
           end
+        end
 
-          it "pushes the Integer as a prefix to the compiler" do
-            expect(compiler).to receive(:push_prefix).with(32)
+        include_examples "literals", Integer, 1000
 
-            subject.parse_next(@input)
+        shared_examples "general prefixes" do |prefix_symbol, compiler_instruction|
+          context "when given a :#{prefix_symbol}" do
+            before(:each) { provide_input(prefix_symbol) }
+
+            it "generates a #{compiler_instruction} prefix" do
+              expect(compiler).to receive(compiler_instruction)
+
+              subject.parse_next(@input)
+            end
+
+            it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+              allow(compiler).to receive(compiler_instruction)
+
+              expect(subject.parse_next(@input)).to be_falsy
+            end
           end
         end
 
-        context "when given a :hash" do
-          before(:each) { provide_input(:hash) }
-
-          it "returns nothing, so that it shouldn't be added as an instruction in the program" do
-            allow(compiler).to receive(:pos)
-
-            expect(subject.parse_next(@input)).to be_falsy
-          end
-
-          it "pushes a pos prefix" do
-            expect(compiler).to receive(:pos)
-
-            subject.parse_next(@input)
-          end
-        end
+        include_examples "general prefixes", :hash, :pos
 
       end
     end
