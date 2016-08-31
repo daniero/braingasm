@@ -102,13 +102,15 @@ module Braingasm
           before(:each) { provide_input(32) }
 
           it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+            allow(compiler).to receive(:push_prefix)
+
             expect(subject.parse_next(@input)).to be_falsy
           end
 
-          it "adds the Integer as a prefix" do
-            subject.parse_next(@input)
+          it "pushes the Integer as a prefix to the compiler" do
+            expect(compiler).to receive(:push_prefix).with(32)
 
-            expect(subject.prefixes).to be == [32]
+            subject.parse_next(@input)
           end
         end
 

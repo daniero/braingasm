@@ -27,7 +27,7 @@ module Braingasm
 
       case token
       when Integer
-        @compiler.prefixes.push token
+        @compiler.push_prefix token
         false
       when :hash
         @compiler.prefixes.push ->(m) { m.pos }
