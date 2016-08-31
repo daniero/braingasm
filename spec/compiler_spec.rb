@@ -89,50 +89,45 @@ module Braingasm
       end
 
       describe "#loop_start" do
+        let(:given_parameter) { 17 }
+        let(:response) { subject.loop_start(given_parameter) }
+
         context "without prefix" do
-          it "returns a loop with correct start index" do
-            subject.program = [nil] * 17
 
-            response = subject.loop_start()
-
-            expect(response).to be_a Parser::Loop
-            expect(response.start_index).to be 17
+          it "returns a loop with the given start index" do
+            expect(response).to be_a Compiler::Loop
+            expect(response.start_index).to be given_parameter
           end
 
           it "pushes the loop to the loop stack" do
-            response = subject.loop_start()
-
             expect(subject.loop_stack).to be == [response]
           end
         end
 
         context "with number prefix" do
           before(:each) { subject.prefixes << 100 }
-          let (:return_values) { subject.loop_start() }
 
           it "returns two instructions" do
-            expect(return_values).to be_an Array
-            expect(return_values.size).to be 2
+            expect(response).to be_an Array
+            expect(response.size).to be 2
           end
 
           describe "first instruction" do
             it "calls machine's #inst_push_ctrl with the prefix" do
               expect(machine).to receive(:inst_push_ctrl).with(100)
 
-              return_values.first.call(machine)
+              response.first.call(machine)
             end
           end
 
           describe "second instruction" do
-            before { subject.program = [nil] * 10 }
-
             it "is a fixed loop with correct start index" do
-              expect(return_values.last).to be_a Parser::Loop
-              expect(return_values.last.start_index).to be 11
+              expect(response.last).to be_a Compiler::Loop
+              expect(response.last.start_index).to be(given_parameter + 1)
             end
 
             it "is pushed to the loop stack" do
-              expect(subject.loop_stack).to be == [return_values.last]
+              expect(subject.loop_stack).to be == [response.last]
             end
           end
         end
