@@ -5,8 +5,8 @@ require "braingasm/compiler"
 
 module Braingasm
   describe Parser do
-    subject { Parser.new(@input) }
     let(:compiler) { instance_double(Compiler) }
+    subject { Parser.new(@input, compiler) }
     let(:machine) { instance_double(Machine) }
 
     it "initializes all necessary fields" do
@@ -15,10 +15,6 @@ module Braingasm
       expect(subject.input).to be :something
       expect(subject.program).to be_an Array
       expect(subject.program).to be_empty
-      expect(subject.loop_stack).to be_an Array
-      expect(subject.loop_stack).to be_empty
-      expect(subject.prefixes).to be_an Array
-      expect(subject.prefixes).to be_empty
     end
 
     def provide_input(*tokens)
