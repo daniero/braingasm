@@ -176,14 +176,19 @@ module Braingasm
         end
       end
 
-      describe "#pos" do
-        include_examples "simple instruction", :pos, :pos
-
+      shared_examples "instruction prefix" do |method_name|
         it "pushes the generated instruction to the prefix stack" do
-          generated_instruction = subject.pos
+          method = subject.method(method_name)
+
+          generated_instruction = method.call()
 
           expect(subject.prefixes).to be == [generated_instruction]
         end
+      end
+
+      describe "#pos" do
+        include_examples "simple instruction", :pos, :pos
+        include_examples "instruction prefix", :pos
       end
 
     end
