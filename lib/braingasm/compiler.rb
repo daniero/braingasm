@@ -25,6 +25,10 @@ module Braingasm
       end
     end
 
+    def pos
+      ->(m) { m.pos }
+    end
+
     def right()
       fix_params ->(n, m) { m.inst_right(n) }
     end

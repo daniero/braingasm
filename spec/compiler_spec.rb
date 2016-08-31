@@ -176,6 +176,11 @@ module Braingasm
           expect(subject.loop_stack).to be_empty
         end
       end
+
+      describe "#pos" do
+        include_examples "simple instruction", :pos, :pos
+      end
+
     end
 
   end
