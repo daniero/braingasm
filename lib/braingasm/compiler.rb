@@ -12,7 +12,7 @@ module Braingasm
 
       case prefix
       when Integer
-        function.curry[prefix]
+        function.curry.call(prefix)
       when Proc
         Proc.new do |m|
           n = prefix.call(m)
