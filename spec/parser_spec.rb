@@ -85,12 +85,10 @@ module Braingasm
                    :loop_end => :loop_end }
 
         inputs.each do |token, instruction|
-          it { should respond_to instruction }
-
-          it "returns instruction '#{instruction}' given a :#{token}" do
+          it "returns instruction '#{instruction}' from compiler given a :#{token}" do
             provide_input(token)
             mock_generated_instruction = "#{instruction}_mock_return"
-            expect(subject).to receive(instruction).and_return(mock_generated_instruction)
+            expect(compiler).to receive(instruction).and_return(mock_generated_instruction)
 
             response = subject.parse_next(@input)
 
