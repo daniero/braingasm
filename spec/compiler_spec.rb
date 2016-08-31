@@ -144,26 +144,24 @@ module Braingasm
           subject.loop_stack = []
           allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
-          expect { subject.loop_end() }.to raise_error(ParsingError)
+          expect { subject.loop_end(:foo) }.to raise_error(ParsingError)
         end
 
         it "returns a jump instruction back to the start of the current loop" do
           current_loop.start_index = 42
           expect(subject).to receive(:jump).with(42).and_return("jump_return_value")
 
-          expect(subject.loop_end()).to eq("jump_return_value")
+          expect(subject.loop_end(:foo)).to eq("jump_return_value")
         end
 
-        it "sets the stop_index of the current loop" do
-          subject.program = [nil] * 13
-
-          subject.loop_end()
+        it "sets the stop_index to the given parameter" do
+          subject.loop_end(13)
 
           expect(current_loop.stop_index).to be 13
         end
 
         it "pops the current loop off the loop stack" do
-          subject.loop_end()
+          subject.loop_end(:foo)
 
           expect(subject.loop_stack).to be_empty
         end
