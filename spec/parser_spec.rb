@@ -98,12 +98,12 @@ module Braingasm
       end
 
       describe "prefixes" do
+        before(:each) { allow(compiler).to receive(:push_prefix) }
+
         context "when given an Integer" do
           before(:each) { provide_input(32) }
 
           it "returns nothing, so that it shouldn't be added as an instruction in the program" do
-            allow(compiler).to receive(:push_prefix)
-
             expect(subject.parse_next(@input)).to be_falsy
           end
 
@@ -118,16 +118,15 @@ module Braingasm
           before(:each) { provide_input(:hash) }
 
           it "returns nothing, so that it shouldn't be added as an instruction in the program" do
+            allow(compiler).to receive(:pos)
+
             expect(subject.parse_next(@input)).to be_falsy
           end
 
-          it "pushes an instruction to the prefix list which gets the machine's current position" do
-            expect(machine).to receive(:pos).and_return 69
+          it "pushes a pos prefix" do
+            expect(compiler).to receive(:pos)
 
             subject.parse_next(@input)
-
-            instruction = subject.prefixes.last
-            instruction.call(machine)
           end
         end
 

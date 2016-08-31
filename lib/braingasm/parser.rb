@@ -30,7 +30,7 @@ module Braingasm
         @compiler.push_prefix token
         false
       when :hash
-        @compiler.prefixes.push ->(m) { m.pos }
+        @compiler.pos()
         false
       when :right
         @compiler.right()

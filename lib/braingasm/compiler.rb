@@ -26,7 +26,9 @@ module Braingasm
     end
 
     def pos
-      ->(m) { m.pos }
+      prok = ->(m) { m.pos }
+      @prefixes << prok
+      prok
     end
 
     def right()

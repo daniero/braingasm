@@ -179,6 +179,12 @@ module Braingasm
 
       describe "#pos" do
         include_examples "simple instruction", :pos, :pos
+
+        it "pushes the generated instruction to the prefix stack" do
+          generated_instruction = subject.pos
+
+          expect(subject.prefixes).to be == [generated_instruction]
+        end
       end
 
     end
