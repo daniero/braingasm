@@ -1,13 +1,11 @@
 # encoding: UTF-8
 require 'spec_helper'
-require "braingasm/machine"
 require "braingasm/compiler"
 
 module Braingasm
   describe Parser do
     let(:compiler) { instance_double(Compiler) }
     subject { Parser.new(@input, compiler) }
-    let(:machine) { instance_double(Machine) }
 
     it "initializes all necessary fields" do
       @input = :something
