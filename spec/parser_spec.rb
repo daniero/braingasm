@@ -25,6 +25,15 @@ module Braingasm
     end
 
     describe "#parse_program" do
+      before do
+        provide_input(*[]) # I.e, no input
+        allow(compiler).to receive(:loop_stack).and_return [] 
+      end
+
+      it "returns an empty program for empty input" do
+        expect(subject.parse_program).to be == []
+      end
+
       it "calls #parse_next with the tokenizer input until it raises StopIteration" do
         tokenizer = provide_input :foo
         expect(subject).to receive(:parse_next).with(tokenizer).and_raise(StopIteration)
@@ -42,12 +51,6 @@ module Braingasm
         subject.parse_program
       end
 
-      it "returns an empty program for empty input" do
-        @input = [].to_enum
-
-        expect(subject.parse_program).to be == []
-      end
-
       it "ignores unknown tokens in the input" do
         provide_input(:unknown, :foo, :bar)
 
@@ -55,7 +58,6 @@ module Braingasm
       end
 
       it "fails if there are unclosed loops in the input" do
-        provide_input(:loop_start)
         allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
         expect { subject.parse_program }.to raise_error(ParsingError)
