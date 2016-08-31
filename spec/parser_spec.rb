@@ -58,6 +58,7 @@ module Braingasm
       end
 
       it "fails if there are unclosed loops in the input" do
+        expect(compiler).to receive(:loop_stack).and_return [:something]
         allow(subject).to receive(:raise_parsing_error).with(any_args).and_raise ParsingError
 
         expect { subject.parse_program }.to raise_error(ParsingError)
