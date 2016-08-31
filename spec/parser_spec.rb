@@ -133,30 +133,13 @@ module Braingasm
       end
     end
 
-    describe "#raise_parsing_error" do
-      it "raises a ParsingError with the correct line and column numbers" do
-        tokenizer = provide_input :foo
-        expect(tokenizer).to receive(:line_numer).and_return 100
-        expect(tokenizer).to receive(:column_number).and_return 200
-        error = nil
-
-        expect { subject.raise_parsing_error("foobar") }.to raise_error(ParsingError) { |e| error = e }
-        expect(error.line).to be 100
-        expect(error.column).to be 200
-      end
-    end
-
     describe "#push_instruction" do
-      before(:each) { subject.prefixes = [:a, :b, :c] }
-
       it "does nothing if the parameter is falsy" do
         subject.push_instruction(false)
         expect(subject.program).to be_empty
-        expect(subject.prefixes).to eq [:a, :b, :c]
 
         subject.push_instruction(nil)
         expect(subject.program).to be_empty
-        expect(subject.prefixes).to eq [:a, :b, :c]
       end
 
       it "pushes the given instruction onto the program" do
@@ -175,12 +158,6 @@ module Braingasm
         expect(subject.program).to be == [1, 2, 3, 4, 5, 6]
       end
 
-      it "clears the prefix stack" do
-        subject.push_instruction(:foo)
-
-        expect(subject.prefixes).to be_empty
-      end
-
       it "returns the index of the newly pushed instruction" do
         expect(subject.push_instruction(:foo)).to be 0
         expect(subject.push_instruction(:bar)).to be 1
@@ -188,5 +165,19 @@ module Braingasm
       end
     end
 
+    describe "#raise_parsing_error" do
+      it "raises a ParsingError with the correct line and column numbers" do
+        tokenizer = provide_input :foo
+        expect(tokenizer).not_to be nil
+        expect(tokenizer).to receive(:line_numer).and_return 100
+        expect(tokenizer).to receive(:column_number).and_return 200
+        error = nil
+
+        expect { subject.raise_parsing_error("foobar") }.to raise_error(ParsingError) { |e| error = e }
+        expect(error.line).to be 100
+        expect(error.column).to be 200
+      end
+    end
   end
+
 end

@@ -86,7 +86,7 @@ module Braingasm
 
     def loop_end(index)
       current_loop = @loop_stack.pop
-      raise_parsing_error("Unmatched `]`") unless current_loop
+      raise BraingasmError, "Unmatched `]`" unless current_loop
       current_loop.stop_index = index
       jump(current_loop.start_index)
     end

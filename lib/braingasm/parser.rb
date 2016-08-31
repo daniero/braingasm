@@ -49,18 +49,18 @@ module Braingasm
       when :loop_end
         @compiler.loop_end(@program.size)
       end
+    rescue BraingasmError => e
+      raise_parsing_error(e.message)
     end
 
     def push_instruction(instruction)
       return unless instruction
-
-      @compiler.prefixes.clear
       @program.push(*instruction)
       @program.size - 1
     end
-  end
 
-  def raise_parsing_error(message)
-    raise ParsingError.new(@input.line_numer, @input.column_number), message
+    def raise_parsing_error(message)
+      raise ParsingError.new(@input.line_numer, @input.column_number), message
+    end
   end
 end
