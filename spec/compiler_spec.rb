@@ -134,7 +134,7 @@ module Braingasm
       end
 
       describe "#loop_end" do
-        let(:current_loop) { Parser::Loop.new }
+        let(:current_loop) { Compiler::Loop.new }
 
         before do
           subject.loop_stack = [current_loop]
