@@ -58,9 +58,9 @@ module Braingasm
       @program.push(*instruction)
       @program.size - 1
     end
+  end
 
-    def raise_parsing_error(message)
-      raise ParsingError.new(@input.line_numer, @input.column_number), message
-    end
+  def raise_parsing_error(message)
+    raise ParsingError.new(@input.line_numer, @input.column_number), message
   end
 end
