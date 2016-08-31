@@ -22,6 +22,18 @@ module Braingasm
             subject.fix_params(function, 14)
           end
         end
+
+        context "with an integer on the prefix stack" do
+          before { subject.prefixes << 1234 }
+
+          it "curries the given function with the prefix" do
+            expect(curried_function).to receive(:call).with(1234)
+
+            subject.fix_params(function)
+          end
+
+          after(:each) { expect(subject.prefixes).to be_empty }
+        end
       end
     end
 
