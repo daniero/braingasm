@@ -1,10 +1,12 @@
 # encoding: UTF-8
 require 'spec_helper'
 require "braingasm/machine"
+require "braingasm/compiler"
 
 module Braingasm
   describe Parser do
     subject { Parser.new(@input) }
+    let(:compiler) { instance_double(Compiler) }
     let(:machine) { instance_double(Machine) }
 
     it "initializes all necessary fields" do
@@ -65,7 +67,7 @@ module Braingasm
     end
 
     describe "#parse_next" do
-      subject { Parser.new(nil) }
+      subject { Parser.new(nil, compiler) }
 
       it "raises StopIteration on end of input" do
         empty = [].to_enum
