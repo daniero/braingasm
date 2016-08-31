@@ -39,6 +39,16 @@ module Braingasm
       end
     end
 
+    describe "#push_prefix" do
+      it "pushes the given prefix to the prefix stack" do
+        subject.push_prefix 1
+        subject.push_prefix 2
+        subject.push_prefix 3
+
+        expect(subject.prefixes).to be == [1, 2, 3]
+      end
+    end
+
     describe "generating instructions" do
       shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
         it "generates a function which calls the given machine's ##{machine_instruction}" do

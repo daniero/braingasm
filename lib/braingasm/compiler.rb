@@ -7,6 +7,10 @@ module Braingasm
       @loop_stack = []
     end
 
+    def push_prefix(prefix)
+      @prefixes << prefix
+    end
+
     def fix_params(function, default_param=1)
       prefix = @prefixes.pop || default_param
 
