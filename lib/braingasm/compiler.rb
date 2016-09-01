@@ -31,6 +31,14 @@ module Braingasm
       prok
     end
 
+    def random
+      random = Proc.new { |n, _| rand n }
+      return_max_value = Proc.new { |_, _| Options[:cell_limit] }
+      prok = fix_params random, return_max_value
+      @prefixes << prok
+      prok
+    end
+
     def right()
       fix_params ->(n, m) { m.inst_right(n) }
     end

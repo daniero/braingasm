@@ -32,6 +32,9 @@ module Braingasm
       when :hash
         @compiler.pos()
         false
+      when :R
+        @compiler.random()
+        false
       when :right
         @compiler.right()
       when :left

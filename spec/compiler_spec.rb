@@ -191,6 +191,30 @@ module Braingasm
         include_examples "instruction prefix", :pos
       end
 
+      describe "#random" do
+        let(:generated_proc) { subject.random() }
+
+        it "returns a proc returning a random number from 0 to the current cell max value" do
+          Options[:cell_limit] = 100
+          expect(subject).to receive(:rand).with(100).and_return(52)
+          expect(generated_proc.call(machine)).to be(52)
+
+          Options[:cell_limit] = 256
+          expect(subject).to receive(:rand).with(256).and_return(18)
+          expect(generated_proc.call(machine)).to be(18)
+        end
+
+        it "can take a prefix for max value" do
+          subject.prefixes << 3000
+
+          expect(subject).to receive(:rand).with(3000).and_return(7)
+          expect(generated_proc.call(machine)).to be(7)
+          expect(subject.prefixes).to be == [generated_proc]
+        end
+
+        include_examples "instruction prefix", :random
+      end
+
     end
 
   end

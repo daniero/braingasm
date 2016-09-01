@@ -120,7 +120,7 @@ module Braingasm
           context "when given a :#{prefix_symbol}" do
             before(:each) { provide_input(prefix_symbol) }
 
-            it "generates a #{compiler_instruction} prefix" do
+            it "generates a ##{compiler_instruction} prefix" do
               expect(compiler).to receive(compiler_instruction)
 
               subject.parse_next(@input)
@@ -135,6 +135,7 @@ module Braingasm
         end
 
         include_examples "general prefixes", :hash, :pos
+        include_examples "general prefixes", :R, :random
 
       end
     end
