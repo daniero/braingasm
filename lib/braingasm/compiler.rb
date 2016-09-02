@@ -18,7 +18,7 @@ module Braingasm
       when Integer
         function.curry.call(prefix)
       when Proc
-        Proc.new do |m|
+        proc do |m|
           n = prefix.call(m)
           function.call(n, m)
         end
@@ -32,8 +32,8 @@ module Braingasm
     end
 
     def random
-      random = Proc.new { |n, _| rand n }
-      return_max_value = Proc.new { |_, _| Options[:cell_limit] }
+      random = proc { |n, _| rand n }
+      return_max_value = proc { |_, _| Options[:cell_limit] }
       prok = fix_params random, return_max_value
       @prefixes << prok
       prok
