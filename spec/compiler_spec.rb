@@ -182,7 +182,7 @@ module Braingasm
 
           generated_instruction = method.call()
 
-          expect(subject.prefixes).to be == [generated_instruction]
+          expect(subject.prefixes).to be == Array(generated_instruction)
         end
       end
 
@@ -209,7 +209,7 @@ module Braingasm
 
           expect(subject).to receive(:rand).with(3000).and_return(7)
           expect(generated_proc.call(machine)).to be(7)
-          expect(subject.prefixes).to be == [generated_proc]
+          expect(subject.prefixes).to be == Array(generated_proc)
         end
 
         include_examples "instruction prefix", :random
