@@ -67,7 +67,7 @@ module Braingasm
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
       else
-        fix_params ->(n, m) { m.inst_set_value(n) }
+        fix_params ->(n, m) { m.cell = n }
       end
     end
 

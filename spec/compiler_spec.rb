@@ -95,7 +95,7 @@ module Braingasm
 
       describe "#read" do
         include_examples "simple instruction", :read, :inst_read_byte
-        include_examples "prefixed instruction", :read, :inst_set_value
+        include_examples "prefixed instruction", :read, 'cell='
       end
 
       describe "#loop_start" do

@@ -55,6 +55,41 @@ describe Braingasm::Machine do
     end
   end
 
+  describe "#cell" do
+    it "returns the value of the cell under the cursor" do
+      subject.tape = [1, 2, 4]
+      expect(subject.cell).to be 1
+
+      subject.dp = 1
+      expect(subject.cell).to be 2
+
+      subject.dp = 2
+      expect(subject.cell).to be 4
+    end
+  end
+
+  shared_examples "cell update" do
+    after { expect(subject.last_write).to be subject.cell }
+  end
+
+  describe "#cell=" do
+    include_examples "cell update"
+
+    it "sets the value of the cell under the cursor" do
+      subject.tape = [0, 0, 0]
+      subject.cell = 1
+      expect(subject.tape).to be == [1, 0, 0]
+
+      subject.dp = 1
+      subject.cell = 3
+      expect(subject.tape).to be == [1, 3, 0]
+
+      subject.dp = 2
+      subject.cell = 5
+      expect(subject.tape).to be == [1, 3, 5]
+    end
+  end
+
   describe "#pos" do
     it "returns the position of the datapointer relative to the initial first cell" do
       expect(subject.pos).to be(0)
@@ -150,10 +185,6 @@ describe Braingasm::Machine do
           expect(subject.tape[0..subject.dp]).to all be 0
         end
       end
-    end
-
-    shared_examples "cell update" do
-      after { expect(subject.last_write).to be subject.tape[subject.dp] }
     end
 
     describe "#inst_inc" do
@@ -316,17 +347,6 @@ describe Braingasm::Machine do
 
           subject.inst_print_cell()
         end
-      end
-    end
-
-    describe "#inst_set_value" do
-      it "sets the current cell to the given value" do
-        subject.inst_set_value 65
-        expect(subject.tape[0]).to be 65
-
-        subject.dp = 1
-        subject.inst_set_value 66
-        expect(subject.tape[1]).to be 66
       end
     end
 

@@ -37,6 +37,15 @@ module Braingasm
       @ip = jump.to
     end
 
+    def cell
+      @tape[@dp]
+    end
+
+    def cell=(new_value)
+      @tape[@dp] = new_value
+      trigger_cell_updated
+    end
+
     def pos
       @dp - @data_offset
     end
@@ -86,7 +95,7 @@ module Braingasm
     end
 
     def inst_jump_if_data_zero(to)
-      raise JumpSignal.new(to) if @tape[@dp] == 0
+      raise JumpSignal.new(to) if cell == 0
     end
 
     def inst_jump_if_ctrl_zero(to)
@@ -104,12 +113,7 @@ module Braingasm
     end
 
     def inst_print_cell
-      @output.putc @tape[@dp]
-    end
-
-    def inst_set_value(v)
-      @tape[@dp] = v
-      trigger_cell_updated
+      @output.putc cell
     end
 
     def inst_read_byte
