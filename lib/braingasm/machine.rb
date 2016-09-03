@@ -6,7 +6,7 @@ module Braingasm
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
   class Machine
-    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack
+    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :input, :output
 
     def initialize
       @tape = Array.new(10) { 0 }
@@ -14,6 +14,8 @@ module Braingasm
       @data_offset = 0
       @ip = 0           # instruction pointer
       @ctrl_stack = []
+      @input = ARGF
+      @output = $stdout
     end
 
     def run
@@ -95,11 +97,11 @@ module Braingasm
     end
 
     def inst_print(chr)
-      putc chr
+      @output.putc chr
     end
 
     def inst_print_cell
-      putc @tape[@dp]
+      @output.putc @tape[@dp]
     end
 
     def inst_set_value(v)
@@ -107,7 +109,7 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = ARGF.getbyte || Options[:eof] || @tape[@dp]
+      @tape[@dp] = @input.getbyte || Options[:eof] || @tape[@dp]
     end
 
     private

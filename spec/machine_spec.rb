@@ -287,18 +287,27 @@ describe Braingasm::Machine do
       end
     end
 
-    describe :inst_print do
-      it "prints the ASCII value of the given parameter" do
-        expect { subject.inst_print(65) }.to output('A').to_stdout
-        expect { subject.inst_print(66) }.to output('B').to_stdout
+    describe "output" do
+      let(:output) { instance_double(IO) }
+      before { subject.output = output }
+
+      describe "#inst_print" do
+        it "prints the ASCII value of the given parameter through the given output" do
+          expect(output).to receive(:putc).with(72)
+          subject.inst_print(72)
+
+          expect(output).to receive(:putc).with(105)
+          subject.inst_print(105)
+        end
       end
-    end
 
-    describe "#inst_print_cell" do
-      it "outputs the value of the current cell as a byte" do
-        subject.tape = [ 70 ]
+      describe "#inst_print_cell" do
+        it "outputs the value of the current cell as a byte" do
+          subject.tape = [ 70 ]
+          expect(output).to receive(:putc).with(70)
 
-        expect { subject.inst_print_cell }.to output('F').to_stdout
+          subject.inst_print_cell()
+        end
       end
     end
 
