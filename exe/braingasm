@@ -33,9 +33,8 @@ err "Error: No filname given" unless filename
 err "Error: No such file: #{filename}" unless File.exists?(filename)
 
 begin
-  input = IO.read(filename)
-  machine = Braingasm.initialize_machine(input)
-  machine.run
+  code = IO.read(filename)
+  Braingasm.run(code)
 rescue Braingasm::BraingasmError => e
   err "#{e.type}: #{e.message}"
 end

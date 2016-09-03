@@ -4,11 +4,19 @@ require "braingasm/compiler"
 require "braingasm/machine"
 
 module Braingasm
+
+  def self.run(code)
+    machine = self.initialize_machine(code)
+    machine.run()
+  end
+
   def self.initialize_machine(code)
-    machine = Machine.new
     tokenizer = Tokenizer.new(code)
     compiler = Compiler.new
-    machine.program = Parser.new(tokenizer, compiler).parse_program
+    program = Parser.new(tokenizer, compiler).parse_program
+    machine = Machine.new
+
+    machine.program = program
     machine
   end
 end
