@@ -3,6 +3,8 @@ require "braingasm/options"
 
 module Braingasm
   describe "#handle_options" do
+    before { Braingasm::Options.reset }
+
     it "translates command line options to Braingasm options" do
       Braingasm.handle_options(:zero => true)
       expect(Options[:eof]).to be 0

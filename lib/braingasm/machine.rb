@@ -6,14 +6,17 @@ module Braingasm
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
   class Machine
-    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :input, :output
+    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :last_write, :input, :output
 
     def initialize
       @tape = Array.new(10) { 0 }
       @dp = 0           # data pointer
       @data_offset = 0
       @ip = 0           # instruction pointer
+
       @ctrl_stack = []
+      @last_write = 0
+
       @input = ARGF
       @output = $stdout
     end
@@ -70,12 +73,12 @@ module Braingasm
 
     def inst_inc(n=1)
       @tape[@dp] += n
-      wrap_cell
+      trigger_cell_updated
     end
 
     def inst_dec(n=1)
       @tape[@dp] -= n
-      wrap_cell
+      trigger_cell_updated
     end
 
     def inst_jump(to)
@@ -106,15 +109,18 @@ module Braingasm
 
     def inst_set_value(v)
       @tape[@dp] = v
+      trigger_cell_updated
     end
 
     def inst_read_byte
       @tape[@dp] = @input.getbyte || Options[:eof] || @tape[@dp]
+      trigger_cell_updated
     end
 
     private
-    def wrap_cell
+    def trigger_cell_updated
       @tape[@dp] %= Options[:cell_limit] if Options[:wrap_cells]
+      @last_write = @tape[@dp]
     end
   end
 end

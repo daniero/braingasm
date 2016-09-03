@@ -14,6 +14,8 @@ describe Braingasm::Machine do
 
     expect(subject.ctrl_stack).to be_an Array
     expect(subject.ctrl_stack).to be_empty
+
+    expect(subject.last_write).to be 0
   end
 
   describe "#run" do
@@ -150,7 +152,13 @@ describe Braingasm::Machine do
       end
     end
 
+    shared_examples "cell update" do
+      after { expect(subject.last_write).to be subject.tape[subject.dp] }
+    end
+
     describe "#inst_inc" do
+      include_examples "cell update"
+
       it "increases the value of the cell under the pointer" do
         subject.dp = 3
 
@@ -358,7 +366,11 @@ describe Braingasm::Machine do
 
         [-1, 0].each do |option_value|
           context "if Options[:eof] is #{option_value}" do
-            before { Braingasm::Options[:eof] = option_value }
+            before do
+              Braingasm::Options[:eof] = option_value
+              # Can't store -1 in the cell with cell wrapping on:
+              Braingasm::Options[:wrap_cells] = false
+            end
 
             it "changes the value of the current cell to #{option_value}" do
               subject.tape[0] = 77
