@@ -1,43 +1,6 @@
 module Braingasm
   describe Compiler do
-    it { should have_attributes(:prefixes => [], :loop_stack => []) }
-
     let(:machine) { instance_double(Machine) }
-
-    describe "#fix_params" do
-      let(:function) { instance_double(Proc) }
-
-      context "with single integer prefixes" do
-        let(:curried_function) { instance_double(Proc) }
-        before(:each) { expect(function).to receive(:curry).and_return(curried_function) }
-
-        context "when prefix stack is empty" do
-          it "curries the given function with the default value, 1" do
-            expect(curried_function).to receive(:call).with(1)
-
-            subject.fix_params(function)
-          end
-
-          it "curries the given function with the given integer, if provided" do
-            expect(curried_function).to receive(:call).with(14)
-
-            subject.fix_params(function, 14)
-          end
-        end
-
-        context "with an integer on the prefix stack" do
-          before { subject.prefixes << 1234 }
-
-          it "curries the given function with the prefix" do
-            expect(curried_function).to receive(:call).with(1234)
-
-            subject.fix_params(function)
-          end
-
-          after(:each) { expect(subject.prefixes).to be_empty }
-        end
-      end
-    end
 
     describe "#push_prefix" do
       it "pushes the given prefix to the prefix stack" do

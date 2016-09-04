@@ -1,28 +1,16 @@
+require "braingasm/prefixes"
+
 module Braingasm
   class Compiler
     attr_accessor :prefixes, :loop_stack
 
     def initialize
-      @prefixes = []
+      @prefixes = PrefixStack.new
       @loop_stack = []
     end
 
     def push_prefix(prefix)
       @prefixes << prefix
-    end
-
-    def fix_params(function, default_param=1)
-      prefix = @prefixes.pop || default_param
-
-      case prefix
-      when Integer
-        function.curry.call(prefix)
-      when Proc
-        proc do |m|
-          n = prefix.call(m)
-          function.call(n, m)
-        end
-      end
     end
 
     def pos
@@ -34,32 +22,32 @@ module Braingasm
     def random
       random = proc { |n, _| rand n }
       return_max_value = proc { |_, _| Options[:cell_limit] }
-      prok = fix_params random, return_max_value
+      prok = @prefixes.fix_params random, return_max_value
       @prefixes << prok
       prok
     end
 
     def right()
-      fix_params ->(n, m) { m.inst_right(n) }
+      @prefixes.fix_params ->(n, m) { m.inst_right(n) }
     end
 
     def left()
-      fix_params ->(n, m) { m.inst_left(n) }
+      @prefixes.fix_params ->(n, m) { m.inst_left(n) }
     end
 
     def inc()
-      fix_params ->(n, m) { m.inst_inc(n) }
+      @prefixes.fix_params ->(n, m) { m.inst_inc(n) }
     end
 
     def dec()
-      fix_params ->(n, m) { m.inst_dec(n) }
+      @prefixes.fix_params ->(n, m) { m.inst_dec(n) }
     end
 
     def print()
       if @prefixes.empty?
         ->(m) { m.inst_print_cell }
       else
-        fix_params ->(n, m) { m.inst_print(n) }
+        @prefixes.fix_params ->(n, m) { m.inst_print(n) }
       end
     end
 
@@ -67,7 +55,7 @@ module Braingasm
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
       else
-        fix_params ->(n, m) { m.cell = n }
+        @prefixes.fix_params ->(n, m) { m.cell = n }
       end
     end
 
@@ -88,7 +76,7 @@ module Braingasm
       new_loop = FixedLoop.new
       @loop_stack.push(new_loop)
       new_loop.start_index = start_index + 1
-      push_ctrl = fix_params ->(n, m) { m.inst_push_ctrl(n) }
+      push_ctrl = @prefixes.fix_params ->(n, m) { m.inst_push_ctrl(n) }
       [push_ctrl, new_loop]
     end
 
