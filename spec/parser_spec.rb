@@ -99,10 +99,12 @@ module Braingasm
 
         shared_examples "literals" do |literal_class, literal_example|
           context "when given a #{literal_class}" do
-            before(:each) { allow(compiler).to receive(:push_prefix) }
-            before(:each) { provide_input(literal_example) }
+            before do
+              provide_input(literal_example)
+              allow(compiler).to receive(:push_prefix).with(literal_example)
+            end
 
-            it "pushes the Integer as a prefix to the compiler" do
+            it "pushes the #{literal_class} as a prefix to the compiler" do
               expect(compiler).to receive(:push_prefix).with(literal_example)
 
               subject.parse_next(@input)
