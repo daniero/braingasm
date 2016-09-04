@@ -25,8 +25,8 @@ module Braingasm
       return if @program.empty?
 
       loop do
-        continue = step
-        break unless continue && @ip < @program.size
+        step()
+        break unless @ip < @program.size
       end
     end
 
