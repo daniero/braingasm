@@ -12,51 +12,51 @@ module Braingasm
       end
     end
 
-    shared_examples "simple instruction" do |method_name, machine_instruction, arg:nil|
-    it "generates a function which calls the given machine's ##{machine_instruction}" do
-      expect(machine).to receive(machine_instruction).with(arg || no_args)
+    shared_examples "simple instruction generation" do |method_name, machine_instruction, arg:nil|
+      it "generates a function which calls the given machine's ##{machine_instruction}" do
+        expect(machine).to receive(machine_instruction).with(arg || no_args)
 
-      generated_instruction = subject.method(method_name).call
+        generated_instruction = subject.method(method_name).call()
 
-      generated_instruction.call(machine)
-    end
+        generated_instruction.call(machine)
+      end
     end
 
     shared_examples "prefixed instruction" do |method_name, machine_instruction|
       context "given an integer prefix" do
         before(:each) { subject.prefixes << 42 }
 
-        include_examples "simple instruction", method_name, machine_instruction, arg:42
+        include_examples "simple instruction generation", method_name, machine_instruction, arg:42
       end
     end
 
     describe "#inc" do
-      include_examples "simple instruction", :inc, :inst_inc, arg:1
+      include_examples "simple instruction generation", :inc, :inst_inc, arg:1
       include_examples "prefixed instruction", :inc, :inst_inc
     end
 
     describe "#dec" do
-      include_examples "simple instruction", :dec, :inst_dec, arg:1
+      include_examples "simple instruction generation", :dec, :inst_dec, arg:1
       include_examples "prefixed instruction", :dec, :inst_dec
     end
 
     describe "#right" do
-      include_examples "simple instruction", :right, :inst_right, arg:1
+      include_examples "simple instruction generation", :right, :inst_right, arg:1
       include_examples "prefixed instruction", :right, :inst_right
     end
 
     describe "#left" do
-      include_examples "simple instruction", :left, :inst_left, arg:1
+      include_examples "simple instruction generation", :left, :inst_left, arg:1
       include_examples "prefixed instruction", :left, :inst_left
     end
 
     describe "#print" do
-      include_examples "simple instruction", :print, :inst_print_cell
+      include_examples "simple instruction generation", :print, :inst_print_cell
       include_examples "prefixed instruction", :print, :inst_print
     end
 
     describe "#read" do
-      include_examples "simple instruction", :read, :inst_read_byte
+      include_examples "simple instruction generation", :read, :inst_read_byte
       include_examples "prefixed instruction", :read, 'cell='
     end
 
@@ -149,7 +149,7 @@ module Braingasm
     end
 
     describe "#pos" do
-      include_examples "simple instruction", :pos, :pos
+      include_examples "simple instruction generation", :pos, :pos
       include_examples "instruction prefix", :pos
     end
 
