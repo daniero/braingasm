@@ -159,7 +159,7 @@ module Braingasm
         expect(prefix_stack).to receive(:<<) { |prefix| pushed_prefix = prefix }
 
         return_value = subject.method(method_name).call()
-        expect(return_value).to be pushed_prefix
+        expect(pushed_prefix).to be return_value
       end
     end
 
