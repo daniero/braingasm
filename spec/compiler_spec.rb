@@ -1,52 +1,65 @@
 module Braingasm
   describe Compiler do
     let(:machine) { instance_double(Machine) }
+    let(:prefix_stack) { instance_double(PrefixStack) }
+    before { subject.prefixes = prefix_stack }
 
     describe "#push_prefix" do
       it "pushes the given prefix to the prefix stack" do
-        subject.push_prefix 1
-        subject.push_prefix 2
-        subject.push_prefix 3
+        expect(prefix_stack).to receive(:<<).with(:foo)
 
-        expect(subject.prefixes).to be == [1, 2, 3]
+        subject.push_prefix(:foo)
       end
     end
 
-    shared_examples "simple instruction generation" do |method_name, machine_instruction, arg:nil|
-      it "generates a function which calls the given machine's ##{machine_instruction}" do
-        expect(machine).to receive(machine_instruction).with(arg || no_args)
+    shared_examples "simple instruction generation" do |method_name, machine_instruction|
+      context "without prefix" do
+        before { allow(prefix_stack).to receive(:empty?).and_return(true) }
 
-        generated_instruction = subject.method(method_name).call()
+        it "generates a function which calls the given machine's ##{machine_instruction}" do
+          expect(machine).to receive(machine_instruction).with(no_args)
 
-        generated_instruction.call(machine)
+          generated_instruction = subject.method(method_name).call()
+
+          generated_instruction.call(machine)
+        end
       end
     end
 
     shared_examples "prefixed instruction" do |method_name, machine_instruction|
-      context "given an integer prefix" do
-        before(:each) { subject.prefixes << 42 }
+      context "with prefix" do
+        before { allow(prefix_stack).to receive(:empty?).and_return(false) }
 
-        include_examples "simple instruction generation", method_name, machine_instruction, arg:42
+        it "sends a function to PrefixStack to inject the proper parameters" do
+          expect(prefix_stack).to receive(:fix_params) { |generated_function|
+            expect(machine).to receive(machine_instruction).with("some parameter")
+            generated_function.call("some parameter", machine)
+          }
+
+          subject.method(method_name).call()
+        end
+
+        it "returns the transformed function from the prefix stack" do
+          expect(prefix_stack).to receive(:fix_params).and_return "return value"
+
+          expect(subject.method(method_name).call()).to be == "return value"
+        end
       end
     end
 
     describe "#inc" do
-      include_examples "simple instruction generation", :inc, :inst_inc, arg:1
       include_examples "prefixed instruction", :inc, :inst_inc
     end
 
     describe "#dec" do
-      include_examples "simple instruction generation", :dec, :inst_dec, arg:1
       include_examples "prefixed instruction", :dec, :inst_dec
     end
 
     describe "#right" do
-      include_examples "simple instruction generation", :right, :inst_right, arg:1
       include_examples "prefixed instruction", :right, :inst_right
     end
 
     describe "#left" do
-      include_examples "simple instruction generation", :left, :inst_left, arg:1
       include_examples "prefixed instruction", :left, :inst_left
     end
 
@@ -61,11 +74,11 @@ module Braingasm
     end
 
     describe "#loop_start" do
+      let(:prefix_stack) { PrefixStack.new }
       let(:given_parameter) { 17 }
       let(:response) { subject.loop_start(given_parameter) }
 
       context "without prefix" do
-
         it "returns a loop with the given start index" do
           expect(response).to be_a Compiler::Loop
           expect(response.start_index).to be given_parameter
@@ -138,43 +151,47 @@ module Braingasm
       end
     end
 
-    shared_examples "instruction prefix" do |method_name|
-      it "pushes the generated instruction to the prefix stack" do
-        method = subject.method(method_name)
+    shared_examples "generated prefix" do |method_name|
+      let(:prefix_stack) { PrefixStack.new }
 
-        generated_instruction = method.call()
+      it "pushes the generated value to the prefix stack" do
+        pushed_prefix = nil
+        expect(prefix_stack).to receive(:<<) { |prefix| pushed_prefix = prefix }
 
-        expect(subject.prefixes).to be == Array(generated_instruction)
+        return_value = subject.method(method_name).call()
+        expect(return_value).to be pushed_prefix
       end
     end
 
     describe "#pos" do
+      include_examples "generated prefix", :pos
       include_examples "simple instruction generation", :pos, :pos
-      include_examples "instruction prefix", :pos
     end
 
     describe "#random" do
+      include_examples "generated prefix", :random
       let(:generated_proc) { subject.random() }
 
-      it "returns a proc returning a random number from 0 to the current cell max value" do
-        Options[:cell_limit] = 100
-        expect(subject).to receive(:rand).with(100).and_return(52)
-        expect(generated_proc.call(machine)).to be(52)
+      context "without prefix" do
+        it "returns a proc returning a random number below the current cell max value" do
+          Options[:cell_limit] = 100
+          expect(subject).to receive(:rand).with(100).and_return(52)
+          expect(generated_proc.call(machine)).to be(52)
 
-        Options[:cell_limit] = 256
-        expect(subject).to receive(:rand).with(256).and_return(18)
-        expect(generated_proc.call(machine)).to be(18)
+          Options[:cell_limit] = 256
+          expect(subject).to receive(:rand).with(256).and_return(18)
+          expect(generated_proc.call(machine)).to be(18)
+        end
       end
 
-      it "can take a prefix for max value" do
-        subject.prefixes << 3000
+      context "with prefix" do
+        before { prefix_stack << 1000 }
 
-        expect(subject).to receive(:rand).with(3000).and_return(7)
-        expect(generated_proc.call(machine)).to be(7)
-        expect(subject.prefixes).to be == Array(generated_proc)
+        it "returns a proc returning a random number below the given prefix" do
+          expect(subject).to receive(:rand).with(1000).and_return(7)
+          expect(generated_proc.call(machine)).to be(7)
+        end
       end
-
-      include_examples "instruction prefix", :random
     end
 
   end
