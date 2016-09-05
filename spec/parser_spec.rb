@@ -138,6 +138,7 @@ module Braingasm
 
         include_examples "general prefixes", :hash, :pos
         include_examples "general prefixes", :R, :random
+        include_examples "general prefixes", :Z, :zero
 
       end
     end

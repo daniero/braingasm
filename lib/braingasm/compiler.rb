@@ -27,6 +27,12 @@ module Braingasm
       prok
     end
 
+    def zero
+      prok = ->(m) { m.last_write == 0 ? 1 : 0 }
+      @prefixes << prok
+      prok
+    end
+
     def right()
       @prefixes.fix_params ->(n, m) { m.inst_right(n) }
     end

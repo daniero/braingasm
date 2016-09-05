@@ -35,6 +35,9 @@ module Braingasm
       when :R
         @compiler.random()
         false
+      when :Z
+        @compiler.zero()
+        false
       when :right
         @compiler.right()
       when :left

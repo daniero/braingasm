@@ -194,5 +194,22 @@ module Braingasm
       end
     end
 
+    describe "#zero" do
+      include_examples "generated prefix", :zero
+      include_examples "simple instruction generation", :zero, :last_write
+
+      it "returns 1 if machine's last write value is 0" do
+        expect(machine).to receive(:last_write).and_return(0)
+
+        expect(subject.zero().call(machine)).to be 1
+      end
+
+      it "returns 0 if machine's last write value is 1" do
+        expect(machine).to receive(:last_write).and_return(1)
+
+        expect(subject.zero().call(machine)).to be 0
+      end
+    end
+
   end
 end
