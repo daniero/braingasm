@@ -44,6 +44,19 @@ module Braingasm
 
           expect(subject.method(method_name).call()).to be == "return value"
         end
+
+        describe "generated instruction" do
+          let(:prefix) { 42 }
+          let(:prefix_stack) { PrefixStack.new }
+          before { prefix_stack << prefix }
+          let(:generated_instruction) { subject.method(method_name).call }
+
+          it "calls the given machine's ##{machine_instruction} with the prefix as parameter" do
+            expect(machine).to receive(machine_instruction).with(prefix)
+
+            generated_instruction.call(machine)
+          end
+        end
       end
     end
 
