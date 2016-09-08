@@ -351,9 +351,7 @@ describe Braingasm::Machine do
     end
 
     describe "#inst_read_byte" do
-      before do
-        stub_const('ARGF', StringIO.new("Hiæ"))
-      end
+      before { subject.input = StringIO.new("Hiæ") }
 
       it "reads one byte from ARGF and stores in the current cell"  do
         subject.inst_read_byte
@@ -370,7 +368,7 @@ describe Braingasm::Machine do
       end
 
       context "on EOF" do
-        before(:each) { stub_const 'ARGF', StringIO.new("") }
+        before { subject.input = StringIO.new("") }
 
         context "if Options[:eof] is nil" do
           before { Braingasm::Options[:eof] = nil }
