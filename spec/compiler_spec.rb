@@ -86,6 +86,10 @@ module Braingasm
       include_examples "prefixed instruction", :read, 'cell='
     end
 
+    describe "#read_int" do
+      include_examples "prefixed instruction", :read_int, :inst_read_int
+    end
+
     describe "#loop_start" do
       let(:prefix_stack) { PrefixStack.new }
       let(:given_parameter) { 17 }

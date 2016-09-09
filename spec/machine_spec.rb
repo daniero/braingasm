@@ -401,5 +401,19 @@ describe Braingasm::Machine do
         end
       end
     end
+
+    describe "inst_read_int" do
+      include_examples "cell update"
+      before { subject.input = StringIO.new("123   456") }
+
+      it "reads an integer from the input stream" do
+        subject.inst_read_int()
+        expect(subject.cell).to be(123)
+
+        subject.inst_read_int()
+        expect(subject.cell).to be(456)
+      end
+    end
+
   end
 end

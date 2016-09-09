@@ -50,6 +50,8 @@ module Braingasm
         @compiler.print()
       when :comma
         @compiler.read()
+      when :semicolon
+        @compiler.read_int()
       when :loop_start
         @compiler.loop_start(@program.size)
       when :loop_end

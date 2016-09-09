@@ -121,6 +121,14 @@ module Braingasm
       trigger_cell_updated
     end
 
+    def inst_read_int(radix=10)
+      return unless @input.gets =~ /\d+/
+
+      @input.ungetc($')
+      @tape[@dp] = $&.to_i(radix)
+      trigger_cell_updated
+    end
+
     private
     def trigger_cell_updated
       @tape[@dp] %= Options[:cell_limit] if Options[:wrap_cells]

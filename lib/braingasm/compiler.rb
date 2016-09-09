@@ -65,6 +65,10 @@ module Braingasm
       end
     end
 
+    def read_int()
+      @prefixes.fix_params ->(n, m) { m.inst_read_int(n) }, 10
+    end
+
     def jump(to)
       ->(m) { m.inst_jump(to) }
     end
