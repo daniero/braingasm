@@ -11,26 +11,21 @@ module Braingasm
 
     def push_prefix(prefix)
       @prefixes << prefix
+      prefix
     end
 
     def pos
-      prok = ->(m) { m.pos }
-      @prefixes << prok
-      prok
+      push_prefix ->(m) { m.pos }
     end
 
     def random
       random = proc { |n, _| rand n }
       return_max_value = proc { |_, _| Options[:cell_limit] }
-      prok = @prefixes.fix_params random, return_max_value
-      @prefixes << prok
-      prok
+      push_prefix @prefixes.fix_params(random, return_max_value)
     end
 
     def zero
-      prok = ->(m) { m.last_write == 0 ? 1 : 0 }
-      @prefixes << prok
-      prok
+      push_prefix ->(m) { m.last_write == 0 ? 1 : 0 }
     end
 
     def right()
