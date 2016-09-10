@@ -2,6 +2,7 @@ require "braingasm/tokenizer"
 require "braingasm/parser"
 require "braingasm/compiler"
 require "braingasm/machine"
+require "braingasm/io"
 
 module Braingasm
 
@@ -16,7 +17,7 @@ module Braingasm
     program = Parser.new(tokenizer, compiler).parse_program
     machine = Machine.new
 
-    machine.input = $<
+    machine.input = InputBuffer.new($<)
     machine.output = $>
     machine.program = program
     machine
