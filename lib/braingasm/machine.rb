@@ -16,9 +16,6 @@ module Braingasm
 
       @ctrl_stack = []
       @last_write = 0
-
-      @input = ARGF
-      @output = $stdout
     end
 
     def run

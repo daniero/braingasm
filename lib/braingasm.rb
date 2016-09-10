@@ -16,6 +16,8 @@ module Braingasm
     program = Parser.new(tokenizer, compiler).parse_program
     machine = Machine.new
 
+    machine.input = $<
+    machine.output = $>
     machine.program = program
     machine
   end
