@@ -113,6 +113,14 @@ module Braingasm
       @output.putc cell
     end
 
+    def inst_print_int(n)
+      @output.print n
+    end
+
+    def inst_print_cell_int
+      @output.print cell
+    end
+
     def inst_read_byte
       @tape[@dp] = @input.getbyte || Options[:eof] || @tape[@dp]
       trigger_cell_updated

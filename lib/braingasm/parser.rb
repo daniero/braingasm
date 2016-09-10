@@ -48,6 +48,8 @@ module Braingasm
         @compiler.dec()
       when :period
         @compiler.print()
+      when :colon
+        @compiler.print_int()
       when :comma
         @compiler.read()
       when :semicolon

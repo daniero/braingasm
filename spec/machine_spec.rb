@@ -348,6 +348,23 @@ describe Braingasm::Machine do
           subject.inst_print_cell()
         end
       end
+
+      describe "#inst_print_cell_int" do
+        it "prints the value of the current cell" do
+          subject.tape = [ 1234 ]
+          expect(output).to receive(:print).with(1234)
+
+          subject.inst_print_cell_int()
+        end
+      end
+
+      describe "#inst_print_int" do
+        it "prints the value of the current cell" do
+          expect(output).to receive(:print).with(99)
+
+          subject.inst_print_int(99)
+        end
+      end
     end
 
     describe "#inst_read_byte" do

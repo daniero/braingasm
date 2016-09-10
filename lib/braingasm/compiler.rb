@@ -57,6 +57,14 @@ module Braingasm
       end
     end
 
+    def print_int()
+      if @prefixes.empty?
+        ->(m) { m.inst_print_cell_int }
+      else
+        @prefixes.fix_params ->(n, m) { m.inst_print_int(n) }
+      end
+    end
+
     def read()
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
