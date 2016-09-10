@@ -16,7 +16,7 @@ module Braingasm
       context "without prefix" do
         before { allow(prefix_stack).to receive(:empty?).and_return(true) }
 
-        it "generates a function which calls the given machine's ##{machine_instruction}" do
+        it "generates a function which calls the machine's ##{machine_instruction}" do
           expect(machine).to receive(machine_instruction).with(no_args)
 
           generated_instruction = subject.method(method_name).call()
@@ -51,7 +51,7 @@ module Braingasm
           before { prefix_stack << prefix }
           let(:generated_instruction) { subject.method(method_name).call }
 
-          it "calls the given machine's ##{machine_instruction} with the prefix as parameter" do
+          it "calls the machine's ##{machine_instruction} with the prefix as parameter" do
             expect(machine).to receive(machine_instruction).with(prefix)
 
             generated_instruction.call(machine)
