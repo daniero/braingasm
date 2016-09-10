@@ -27,8 +27,8 @@ module Braingasm
                    ',' => :comma,
                    ';' => :semicolon,
                    '#' => :hash,
-                   'r' => :R,
-                   'z' => :Z,
+                   'r' => :r,
+                   'z' => :z,
                    '[' => :loop_start,
                    ']' => :loop_end }
 

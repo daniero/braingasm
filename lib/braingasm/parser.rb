@@ -32,10 +32,10 @@ module Braingasm
       when :hash
         @compiler.pos()
         false
-      when :R
+      when :r
         @compiler.random()
         false
-      when :Z
+      when :z
         @compiler.zero()
         false
       when :right
