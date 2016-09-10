@@ -38,6 +38,9 @@ module Braingasm
       when :z
         @compiler.zero()
         false
+      when :p
+        @compiler.parity()
+        false
       when :right
         @compiler.right()
       when :left

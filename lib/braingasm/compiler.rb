@@ -28,6 +28,10 @@ module Braingasm
       push_prefix ->(m) { m.last_write == 0 ? 1 : 0 }
     end
 
+    def parity
+      push_prefix ->(m) { (m.last_write &.% 2) || 0 }
+    end
+
     def right()
       @prefixes.fix_params ->(n, m) { m.inst_right(n) }
     end
