@@ -26,24 +26,6 @@ module Braingasm
       token = tokens.next
 
       case token
-      when Integer
-        @compiler.push_prefix token
-        false
-      when :hash
-        @compiler.pos
-        false
-      when :r
-        @compiler.random
-        false
-      when :z
-        @compiler.zero
-        false
-      when :s
-        @compiler.signed
-        false
-      when :p
-        @compiler.parity
-        false
       when :right
         @compiler.right
       when :left
@@ -66,6 +48,22 @@ module Braingasm
         @compiler.loop_start(@program.size)
       when :loop_end
         @compiler.loop_end(@program.size)
+      else
+        case token
+        when Integer
+          @compiler.push_prefix token
+        when :hash
+          @compiler.pos
+        when :r
+          @compiler.random
+        when :z
+          @compiler.zero
+        when :s
+          @compiler.signed
+        when :p
+          @compiler.parity
+        end
+        false
       end
     rescue BraingasmError => e
       raise_parsing_error(e.message)

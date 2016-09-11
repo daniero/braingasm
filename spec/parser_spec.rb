@@ -132,7 +132,7 @@ module Braingasm
             end
 
             it "returns nothing, so that it shouldn't be added as an instruction in the program" do
-              allow(compiler).to receive(compiler_instruction)
+              allow(compiler).to receive(compiler_instruction).and_return(true)
 
               expect(subject.parse_next(@input)).to be_falsy
             end
