@@ -47,6 +47,7 @@ module Braingasm
                         ':' => :colon,
                         ',' => :comma,
                         ';' => :semicolon,
+                        'C' => :C,
                         '#' => :hash,
                         'r' => :r,
                         'p' => :p,

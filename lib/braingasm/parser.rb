@@ -57,6 +57,8 @@ module Braingasm
         @compiler.read()
       when :semicolon
         @compiler.read_int()
+      when :C
+        @compiler.compare()
       when :loop_start
         @compiler.loop_start(@program.size)
       when :loop_end

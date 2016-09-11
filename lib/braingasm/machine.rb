@@ -134,6 +134,11 @@ module Braingasm
       trigger_cell_updated
     end
 
+    def inst_compare_cells
+      operand = @dp == 0 ? 0 : @tape[@dp-1]
+      @last_write = @tape[@dp] - operand
+    end
+
     private
     def trigger_cell_updated
       @tape[@dp] %= Options[:cell_limit] if Options[:wrap_cells]

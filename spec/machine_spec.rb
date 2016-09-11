@@ -432,5 +432,31 @@ describe Braingasm::Machine do
       end
     end
 
+    describe "#inst_compare_cells" do
+      before do
+        subject.tape = [1, 3, 6, 10]
+      end
+
+      it "updates last write value to current cell value minus cell value to the left" do
+        subject.dp = 1
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(3 - 1)
+
+        subject.dp = 2
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(6 - 3)
+
+        subject.dp = 3
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(10 - 6)
+      end
+
+      it "compares the leftmost cell on the tape with 0" do
+        subject.inst_compare_cells
+
+        expect(subject.last_write).to be(1 - 0)
+      end
+    end
+
   end
 end

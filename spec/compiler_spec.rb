@@ -95,6 +95,10 @@ module Braingasm
       include_examples "prefixed instruction", :read_int, :inst_read_int
     end
 
+    describe "#compare" do
+      include_examples "simple instruction generation", :compare, :inst_compare_cells
+    end
+
     describe "#loop_start" do
       let(:prefix_stack) { PrefixStack.new }
       let(:given_parameter) { 17 }
