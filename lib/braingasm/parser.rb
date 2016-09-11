@@ -38,6 +38,9 @@ module Braingasm
       when :z
         @compiler.zero
         false
+      when :s
+        @compiler.signed
+        false
       when :p
         @compiler.parity
         false

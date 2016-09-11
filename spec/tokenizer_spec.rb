@@ -31,6 +31,7 @@ module Braingasm
                    'r' => :r,
                    'p' => :p,
                    'z' => :z,
+                   's' => :s,
                    '[' => :loop_start,
                    ']' => :loop_end }
 

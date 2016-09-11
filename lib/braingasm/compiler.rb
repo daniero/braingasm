@@ -5,7 +5,7 @@ module Braingasm
     attr_accessor :prefixes, :loop_stack
 
     def initialize
-      @prefixes = PrefixStack.new
+     @prefixes = PrefixStack.new
       @loop_stack = []
     end
 
@@ -26,6 +26,10 @@ module Braingasm
 
     def zero
       push_prefix ->(m) { m.last_write == 0 ? 1 : 0 }
+    end
+
+    def signed
+      push_prefix ->(m) { m.last_write >= 0 ? 0 : 1 }
     end
 
     def parity
