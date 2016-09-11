@@ -230,7 +230,7 @@ module Braingasm
         expect(subject.zero().call(machine)).to be 1
       end
 
-      it "returns 0 if machine's last write value is 1" do
+      it "returns 0 if machine's last write value is something else" do
         expect(machine).to receive(:last_write).and_return(1)
 
         expect(subject.zero().call(machine)).to be 0
