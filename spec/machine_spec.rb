@@ -419,7 +419,7 @@ describe Braingasm::Machine do
       end
     end
 
-    describe "inst_read_int" do
+    describe "#inst_read_int" do
       include_examples "cell update"
       before { subject.input = StringIO.new("123   456") }
 
