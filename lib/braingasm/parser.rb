@@ -30,35 +30,35 @@ module Braingasm
         @compiler.push_prefix token
         false
       when :hash
-        @compiler.pos()
+        @compiler.pos
         false
       when :r
-        @compiler.random()
+        @compiler.random
         false
       when :z
-        @compiler.zero()
+        @compiler.zero
         false
       when :p
-        @compiler.parity()
+        @compiler.parity
         false
       when :right
-        @compiler.right()
+        @compiler.right
       when :left
-        @compiler.left()
+        @compiler.left
       when :plus
-        @compiler.inc()
+        @compiler.inc
       when :minus
-        @compiler.dec()
+        @compiler.dec
       when :period
-        @compiler.print()
+        @compiler.print
       when :colon
-        @compiler.print_int()
+        @compiler.print_int
       when :comma
-        @compiler.read()
+        @compiler.read
       when :semicolon
-        @compiler.read_int()
+        @compiler.read_int
       when :C
-        @compiler.compare()
+        @compiler.compare
       when :loop_start
         @compiler.loop_start(@program.size)
       when :loop_end

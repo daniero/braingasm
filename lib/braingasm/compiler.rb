@@ -32,23 +32,23 @@ module Braingasm
       push_prefix ->(m) { (m.last_write &.% 2) || 0 }
     end
 
-    def right()
+    def right
       @prefixes.fix_params ->(n, m) { m.inst_right(n) }
     end
 
-    def left()
+    def left
       @prefixes.fix_params ->(n, m) { m.inst_left(n) }
     end
 
-    def inc()
+    def inc
       @prefixes.fix_params ->(n, m) { m.inst_inc(n) }
     end
 
-    def dec()
+    def dec
       @prefixes.fix_params ->(n, m) { m.inst_dec(n) }
     end
 
-    def print()
+    def print
       if @prefixes.empty?
         ->(m) { m.inst_print_cell }
       else
@@ -56,7 +56,7 @@ module Braingasm
       end
     end
 
-    def print_int()
+    def print_int
       if @prefixes.empty?
         ->(m) { m.inst_print_cell_int }
       else
@@ -64,7 +64,7 @@ module Braingasm
       end
     end
 
-    def read()
+    def read
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
       else
@@ -72,7 +72,7 @@ module Braingasm
       end
     end
 
-    def read_int()
+    def read_int
       @prefixes.fix_params ->(n, m) { m.inst_read_int(n) }, 10
     end
 
