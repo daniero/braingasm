@@ -5,7 +5,7 @@ module Braingasm
     attr_accessor :prefixes, :loop_stack
 
     def initialize
-     @prefixes = PrefixStack.new
+      @prefixes = PrefixStack.new
       @loop_stack = []
     end
 
