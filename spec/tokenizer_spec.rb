@@ -23,7 +23,13 @@ module Braingasm
                    '<' => :left,
                    '>' => :right,
                    '.' => :period,
+                   ':' => :colon,
                    ',' => :comma,
+                   ';' => :semicolon,
+                   '#' => :hash,
+                   'r' => :r,
+                   'p' => :p,
+                   'z' => :z,
                    '[' => :loop_start,
                    ']' => :loop_end }
 
@@ -35,8 +41,17 @@ module Braingasm
           end
         end
 
+        it "returns Integer objects when encountering numbers" do
+          @input = "1 23+456"
+
+          expect(subject.next).to be 1
+          expect(subject.next).to be 23
+          expect(subject.next).to be :plus
+          expect(subject.next).to be 456
+        end
+
         it "returns :unknown for any other input" do
-          @input = "*?`#"
+          @input = "*?`)"
 
           4.times { expect(subject.next).to be :unknown }
         end

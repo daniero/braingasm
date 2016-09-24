@@ -18,6 +18,10 @@ module Braingasm
       @options[option] = value
     end
 
+    def self.reset
+      @options = @defaults.dup
+    end
+
     private
     def self.check_defaults(option)
       raise ArgumentError, "Unknown option '#{option}'" unless @defaults.has_key?(option)

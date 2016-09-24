@@ -19,7 +19,7 @@ opts = Trollop::options do
   opt :as_is,         "EOF leaves cell unchanged"
   conflicts :zero, :negative, :as_is
 
-  opt :unbound,       "Allow aritrarily large cells"
+  opt :unbound,       "Allow arbitrarily large cells"
   opt :cell_size,     "Cell size in bits",
                       :short => '-s',
                       :default => 8
@@ -33,9 +33,8 @@ err "Error: No filname given" unless filename
 err "Error: No such file: #{filename}" unless File.exists?(filename)
 
 begin
-  input = IO.read(filename)
-  machine = Braingasm.initialize_machine(input)
-  machine.run
+  code = IO.read(filename)
+  Braingasm.run(code)
 rescue Braingasm::BraingasmError => e
   err "#{e.type}: #{e.message}"
 end

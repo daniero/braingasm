@@ -1,15 +1,16 @@
 require "braingasm/errors"
+require "braingasm/compiler"
 
 module Braingasm
 
   # Takes some input code and generates the program
   class Parser
-    attr_accessor :program, :loop_stack
+    attr_accessor :input, :program
 
-    def initialize(input)
+    def initialize(input, compiler)
       @input = input
+      @compiler = compiler
       @program = []
-      @loop_stack = []
     end
 
     def parse_program
@@ -17,86 +18,58 @@ module Braingasm
         push_instruction parse_next(@input)
       end
 
-      raise_parsing_error("Unmatched `[`") unless @loop_stack.empty?
+      raise_parsing_error("Unmatched `[`") unless @compiler.loop_stack.empty?
       @program
     end
 
     def parse_next(tokens)
-      case tokens.next
+      token = tokens.next
+
+      case token
+      when Integer
+        @compiler.push_prefix token
+        false
+      when :hash
+        @compiler.pos()
+        false
+      when :r
+        @compiler.random()
+        false
+      when :z
+        @compiler.zero()
+        false
+      when :p
+        @compiler.parity()
+        false
       when :right
-        right()
+        @compiler.right()
       when :left
-        left()
+        @compiler.left()
       when :plus
-        inc()
+        @compiler.inc()
       when :minus
-        dec()
+        @compiler.dec()
       when :period
-        print()
+        @compiler.print()
+      when :colon
+        @compiler.print_int()
       when :comma
-        read()
+        @compiler.read()
+      when :semicolon
+        @compiler.read_int()
       when :loop_start
-        loop_start()
+        @compiler.loop_start(@program.size)
       when :loop_end
-        loop_end()
+        @compiler.loop_end(@program.size)
       end
+    rescue BraingasmError => e
+      raise_parsing_error(e.message)
     end
 
     def push_instruction(instruction)
       return unless instruction
-      @program.push instruction
+      @program.push(*instruction)
       @program.size - 1
-    end
-
-    def right(n=1)
-      -> m { m.inst_right(n) }
-    end
-
-    def left(n=1)
-      -> m { m.inst_left(n) }
-    end
-
-    def inc(n=1)
-      -> m { m.inst_inc(n) }
-    end
-
-    def dec(n=1)
-      -> m { m.inst_dec(n) }
-    end
-
-    def print()
-      -> m { m.inst_print_cell }
-    end
-
-    def read()
-      -> m { m.inst_read_byte }
-    end
-
-    def jump(to)
-      -> m { m.inst_jump(to) }
-    end
-
-    def loop_start()
-        new_loop = Loop.new
-        @loop_stack.push(new_loop)
-        new_loop.start_index = @program.size
-        new_loop
-    end
-
-    def loop_end
-        current_loop = @loop_stack.pop
-        raise_parsing_error("Unmatched `]`") unless current_loop
-        index = @program.size
-        current_loop.stop_index = index
-        jump(current_loop.start_index)
-    end
-
-    class Loop
-      attr_accessor :start_index, :stop_index
-
-      def call(machine)
-        machine.inst_jump_if_zero(stop_index + 1)
-      end
     end
 
     def raise_parsing_error(message)
