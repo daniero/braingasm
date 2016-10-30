@@ -68,6 +68,14 @@ module Braingasm
       include_examples "prefixed instruction", :dec, :inst_dec
     end
 
+    describe "#multiply" do
+      include_examples "prefixed instruction", :multiply, :inst_multiply
+    end
+
+    describe "#divide" do
+      include_examples "prefixed instruction", :divide, :inst_divide
+    end
+
     describe "#right" do
       include_examples "prefixed instruction", :right, :inst_right
     end

@@ -41,6 +41,8 @@ module Braingasm
 
     @@simple_tokens = { '+' => :plus,
                         '-' => :minus,
+                        '*' => :asterisk,
+                        '/' => :slash,
                         '<' => :left,
                         '>' => :right,
                         '.' => :period,

@@ -34,6 +34,10 @@ module Braingasm
         @compiler.inc
       when :minus
         @compiler.dec
+      when :asterisk
+        @compiler.multiply
+      when :slash
+        @compiler.divide
       when :period
         @compiler.print
       when :colon

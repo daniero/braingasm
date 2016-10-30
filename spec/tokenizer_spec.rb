@@ -20,6 +20,8 @@ module Braingasm
       describe "#next" do
         tokens = { '+' => :plus,
                    '-' => :minus,
+                   '*' => :asterisk,
+                   '/' => :slash,
                    '<' => :left,
                    '>' => :right,
                    '.' => :period,
@@ -53,7 +55,7 @@ module Braingasm
         end
 
         it "returns :unknown for any other input" do
-          @input = "*?`)"
+          @input = "^?`)"
 
           4.times { expect(subject.next).to be :unknown }
         end

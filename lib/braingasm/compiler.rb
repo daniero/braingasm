@@ -52,6 +52,14 @@ module Braingasm
       @prefixes.fix_params ->(n, m) { m.inst_dec(n) }
     end
 
+    def multiply
+      @prefixes.fix_params ->(n, m) { m.inst_multiply(n) }, 2
+    end
+
+    def divide
+      @prefixes.fix_params ->(n, m) { m.inst_divide(n) }, 2
+    end
+
     def print
       if @prefixes.empty?
         ->(m) { m.inst_print_cell }

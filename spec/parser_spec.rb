@@ -75,6 +75,8 @@ module Braingasm
       describe "instructions" do
         inputs = { :plus => :inc,
                    :minus => :dec,
+                   :asterisk => :multiply,
+                   :slash => :divide,
                    :right => :right,
                    :left => :left,
                    :period => :print,

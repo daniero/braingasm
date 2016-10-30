@@ -87,6 +87,16 @@ module Braingasm
       trigger_cell_updated
     end
 
+    def inst_multiply(n=2)
+      @tape[@dp] *= n
+      trigger_cell_updated
+    end
+
+    def inst_divide(n=2)
+      @tape[@dp] /= n
+      trigger_cell_updated
+    end
+
     def inst_jump(to)
       raise JumpSignal.new(to)
     end
