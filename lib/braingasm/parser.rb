@@ -48,6 +48,8 @@ module Braingasm
         @compiler.read_int
       when :C
         @compiler.compare
+      when :quit
+        @compiler.quit
       when :loop_start
         @compiler.loop_start(@program.size)
       when :loop_end

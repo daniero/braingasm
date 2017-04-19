@@ -83,6 +83,7 @@ module Braingasm
                    :colon => :print_int,
                    :comma => :read,
                    :C => :compare,
+                   :quit => :quit,
                    :semicolon => :read_int,
                    :loop_start => :loop_start,
                    :loop_end => :loop_end }

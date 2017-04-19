@@ -502,5 +502,21 @@ describe Braingasm::Machine do
       end
     end
 
+    describe "#inst_quit" do
+      it "does nothing if the given argument is zero" do
+        subject.inst_quit(0)
+      end
+
+      it "raises an ExitSignal when given non-zero argument" do
+        expect { subject.inst_quit(1) }.to raise_error(Braingasm::ExitSignal)
+      end
+
+      it "sets exit code to 0" do
+        expect { subject.inst_quit(42) }.to raise_error { |signal|
+          expect(signal.code).to be == 0
+        }
+      end
+    end
+
   end
 end

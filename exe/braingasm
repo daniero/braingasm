@@ -35,6 +35,8 @@ err "Error: No such file: #{filename}" unless File.exists?(filename)
 begin
   code = IO.read(filename)
   Braingasm.run(code)
+rescue Braingasm::ExitSignal => e
+  exit e.code
 rescue Braingasm::BraingasmError => e
   err "#{e.type}: #{e.message}"
 end

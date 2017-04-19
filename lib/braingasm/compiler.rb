@@ -92,6 +92,10 @@ module Braingasm
       ->(m) { m.inst_compare_cells }
     end
 
+    def quit
+      @prefixes.fix_params ->(n, m) { m.inst_quit(n) }, 1
+    end
+
     def jump(to)
       ->(m) { m.inst_jump(to) }
     end

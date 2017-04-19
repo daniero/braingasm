@@ -149,6 +149,10 @@ module Braingasm
       @last_write = @tape[@dp] - operand
     end
 
+    def inst_quit(value, code=0)
+      raise ExitSignal.new(code) unless value == 0
+    end
+
     private
     def trigger_cell_updated
       @tape[@dp] %= Options[:cell_limit] if Options[:wrap_cells]
