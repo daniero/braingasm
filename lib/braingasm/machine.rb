@@ -78,23 +78,19 @@ module Braingasm
     end
 
     def inst_inc(n=1)
-      @tape[@dp] += n
-      trigger_cell_updated
+      self.cell += n
     end
 
     def inst_dec(n=1)
-      @tape[@dp] -= n
-      trigger_cell_updated
+      self.cell -= n
     end
 
     def inst_multiply(n=2)
-      @tape[@dp] *= n
-      trigger_cell_updated
+      self.cell *= n
     end
 
     def inst_divide(n=2)
-      @tape[@dp] /= n
-      trigger_cell_updated
+      self.cell /= n
     end
 
     def inst_jump(to)
@@ -132,16 +128,14 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = @input.getbyte || Options[:eof] || @tape[@dp]
-      trigger_cell_updated
+      self.cell = @input.getbyte || Options[:eof] || @tape[@dp]
     end
 
     def inst_read_int(radix=10)
       return unless @input.gets =~ /\d+/
 
       @input.ungetc($')
-      @tape[@dp] = $&.to_i(radix)
-      trigger_cell_updated
+      self.cell = $&.to_i(radix)
     end
 
     def inst_compare_cells
