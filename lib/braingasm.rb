@@ -12,14 +12,19 @@ module Braingasm
   end
 
   def self.initialize_machine(code)
-    tokenizer = Tokenizer.new(code)
-    compiler = Compiler.new
-    program = Parser.new(tokenizer, compiler).parse_program
     machine = Machine.new
 
+    machine.program = compile(code)
     machine.input = InputBuffer.new($<)
     machine.output = $>
-    machine.program = program
     machine
+  end
+
+  def self.compile(code)
+    tokenizer = Tokenizer.new(code)
+    compiler = Compiler.new
+    parser = Parser.new(tokenizer, compiler)
+
+    parser.parse_program
   end
 end
