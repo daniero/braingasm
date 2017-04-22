@@ -1,7 +1,7 @@
 require 'braingasm'
 require 'braingasm/machine'
 
-shared_context "braingasm" do
+shared_context "braingasm features" do
   before do
     @machine = Braingasm::Machine.new
   end
@@ -13,5 +13,5 @@ shared_context "braingasm" do
 end
 
 RSpec.configure do |rspec|
-  rspec.include_context "braingasm", :include_shared => true
+  rspec.include_context "braingasm features", :include_shared => true
 end
