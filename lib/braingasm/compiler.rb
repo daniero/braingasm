@@ -25,7 +25,7 @@ module Braingasm
     end
 
     def zero
-      push_prefix ->(m) { m.last_write == 0 ? 1 : 0 }
+      push_prefix ->(m) { m.cell == 0 ? 1 : 0 }
     end
 
     def signed

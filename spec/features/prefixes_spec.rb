@@ -24,20 +24,12 @@ describe "prefixes" do
   end
 
   describe "z" do
-    it "returns 1 if the last cell update resulted in zero" do
-      @machine.cell = 1
+    it "returns 1 if the current cell is zero, 0 if not" do
+      @machine.tape = [1, 0]
 
-      run "-z,"
+      run "z, > z,"
 
-      expect(@machine.cell).to be == 1
-    end
-
-    it "returns 0 if the last cell update did not result in zero" do
-      @machine.cell = 2
-
-      run "-z,"
-
-      expect(@machine.cell).to be == 0
+      expect(@machine.tape[0..1]).to be == [0, 1]
     end
   end
 
