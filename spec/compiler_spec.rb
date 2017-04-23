@@ -257,25 +257,5 @@ module Braingasm
       end
     end
 
-    describe "#parity" do
-      include_examples "simple instruction generation", :parity, :last_write
-      include_examples "generated prefix", :parity
-
-      it "retuns machine's last write value modulo 2" do
-        10.times do |i|
-          expect(machine).to receive(:last_write).and_return(i)
-
-          expect(subject.parity().call(machine)).to be(i % 2)
-        end
-      end
-
-      it "defaults to 0 if there is no last write value" do
-          expect(machine).to receive(:last_write).and_return(nil)
-
-          expect(subject.parity().call(machine)).to be 0
-      end
-
-    end
-
   end
 end

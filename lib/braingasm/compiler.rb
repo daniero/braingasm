@@ -33,7 +33,7 @@ module Braingasm
     end
 
     def parity
-      push_prefix ->(m) { (m.last_write &.% 2) || 0 }
+      push_prefix ->(m) { (m.cell &.% 2) || 0 }
     end
 
     def right

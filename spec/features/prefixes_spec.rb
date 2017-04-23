@@ -34,8 +34,10 @@ describe "prefixes" do
   end
 
   describe "p" do
-    it "returns the parity bit of the last cell update" do
-      run "1+p, > 2+p,"
+    it "returns the parity bit of the current cell" do
+      @machine.tape = [13, 42]
+
+      run "p, > p,"
 
       expect(@machine.tape[0]).to be == 1
       expect(@machine.tape[1]).to be == 0
