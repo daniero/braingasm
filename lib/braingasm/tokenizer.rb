@@ -35,8 +35,15 @@ module Braingasm
 
     private
     def read_token(scanner)
-      return scanner.matched.to_i if scanner.scan(/\d+/)
-      @@simple_tokens[scanner.scan(/\S/)] || :unknown
+      if scanner.scan(/\d+/)
+        scanner.matched.to_i
+      elsif scanner.scan(/"/)
+        s = scanner.scan(/[^"]*/)
+        scanner.skip(/"/)
+        s
+      else
+        @@simple_tokens[scanner.scan(/\S/)] || :unknown
+      end
     end
 
     @@simple_tokens = { '+' => :plus,

@@ -10,7 +10,7 @@ describe "output methods" do
   end
 
   describe "." do
-    it "prints the current cell as a byte value" do
+    it "prints the current cell as a byte value when given no parameter" do
       @machine.tape[0] = 65
 
       run "."
@@ -18,10 +18,16 @@ describe "output methods" do
       expect(@output).to be == "A"
     end
 
-    it "takes an optional integer parameter and prints that instead" do
+    it "accepts an integer parameter and prints its byte value" do
       run "66."
 
       expect(@output).to be == "B"
+    end
+
+    it "accepts a string parameter and prints it" do
+      run %{"Hey".}
+
+      expect(@output).to be == "Hey"
     end
   end
 

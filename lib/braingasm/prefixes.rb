@@ -15,7 +15,7 @@ module Braingasm
       prefix = @stack.pop || default_param
 
       case prefix
-      when Integer
+      when Integer, String
         function.curry.call(prefix)
       when Proc
         proc do |m|

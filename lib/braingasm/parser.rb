@@ -56,7 +56,7 @@ module Braingasm
         @compiler.loop_end(@program.size)
       else
         case token
-        when Integer
+        when Integer, String
           @compiler.push_prefix token
         when :hash
           @compiler.pos

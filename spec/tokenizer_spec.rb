@@ -55,6 +55,12 @@ module Braingasm
           expect(subject.next).to be 456
         end
 
+        it "reads strings" do
+          @input = '"Hello"'
+
+          expect(subject.next).to be == "Hello"
+        end
+
         it "returns :unknown for any other input" do
           @input = "^?`)"
 

@@ -112,7 +112,12 @@ module Braingasm
     end
 
     def inst_print(chr)
-      @output.putc chr
+      case chr
+      when Integer
+        @output.putc chr
+      else
+        @output.print chr
+      end
     end
 
     def inst_print_cell
