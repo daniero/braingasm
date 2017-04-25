@@ -79,6 +79,12 @@ module Braingasm
     def read
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
+      elsif @prefixes.first.is_a? String
+        string = @prefixes.first
+        @prefixes.fix_params ->(n, m) do
+          from, to = m.dp, m.dp + string.size
+          m.tape[from...to] = string.bytes
+        end
       else
         @prefixes.fix_params ->(n, m) { m.cell = n }
       end

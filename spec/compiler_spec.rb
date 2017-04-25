@@ -94,11 +94,6 @@ module Braingasm
       include_examples "prefixed instruction", :print_int, :inst_print_int
     end
 
-    describe "#read" do
-      include_examples "simple instruction generation", :read, :inst_read_byte
-      include_examples "prefixed instruction", :read, 'cell='
-    end
-
     describe "#read_int" do
       include_examples "prefixed instruction", :read_int, :inst_read_int
     end

@@ -10,20 +10,43 @@ describe "input methods" do
   end
 
   describe "," do
-    it "reads one byte from input and stores it in current cell" do
-      @input << "hey"
-      expect(@machine.tape).to all(be 0)
+    context "without prefix" do
+      it "reads one byte from input and stores it in current cell" do
+        @input << "hey"
+        expect(@machine.tape).to all(be 0)
 
-      run ","
+        run ","
 
-      expect(@machine.cell).to be == 'h'.ord
-      expect(@machine.tape.drop(1)).to all(be 0)
+        expect(@machine.cell).to be == 'h'.ord
+        expect(@machine.tape.drop(1)).to all(be 0)
+      end
     end
 
-    it "takes an optional integer parameter and stores that instead" do
-      run "65,"
+    context "with integer prefix" do
+      it "stores given integer in current cell" do
+        run "65,"
 
-      expect(@machine.cell).to be == 65
+        expect(@machine.cell).to be == 65
+      end
+    end
+
+    context "with string prefix" do
+      it "stores its bytes on the tape, starting at the data pointer" do
+        @machine.tape = [*0..9]
+        @machine.dp = 4
+
+        run '"ABC",'
+
+        expect(@machine.tape).to be == [0, 1, 2, 3, 65, 66, 67, 7, 8, 9]
+      end
+
+      it "expands the tape if necessary" do
+        @machine.tape = [0, 0, 0]
+
+        run '"ABCDEF",'
+
+        expect(@machine.tape).to be == [65, 66, 67, 68, 69, 70]
+      end
     end
   end
 
