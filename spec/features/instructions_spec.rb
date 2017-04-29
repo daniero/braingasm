@@ -24,16 +24,22 @@ describe "basic instructions" do
       expect(@machine.dp).to be == 7
       expect(@machine.cell).to be == 0
     end
+
+    it "can move beyond the current end of the tape" do
+      @machine.tape = []
+
+      run "99>"
+
+      expect(@machine.dp).to be == 99
+    end
   end
 
   describe "<" do
-    before do
+    it "decreases the data pointer, moving to the previous cell" do
       @machine.tape = [1, 2, 4, 8, 16, 32]
       @machine.dp = 5
       expect(@machine.cell).to be == 32
-    end
 
-    it "decreases the data pointer, moving to the previous cell" do
       run "<"
 
       expect(@machine.dp).to be == 4
@@ -41,9 +47,31 @@ describe "basic instructions" do
     end
 
     it "takes an optional integer parameter and moves by that much" do
+      @machine.dp = 10
+
       run "3<"
 
-      expect(@machine.dp).to be == 2
+      expect(@machine.dp).to be == 7
+    end
+
+    it "can move past the current start of the tape" do
+      run "99<"
+    end
+
+    context "with # prefix" do
+      it "moves back to original start of tape" do
+        run "99>#<"
+
+        expect(@machine.dp).to be == 0
+      end
+
+      it "moves back to original start of tape also from the left" do
+        @machine.cell = 13
+
+        run "7<+#<"
+
+        expect(@machine.cell).to be == 13
+      end
     end
   end
 
