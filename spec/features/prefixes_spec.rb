@@ -24,23 +24,54 @@ describe "prefixes" do
   end
 
   describe "z" do
-    it "returns 1 if the current cell is zero, 0 if not" do
-      @machine.tape = [1, 0]
+    context "without prefix" do
+      it "returns 1 if the current cell is zero, 0 if not" do
+        @machine.tape = [1, 0]
 
-      run "z, > z,"
+        run "z, > z,"
 
-      expect(@machine.tape[0..1]).to be == [0, 1]
+        expect(@machine.tape[0..1]).to be == [0, 1]
+      end
+    end
+
+    context "with integer prefix" do
+      it "checks the prefix instead" do
+        run "1z, > 0z,"
+
+        expect(@machine.tape[0..1]).to be == [0, 1]
+      end
+    end
+  end
+
+  describe "s" do
+    context "without prefix" do
+      it "returns 1 if the current cell is negative (signed), 0 otherwise"
+    end
+
+    context "with integer prefix" do
+      it "checks the prefix instead"
     end
   end
 
   describe "p" do
-    it "returns the parity bit of the current cell" do
-      @machine.tape = [13, 42]
+    context "without prefix" do
+      it "returns the parity bit of the current cell" do
+        @machine.tape = [13, 42]
 
-      run "p, > p,"
+        run "p, > p,"
 
-      expect(@machine.tape[0]).to be == 1
-      expect(@machine.tape[1]).to be == 0
+        expect(@machine.tape[0]).to be == 1
+        expect(@machine.tape[1]).to be == 0
+      end
+    end
+
+    context "with integer prefix" do
+      it "returns its parity bit" do
+        run "7p, > 8p,"
+
+        expect(@machine.tape[0]).to be == 1
+        expect(@machine.tape[1]).to be == 0
+      end
     end
   end
 
