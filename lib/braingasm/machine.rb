@@ -131,7 +131,7 @@ module Braingasm
     end
 
     def inst_print_cell
-      @output.putc cell
+      print_bytes(cell)
     end
 
     def inst_print_int(n)
