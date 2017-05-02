@@ -24,6 +24,12 @@ describe "output methods" do
       expect(@output).to be == "B"
     end
 
+    it "prints large values as multiple bytes" do
+      run "6841721."
+
+      expect(@output).to be == "hey"
+    end
+
     it "accepts a string parameter and prints it" do
       run %{"Hey".}
 

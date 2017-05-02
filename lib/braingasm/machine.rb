@@ -111,10 +111,20 @@ module Braingasm
       ctrl_stack << x
     end
 
+    def print_bytes(b)
+      d,m = b.divmod(256)
+
+      if d > 0
+        print_bytes(d)
+      end
+
+      @output.putc(m)
+    end
+
     def inst_print(chr)
       case chr
       when Integer
-        @output.putc chr
+        print_bytes(chr)
       else
         @output.print chr
       end
