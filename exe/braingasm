@@ -19,11 +19,12 @@ opts = Trollop::options do
   opt :as_is,         "EOF leaves cell unchanged"
   conflicts :zero, :negative, :as_is
 
-  opt :unbound,       "Allow arbitrarily large cells"
+  opt :unbound,       "Allow arbitrarily large cells (on by default)"
+  opt :bound,         "Don't Allow arbitrarily large cells"
   opt :cell_size,     "Cell size in bits",
                       :short => '-s',
                       :default => 8
-  conflicts :unbound, :cell_size
+  conflicts :unbound, :bound, :cell_size
 end
 
 Braingasm.handle_options(opts)
