@@ -21,6 +21,12 @@ describe "prefixes" do
       expect(@machine.tape[0]).to be == 0
       expect(@machine.tape[5]).to be == 5
     end
+
+    it "returns a negative value if moving left from the starting position" do
+      run "7< #,"
+
+      expect(@machine.cell).to be == -7
+    end
   end
 
   describe "z" do
