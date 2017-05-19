@@ -111,6 +111,14 @@ module Braingasm
       @prefixes.fix_params ->(n, m) { m.inst_quit(n) }, 1
     end
 
+    def tape_limit
+      if @prefixes.empty?
+        push_prefix ->(m) { x = m.pos; x + (x < 0 ? -1 : 1) }
+      end
+
+      @prefixes.fix_params ->(n, m) { m.limit_tape(n) }
+    end
+
     def jump(to)
       ->(m) { m.inst_jump(to) }
     end

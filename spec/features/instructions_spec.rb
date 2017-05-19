@@ -143,3 +143,58 @@ describe "basic instructions" do
     end
   end
 end
+
+describe "tape limit (L instruction)" do
+  include_context "braingasm features"
+
+  describe "without a prefix" do
+    it "makes the tape wrap around after the current position" do
+      run "17+ 5> L >"
+
+      expect(@machine.dp).to be == 0
+      expect(@machine.cell).to be == 17
+    end
+
+    describe "from a negative position" do
+      it "wraps around to start position when going further left" do
+        run "7+ 5< L <"
+
+        expect(@machine.pos).to be == 0
+        expect(@machine.cell).to be == 7
+      end
+
+      it "stays within negative indices" do
+        run "5< L 2<"
+
+        expect(@machine.pos).to be == -1
+      end
+
+      it "can reach the start position moving right" do
+        run "5< L 5>"
+
+        expect(@machine.pos).to be == 0
+      end
+
+      it "wraps around when moving to the right past start position" do
+        run "5< L 6>"
+
+        expect(@machine.pos).to be == -5
+      end
+    end
+  end
+
+  describe "given an integer prefix" do
+    it "limits the tape to that length" do
+      run "5L 12[+>]"
+
+      expect(@machine.tape.take(5)).to be == [3, 3, 2, 2, 2]
+      expect(@machine.tape.drop(5)).to all (be 0)
+    end
+
+    it "makes the tape wrap back to the last cell when moving left from start position" do
+      run "9L <"
+
+      expect(@machine.dp).to be == 8
+    end
+  end
+end

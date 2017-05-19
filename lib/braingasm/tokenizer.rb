@@ -63,6 +63,7 @@ module Braingasm
                         'z' => :z,
                         's' => :s,
                         'Q' => :quit,
+                        'L' => :tape_limit,
                         '[' => :loop_start,
                         ']' => :loop_end }
 

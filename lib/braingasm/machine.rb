@@ -6,7 +6,8 @@ module Braingasm
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
   class Machine
-    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :last_write, :input, :output
+    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :last_write, :input, :output,
+      :tape_limit
 
     def initialize
       @tape = Array.new(10) { 0 }
@@ -42,8 +43,20 @@ module Braingasm
       @dp - @data_offset
     end
 
+    def calculate_new_dp(move)
+      if @tape_limit
+        if @tape_limit >= 0
+          (@dp + move) % @tape_limit
+        else
+          (@dp + move) % -@tape_limit
+        end
+      else
+        @dp + move
+      end
+    end
+
     def inst_right(n=1)
-      new_dp = @dp + n
+      new_dp = calculate_new_dp(n)
       no_cells = @tape.length
 
       if new_dp >= no_cells
@@ -55,17 +68,17 @@ module Braingasm
     end
 
     def inst_left(n=1)
-      new_dp = @dp - n
+      new_dp = calculate_new_dp(-n)
 
       if new_dp < 0
         new_cells = -new_dp
         new_cells.times { @tape.unshift 0 }
         @data_offset += new_cells
 
-        new_dp = 0
+        @dp = 0
+      else
+        @dp = new_dp
       end
-
-      @dp = new_dp
     end
 
     def inst_print_tape
@@ -156,6 +169,11 @@ module Braingasm
     def inst_quit(value, code=0)
       raise ExitSignal.new(code) unless value == 0
     end
+
+    def limit_tape(cell_number)
+      @tape_limit = cell_number
+    end
+
 
     private
     def trigger_cell_updated

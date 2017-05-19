@@ -50,6 +50,8 @@ module Braingasm
         @compiler.compare
       when :quit
         @compiler.quit
+      when :tape_limit
+        @compiler.tape_limit
       when :loop_start
         @compiler.loop_start(@program.size)
       when :loop_end
