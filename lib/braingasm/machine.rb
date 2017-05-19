@@ -19,12 +19,7 @@ module Braingasm
     end
 
     def run
-      return if @program.empty?
-
-      loop do
-        step()
-        break unless @ip < @program.size
-      end
+      step while @ip < @program.size
     end
 
     def step
