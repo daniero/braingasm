@@ -90,10 +90,20 @@ module Braingasm
         ->(m) { m.inst_read_byte }
       elsif @prefixes.first.is_a? String
         string = @prefixes.first
-        @prefixes.fix_params ->(n, m) do
+
+        @prefixes.fix_params ->(n, m) {
           from, to = m.dp, m.dp + string.size
-          m.tape[from...to] = string.bytes
-        end
+
+          if m.tape_limit && to > m.tape_limit
+            limit = m.tape_limit
+            cutoff = to - limit
+
+            m.tape[from..limit] = string.bytes[0..cutoff]
+            m.tape[0...cutoff] = string.bytes[(cutoff+1)..-1]
+          else
+            m.tape[from...to] = string.bytes
+          end
+        }
       else
         @prefixes.fix_params ->(n, m) { m.cell = n }
       end

@@ -47,6 +47,13 @@ describe "input methods" do
 
         expect(@machine.tape).to be == [65, 66, 67, 68, 69, 70]
       end
+
+      it "wraps around if tape limit is set" do
+        run '6L 3> "ABCDE",'
+
+        expect(@machine.tape[0..5]).to be == [68, 69, 0, 65, 66, 67]
+        expect(@machine.tape[6]).to be == 0
+      end
     end
   end
 
