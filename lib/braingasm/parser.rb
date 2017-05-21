@@ -30,23 +30,23 @@ module Braingasm
         @compiler.right
       when :left
         @compiler.left
-      when :plus
+      when :increment
         @compiler.inc
-      when :minus
+      when :decrement
         @compiler.dec
-      when :asterisk
+      when :multiply
         @compiler.multiply
-      when :slash
+      when :divide
         @compiler.divide
-      when :period
+      when :print
         @compiler.print
-      when :colon
+      when :output
         @compiler.print_int
-      when :comma
+      when :read
         @compiler.read
-      when :semicolon
+      when :input
         @compiler.read_int
-      when :C
+      when :compare
         @compiler.compare
       when :quit
         @compiler.quit
@@ -60,15 +60,15 @@ module Braingasm
         case token
         when Integer, String
           @compiler.push_prefix token
-        when :hash
+        when :position
           @compiler.pos
-        when :r
+        when :random
           @compiler.random
-        when :z
+        when :zero
           @compiler.zero
-        when :s
+        when :signed
           @compiler.signed
-        when :p
+        when :parity
           @compiler.parity
         end
         false
