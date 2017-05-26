@@ -40,15 +40,25 @@ module Braingasm
     end
 
     def parity
-      read_cell if @prefixes.empty?
-
-      push_prefix @prefixes.fix_params(->(n, m) { (n % 2) ^ 1 })
+      if @prefixes.last.is_a?(Integer)
+        x = @prefixes.pop
+        read_cell if @prefixes.empty?
+        push_prefix @prefixes.fix_params(->(n, m) { n % x == 0 ? 1 : 0 })
+      else
+        read_cell if @prefixes.empty?
+        push_prefix @prefixes.fix_params(->(n, m) { (n % 2) ^ 1 })
+      end
     end
 
     def oddity
-      read_cell if @prefixes.empty?
-
-      push_prefix @prefixes.fix_params(->(n, m) { n % 2 })
+      if @prefixes.last.is_a?(Integer)
+        x = @prefixes.pop
+        read_cell if @prefixes.empty?
+        push_prefix @prefixes.fix_params(->(n, m) { n % x == 0 ? 0 : 1 })
+      else
+        read_cell if @prefixes.empty?
+        push_prefix @prefixes.fix_params(->(n, m) { n % 2 })
+      end
     end
 
     def right
