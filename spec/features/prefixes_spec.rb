@@ -124,6 +124,19 @@ describe "prefixes" do
       end
     end
 
+    context "with an integer literal prefix" do
+      it "returns 0 if the current cell is divisble by the given integer, 1 otherwise" do
+        @machine.tape = [0, 1, 2, 3]
+
+        run "4[ 3o, > ]"
+
+        expect(@machine.tape[0]).to be == 0
+        expect(@machine.tape[1]).to be == 1
+        expect(@machine.tape[2]).to be == 1
+        expect(@machine.tape[3]).to be == 0
+      end
+    end
+
     context "with two integer prefixes" do
       it "checks the first, modulo the second" do
         run "3> #4o, > #4o,"
