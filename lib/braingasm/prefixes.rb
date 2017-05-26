@@ -5,7 +5,7 @@ module Braingasm
   class PrefixStack
     extend Forwardable
     attr_accessor :stack
-    def_delegators :@stack, :empty?, :<<, :pop, :==
+    def_delegators :@stack, :empty?, :<<, :pop, :==, :first
 
     def initialize
       @stack = []
@@ -15,7 +15,7 @@ module Braingasm
       prefix = @stack.pop || default_param
 
       case prefix
-      when Integer
+      when Integer, String
         function.curry.call(prefix)
       when Proc
         proc do |m|

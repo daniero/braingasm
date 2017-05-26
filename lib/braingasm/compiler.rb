@@ -14,6 +14,11 @@ module Braingasm
       prefix
     end
 
+    READ_CELL = ->(n, m) { m.cell }
+    def read_cell
+      push_prefix @prefixes.fix_params(READ_CELL)
+    end
+
     def pos
       push_prefix ->(m) { m.pos }
     end
@@ -25,30 +30,52 @@ module Braingasm
     end
 
     def zero
-      push_prefix ->(m) { m.last_write == 0 ? 1 : 0 }
+      read_cell if @prefixes.empty?
+
+      push_prefix @prefixes.fix_params(->(n, m) { n.zero? ? 1 : 0 })
+    end
+
+    def signed
+      push_prefix ->(m) { m.last_write >= 0 ? 0 : 1 }
     end
 
     def parity
-      push_prefix ->(m) { (m.last_write &.% 2) || 0 }
+      read_cell if @prefixes.empty?
+
+      push_prefix @prefixes.fix_params(->(n, m) { (n % 2) ^ 1 })
     end
 
-    def right()
+    def oddity
+      read_cell if @prefixes.empty?
+
+      push_prefix @prefixes.fix_params(->(n, m) { n % 2 })
+    end
+
+    def right
       @prefixes.fix_params ->(n, m) { m.inst_right(n) }
     end
 
-    def left()
+    def left
       @prefixes.fix_params ->(n, m) { m.inst_left(n) }
     end
 
-    def inc()
+    def inc
       @prefixes.fix_params ->(n, m) { m.inst_inc(n) }
     end
 
-    def dec()
+    def dec
       @prefixes.fix_params ->(n, m) { m.inst_dec(n) }
     end
 
-    def print()
+    def multiply
+      @prefixes.fix_params ->(n, m) { m.inst_multiply(n) }, 2
+    end
+
+    def divide
+      @prefixes.fix_params ->(n, m) { m.inst_divide(n) }, 2
+    end
+
+    def print
       if @prefixes.empty?
         ->(m) { m.inst_print_cell }
       else
@@ -56,7 +83,7 @@ module Braingasm
       end
     end
 
-    def print_int()
+    def print_int
       if @prefixes.empty?
         ->(m) { m.inst_print_cell_int }
       else
@@ -64,16 +91,48 @@ module Braingasm
       end
     end
 
-    def read()
+    def read
       if @prefixes.empty?
         ->(m) { m.inst_read_byte }
+      elsif @prefixes.first.is_a? String
+        string = @prefixes.first
+
+        @prefixes.fix_params ->(n, m) {
+          from, to = m.dp, m.dp + string.size
+
+          if m.tape_limit && to > m.tape_limit
+            limit = m.tape_limit
+            cutoff = to - limit
+
+            m.tape[from..limit] = string.bytes[0..cutoff]
+            m.tape[0...cutoff] = string.bytes[(cutoff+1)..-1]
+          else
+            m.tape[from...to] = string.bytes
+          end
+        }
       else
         @prefixes.fix_params ->(n, m) { m.cell = n }
       end
     end
 
-    def read_int()
+    def read_int
       @prefixes.fix_params ->(n, m) { m.inst_read_int(n) }, 10
+    end
+
+    def compare
+      ->(m) { m.inst_compare_cells }
+    end
+
+    def quit
+      @prefixes.fix_params ->(n, m) { m.inst_quit(n) }, 1
+    end
+
+    def tape_limit
+      if @prefixes.empty?
+        push_prefix ->(m) { x = m.pos; x + (x < 0 ? -1 : 1) }
+      end
+
+      @prefixes.fix_params ->(n, m) { m.limit_tape(n) }
     end
 
     def jump(to)

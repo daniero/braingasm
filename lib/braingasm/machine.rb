@@ -6,7 +6,8 @@ module Braingasm
   # A Machine keeps the state of a running program, and exposes various
   # operations to modify this state
   class Machine
-    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :last_write, :input, :output
+    attr_accessor :tape, :dp, :program, :ip, :ctrl_stack, :last_write, :input, :output,
+      :tape_limit
 
     def initialize
       @tape = Array.new(10) { 0 }
@@ -19,12 +20,7 @@ module Braingasm
     end
 
     def run
-      return if @program.empty?
-
-      loop do
-        step()
-        break unless @ip < @program.size
-      end
+      step while @ip < @program.size
     end
 
     def step
@@ -47,8 +43,20 @@ module Braingasm
       @dp - @data_offset
     end
 
+    def calculate_new_dp(move)
+      if @tape_limit
+        if @tape_limit >= 0
+          (@dp + move) % @tape_limit
+        else
+          (@dp + move) % -@tape_limit
+        end
+      else
+        @dp + move
+      end
+    end
+
     def inst_right(n=1)
-      new_dp = @dp + n
+      new_dp = calculate_new_dp(n)
       no_cells = @tape.length
 
       if new_dp >= no_cells
@@ -60,17 +68,17 @@ module Braingasm
     end
 
     def inst_left(n=1)
-      new_dp = @dp - n
+      new_dp = calculate_new_dp(-n)
 
       if new_dp < 0
         new_cells = -new_dp
         new_cells.times { @tape.unshift 0 }
         @data_offset += new_cells
 
-        new_dp = 0
+        @dp = 0
+      else
+        @dp = new_dp
       end
-
-      @dp = new_dp
     end
 
     def inst_print_tape
@@ -78,13 +86,19 @@ module Braingasm
     end
 
     def inst_inc(n=1)
-      @tape[@dp] += n
-      trigger_cell_updated
+      self.cell += n
     end
 
     def inst_dec(n=1)
-      @tape[@dp] -= n
-      trigger_cell_updated
+      self.cell -= n
+    end
+
+    def inst_multiply(n=2)
+      self.cell *= n
+    end
+
+    def inst_divide(n=2)
+      self.cell /= n
     end
 
     def inst_jump(to)
@@ -105,12 +119,27 @@ module Braingasm
       ctrl_stack << x
     end
 
+    def print_bytes(b)
+      d,m = b.divmod(256)
+
+      if d > 0
+        print_bytes(d)
+      end
+
+      @output.putc(m)
+    end
+
     def inst_print(chr)
-      @output.putc chr
+      case chr
+      when Integer
+        print_bytes(chr)
+      else
+        @output.print chr
+      end
     end
 
     def inst_print_cell
-      @output.putc cell
+      print_bytes(cell)
     end
 
     def inst_print_int(n)
@@ -122,17 +151,29 @@ module Braingasm
     end
 
     def inst_read_byte
-      @tape[@dp] = @input.getbyte || Options[:eof] || @tape[@dp]
-      trigger_cell_updated
+      self.cell = @input.getbyte || Options[:eof] || @tape[@dp]
     end
 
     def inst_read_int(radix=10)
       return unless @input.gets =~ /\d+/
 
       @input.ungetc($')
-      @tape[@dp] = $&.to_i(radix)
-      trigger_cell_updated
+      self.cell = $&.to_i(radix)
     end
+
+    def inst_compare_cells
+      operand = @dp == 0 ? 0 : @tape[@dp-1]
+      @last_write = @tape[@dp] - operand
+    end
+
+    def inst_quit(value, code=0)
+      raise ExitSignal.new(code) unless value == 0
+    end
+
+    def limit_tape(cell_number)
+      @tape_limit = cell_number
+    end
+
 
     private
     def trigger_cell_updated

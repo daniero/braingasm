@@ -35,22 +35,36 @@ module Braingasm
 
     private
     def read_token(scanner)
-      return scanner.matched.to_i if scanner.scan(/\d+/)
-      @@simple_tokens[scanner.scan(/\S/)] || :unknown
+      if scanner.scan(/\d+/)
+        scanner.matched.to_i
+      elsif scanner.scan(/"/)
+        s = scanner.scan(/[^"]*/)
+        scanner.skip(/"/)
+        s
+      else
+        @@simple_tokens[scanner.scan(/\S/)] || :unknown
+      end
     end
 
-    @@simple_tokens = { '+' => :plus,
-                        '-' => :minus,
+    @@simple_tokens = { '+' => :increment,
+                        '-' => :decrement,
+                        '*' => :multiply,
+                        '/' => :divide,
                         '<' => :left,
                         '>' => :right,
-                        '.' => :period,
-                        ':' => :colon,
-                        ',' => :comma,
-                        ';' => :semicolon,
-                        '#' => :hash,
-                        'r' => :r,
-                        'p' => :p,
-                        'z' => :z,
+                        '.' => :print,
+                        ':' => :output,
+                        ',' => :read,
+                        ';' => :input,
+                        'C' => :compare,
+                        '#' => :position,
+                        'r' => :random,
+                        'p' => :parity,
+                        'o' => :oddity,
+                        'z' => :zero,
+                        's' => :signed,
+                        'Q' => :quit,
+                        'L' => :tape_limit,
                         '[' => :loop_start,
                         ']' => :loop_end }
 

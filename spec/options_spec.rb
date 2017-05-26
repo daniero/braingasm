@@ -15,8 +15,8 @@ module Braingasm
       Braingasm.handle_options(:as_is => true)
       expect(Options[:eof]).to be nil
 
-      expect(Options[:wrap_cells]).to be true
-      Braingasm.handle_options(:wrap_cells => true)
+      expect(Options[:wrap_cells]).to be false
+      Braingasm.handle_options(:bound => true)
       expect(Options[:wrap_cells]).to be true
     end
 
@@ -32,6 +32,11 @@ module Braingasm
 
         Braingasm.handle_options(**opts, :cell_size => 32)
         expect(Options[:cell_limit]).to be 4294967296
+      end
+
+      it "sets :wrap_cells to true" do
+        Braingasm.handle_options(**opts, :cell_size => 8)
+        expect(Options[:wrap_cells]).to be true
       end
     end
   end

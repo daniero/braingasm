@@ -265,6 +265,50 @@ describe Braingasm::Machine do
       end
     end
 
+    describe "#inst_multiply" do
+      include_examples "cell update"
+
+      it "doubles the current cell when no parameter" do
+        subject.tape = [ 1 ]
+
+        subject.inst_multiply
+        expect(subject.tape[0]).to be 2
+
+        subject.inst_multiply
+        expect(subject.tape[0]).to be 4
+      end
+
+      it "multiplies the current cell with the given parameter" do
+        subject.tape = [ 3 ]
+
+        subject.inst_multiply(7)
+
+        expect(subject.tape[0]).to be 21
+      end
+    end
+
+    describe "#inst_divide" do
+      include_examples "cell update"
+
+      it "halves the current cell when no parameter" do
+        subject.tape = [28]
+
+        subject.inst_divide
+        expect(subject.tape[0]).to be 14
+
+        subject.inst_divide
+        expect(subject.tape[0]).to be 7
+      end
+
+      it "divides the current cell with the given parameter" do
+        subject.tape = [ 100 ]
+
+        subject.inst_divide(25)
+
+        expect(subject.tape[0]).to be 4
+      end
+    end
+
     describe "#inst_jump" do
       it "raises a JumpSignal, interupting normal program flow" do
         expect{ subject.inst_jump(:foo) }.to raise_error Braingasm::JumpSignal
@@ -429,6 +473,48 @@ describe Braingasm::Machine do
 
         subject.inst_read_int()
         expect(subject.cell).to be(456)
+      end
+    end
+
+    describe "#inst_compare_cells" do
+      before do
+        subject.tape = [1, 3, 6, 10]
+      end
+
+      it "updates last write value to current cell value minus cell value to the left" do
+        subject.dp = 1
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(3 - 1)
+
+        subject.dp = 2
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(6 - 3)
+
+        subject.dp = 3
+        subject.inst_compare_cells
+        expect(subject.last_write).to be(10 - 6)
+      end
+
+      it "compares the leftmost cell on the tape with 0" do
+        subject.inst_compare_cells
+
+        expect(subject.last_write).to be(1 - 0)
+      end
+    end
+
+    describe "#inst_quit" do
+      it "does nothing if the given argument is zero" do
+        subject.inst_quit(0)
+      end
+
+      it "raises an ExitSignal when given non-zero argument" do
+        expect { subject.inst_quit(1) }.to raise_error(Braingasm::ExitSignal)
+      end
+
+      it "sets exit code to 0" do
+        expect { subject.inst_quit(42) }.to raise_error { |signal|
+          expect(signal.code).to be == 0
+        }
       end
     end
 

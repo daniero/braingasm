@@ -26,4 +26,11 @@ module Braingasm
       @to = to
     end
   end
+
+  class ExitSignal < VMError
+    attr_reader :code
+    def initialize(code=0)
+      @code = code
+    end
+  end
 end

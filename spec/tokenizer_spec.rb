@@ -18,40 +18,23 @@ module Braingasm
       end
 
       describe "#next" do
-        tokens = { '+' => :plus,
-                   '-' => :minus,
-                   '<' => :left,
-                   '>' => :right,
-                   '.' => :period,
-                   ':' => :colon,
-                   ',' => :comma,
-                   ';' => :semicolon,
-                   '#' => :hash,
-                   'r' => :r,
-                   'p' => :p,
-                   'z' => :z,
-                   '[' => :loop_start,
-                   ']' => :loop_end }
-
-        tokens.each do |char, token|
-          it "returns :#{token} when input is '#{char}'" do
-            @input = char
-
-            expect(subject.next).to eq(token)
-          end
-        end
-
         it "returns Integer objects when encountering numbers" do
           @input = "1 23+456"
 
           expect(subject.next).to be 1
           expect(subject.next).to be 23
-          expect(subject.next).to be :plus
+          subject.next # skip the plus
           expect(subject.next).to be 456
         end
 
+        it "reads strings" do
+          @input = '"Hello"'
+
+          expect(subject.next).to be == "Hello"
+        end
+
         it "returns :unknown for any other input" do
-          @input = "*?`)"
+          @input = "^?`)"
 
           4.times { expect(subject.next).to be :unknown }
         end

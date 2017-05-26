@@ -68,6 +68,14 @@ module Braingasm
       include_examples "prefixed instruction", :dec, :inst_dec
     end
 
+    describe "#multiply" do
+      include_examples "prefixed instruction", :multiply, :inst_multiply
+    end
+
+    describe "#divide" do
+      include_examples "prefixed instruction", :divide, :inst_divide
+    end
+
     describe "#right" do
       include_examples "prefixed instruction", :right, :inst_right
     end
@@ -86,13 +94,17 @@ module Braingasm
       include_examples "prefixed instruction", :print_int, :inst_print_int
     end
 
-    describe "#read" do
-      include_examples "simple instruction generation", :read, :inst_read_byte
-      include_examples "prefixed instruction", :read, 'cell='
-    end
-
     describe "#read_int" do
       include_examples "prefixed instruction", :read_int, :inst_read_int
+    end
+
+    describe "#compare" do
+      include_examples "simple instruction generation", :compare, :inst_compare_cells
+    end
+
+    describe "#quit" do
+      include_examples "simple instruction generation", :read, :inst_read_byte
+      include_examples "prefixed instruction", :quit, :inst_quit
     end
 
     describe "#loop_start" do
@@ -216,41 +228,28 @@ module Braingasm
       end
     end
 
-    describe "#zero" do
-      include_examples "generated prefix", :zero
-      include_examples "simple instruction generation", :zero, :last_write
+    describe "#signed" do
+      before { allow(machine).to receive(:last_write).and_return(0) }
+      include_examples "generated prefix", :signed
+      include_examples "simple instruction generation", :signed, :last_write
 
-      it "returns 1 if machine's last write value is 0" do
+      it "returns 1 if machine's last write instruction is negative (signed)" do
+        expect(machine).to receive(:last_write).and_return(-1)
+
+        expect(subject.signed.call(machine)).to be 1
+      end
+
+      it "returns 0 if machine's last write instruction is 0 (unsigned)" do
         expect(machine).to receive(:last_write).and_return(0)
 
-        expect(subject.zero().call(machine)).to be 1
+        expect(subject.signed.call(machine)).to be 0
       end
 
-      it "returns 0 if machine's last write value is 1" do
+      it "returns 0 if machine's last write instruction is positive (unsigned)" do
         expect(machine).to receive(:last_write).and_return(1)
 
-        expect(subject.zero().call(machine)).to be 0
+        expect(subject.signed.call(machine)).to be 0
       end
-    end
-
-    describe "#parity" do
-      include_examples "simple instruction generation", :parity, :last_write
-      include_examples "generated prefix", :parity
-
-      it "retuns machine's last write value modulo 2" do
-        10.times do |i|
-          expect(machine).to receive(:last_write).and_return(i)
-
-          expect(subject.parity().call(machine)).to be(i % 2)
-        end
-      end
-
-      it "defaults to 0 if there is no last write value" do
-          expect(machine).to receive(:last_write).and_return(nil)
-
-          expect(subject.parity().call(machine)).to be 0
-      end
-
     end
 
   end
