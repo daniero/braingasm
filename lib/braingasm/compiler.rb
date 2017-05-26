@@ -42,7 +42,13 @@ module Braingasm
     def parity
       read_cell if @prefixes.empty?
 
-      push_prefix @prefixes.fix_params(->(n, m) { n % 2 || 0 })
+      push_prefix @prefixes.fix_params(->(n, m) { (n % 2) ^ 1 })
+    end
+
+    def oddity
+      read_cell if @prefixes.empty?
+
+      push_prefix @prefixes.fix_params(->(n, m) { n % 2 })
     end
 
     def right

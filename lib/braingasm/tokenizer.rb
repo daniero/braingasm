@@ -60,6 +60,7 @@ module Braingasm
                         '#' => :position,
                         'r' => :random,
                         'p' => :parity,
+                        'o' => :oddity,
                         'z' => :zero,
                         's' => :signed,
                         'Q' => :quit,

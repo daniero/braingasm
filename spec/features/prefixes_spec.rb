@@ -59,10 +59,10 @@ describe "prefixes" do
     end
   end
 
-  describe "p" do
+  describe "p (parity)" do
     context "without prefix" do
-      it "returns the parity bit of the current cell" do
-        @machine.tape = [13, 42]
+      it "returns 1 if the value of the current cell is even, 0 if it's odd" do
+        @machine.tape = [42, 13]
 
         run "p, > p,"
 
@@ -72,8 +72,30 @@ describe "prefixes" do
     end
 
     context "with integer prefix" do
-      it "returns its parity bit" do
+      it "evaulates the integer instead" do
         run "7p, > 8p,"
+
+        expect(@machine.tape[0]).to be == 0
+        expect(@machine.tape[1]).to be == 1
+      end
+    end
+  end
+
+  describe "o (oddity)" do
+    context "without prefix" do
+      it "returns 1 if the value of the current cell is odd, 0 if it's even" do
+        @machine.tape = [42, 13]
+
+        run "o, > o,"
+
+        expect(@machine.tape[0]).to be == 0
+        expect(@machine.tape[1]).to be == 1
+      end
+    end
+
+    context "with integer prefix" do
+      it "evaulates the integer instead" do
+        run "7o, > 8o,"
 
         expect(@machine.tape[0]).to be == 1
         expect(@machine.tape[1]).to be == 0

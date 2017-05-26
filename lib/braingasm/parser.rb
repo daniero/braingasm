@@ -70,6 +70,8 @@ module Braingasm
           @compiler.signed
         when :parity
           @compiler.parity
+        when :oddity
+          @compiler.oddity
         end
         false
       end
