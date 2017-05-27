@@ -51,11 +51,27 @@ describe "prefixes" do
 
   describe "s" do
     context "without prefix" do
-      it "returns 1 if the current cell is negative (signed), 0 otherwise"
+      it "returns 1 if the current cell is negative (signed), 0 otherwise" do
+        @machine.tape = [-2, -1, 0, 1, 2]
+
+        run "s, > s, > s, > s, > s,"
+
+        expect(@machine.tape).to be == [1, 1, 0, 0, 0]
+      end
     end
 
     context "with integer prefix" do
-      it "checks the prefix instead"
+      it "returns 0 if the given prefix is zero or positive" do
+        run "#s, > #s,"
+
+        expect(@machine.tape[0..1]).to be == [0, 0]
+      end
+
+      it "returns 1 if the given prefix is negative" do
+        run "< #s,"
+
+        expect(@machine.cell).to be == 1
+      end
     end
   end
 
@@ -71,12 +87,34 @@ describe "prefixes" do
       end
     end
 
-    context "with integer prefix" do
-      it "evaulates the integer instead" do
-        run "7p, > 8p,"
+    context "with prefix yielding an integer" do
+      it "evaulates the prefix instead" do
+        run "4> #p, > #p,"
 
-        expect(@machine.tape[0]).to be == 0
-        expect(@machine.tape[1]).to be == 1
+        expect(@machine.tape[4]).to be == 1
+        expect(@machine.tape[5]).to be == 0
+      end
+    end
+
+    context "with an integer literal prefix" do
+      it "returns 1 if the current cell is divisble by the given integer, 0 otherwise" do
+        @machine.tape = [0, 1, 2, 3]
+
+        run "4[ 3p, > ]"
+
+        expect(@machine.tape[0]).to be == 1
+        expect(@machine.tape[1]).to be == 0
+        expect(@machine.tape[2]).to be == 0
+        expect(@machine.tape[3]).to be == 1
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "7> #4p, > #4p,"
+
+        expect(@machine.tape[7]).to be == 0
+        expect(@machine.tape[8]).to be == 1
       end
     end
   end
@@ -93,12 +131,34 @@ describe "prefixes" do
       end
     end
 
-    context "with integer prefix" do
-      it "evaulates the integer instead" do
-        run "7o, > 8o,"
+    context "with prefix yielding an integer" do
+      it "evaulates the prefix instead" do
+        run "7> #o, > #o,"
 
-        expect(@machine.tape[0]).to be == 1
-        expect(@machine.tape[1]).to be == 0
+        expect(@machine.tape[7]).to be == 1
+        expect(@machine.tape[8]).to be == 0
+      end
+    end
+
+    context "with an integer literal prefix" do
+      it "returns 0 if the current cell is divisble by the given integer, 1 otherwise" do
+        @machine.tape = [0, 1, 2, 3]
+
+        run "4[ 3o, > ]"
+
+        expect(@machine.tape[0]).to be == 0
+        expect(@machine.tape[1]).to be == 1
+        expect(@machine.tape[2]).to be == 1
+        expect(@machine.tape[3]).to be == 0
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "3> #4o, > #4o,"
+
+        expect(@machine.tape[3]).to be == 1
+        expect(@machine.tape[4]).to be == 0
       end
     end
   end
