@@ -51,11 +51,27 @@ describe "prefixes" do
 
   describe "s" do
     context "without prefix" do
-      it "returns 1 if the current cell is negative (signed), 0 otherwise"
+      it "returns 1 if the current cell is negative (signed), 0 otherwise" do
+        @machine.tape = [-2, -1, 0, 1, 2]
+
+        run "s, > s, > s, > s, > s,"
+
+        expect(@machine.tape).to be == [1, 1, 0, 0, 0]
+      end
     end
 
     context "with integer prefix" do
-      it "checks the prefix instead"
+      it "returns 0 if the given prefix is zero or positive" do
+        run "#s, > #s,"
+
+        expect(@machine.tape[0..1]).to be == [0, 0]
+      end
+
+      it "returns 1 if the given prefix is negative" do
+        run "< #s,"
+
+        expect(@machine.cell).to be == 1
+      end
     end
   end
 

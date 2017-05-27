@@ -36,7 +36,9 @@ module Braingasm
     end
 
     def signed
-      push_prefix ->(m) { m.last_write >= 0 ? 0 : 1 }
+      read_cell if @prefixes.empty?
+
+      push_prefix @prefixes.fix_params(->(n, m) { n < 0 ? 1 : 0 })
     end
 
     def parity

@@ -228,29 +228,5 @@ module Braingasm
       end
     end
 
-    describe "#signed" do
-      before { allow(machine).to receive(:last_write).and_return(0) }
-      include_examples "generated prefix", :signed
-      include_examples "simple instruction generation", :signed, :last_write
-
-      it "returns 1 if machine's last write instruction is negative (signed)" do
-        expect(machine).to receive(:last_write).and_return(-1)
-
-        expect(subject.signed.call(machine)).to be 1
-      end
-
-      it "returns 0 if machine's last write instruction is 0 (unsigned)" do
-        expect(machine).to receive(:last_write).and_return(0)
-
-        expect(subject.signed.call(machine)).to be 0
-      end
-
-      it "returns 0 if machine's last write instruction is positive (unsigned)" do
-        expect(machine).to receive(:last_write).and_return(1)
-
-        expect(subject.signed.call(machine)).to be 0
-      end
-    end
-
   end
 end
