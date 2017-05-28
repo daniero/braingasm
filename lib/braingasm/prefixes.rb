@@ -5,7 +5,7 @@ module Braingasm
   class PrefixStack
     extend Forwardable
     attr_accessor :stack
-    def_delegators :@stack, :empty?, :<<, :pop, :==, :first, :last
+    def_delegators :@stack, :empty?, :length, :<<, :pop, :==, :first, :last
 
     def initialize
       @stack = []

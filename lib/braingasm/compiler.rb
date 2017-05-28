@@ -24,9 +24,18 @@ module Braingasm
     end
 
     def random
-      random = proc { |n, _| rand n }
-      return_max_value = proc { |_, _| Options[:cell_limit] }
-      push_prefix @prefixes.fix_params(random, return_max_value)
+      if @prefixes.empty?
+        push_prefix @prefixes.fix_params(->(_, _) { Options[:cell_limit] })
+      end
+
+      if @prefixes.length == 1
+        push_prefix @prefixes.fix_params(->(n, _) { rand n })
+      else
+        f = @prefixes.fix_params(->(n, _) { n })
+        g = @prefixes.fix_params(->(n, _) { n })
+
+        push_prefix(->(m) { max = f[m]; min = g[m]; rand(max-min + 1) + min })
+      end
     end
 
     def zero
