@@ -26,5 +26,4 @@ module Braingasm
     end
 
   end
-
 end

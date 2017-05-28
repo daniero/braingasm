@@ -14,6 +14,11 @@ module Braingasm
       prefix
     end
 
+    def eval_prefixes(n)
+      prefixes = @prefixes.pop(n)
+      ->(m) { yield(m, *prefixes.map { |p| p.is_a?(Proc) ? p[m] : p }) }
+    end
+
     READ_CELL = ->(n, m) { m.cell }
     def read_cell
       push_prefix @prefixes.fix_params(READ_CELL)
@@ -31,10 +36,7 @@ module Braingasm
       if @prefixes.length == 1
         push_prefix @prefixes.fix_params(->(n, _) { rand n })
       else
-        f = @prefixes.fix_params(->(n, _) { n })
-        g = @prefixes.fix_params(->(n, _) { n })
-
-        push_prefix(->(m) { max = f[m]; min = g[m]; rand(max-min + 1) + min })
+        push_prefix eval_prefixes(2) { |_, min, max| rand(max-min + 1) + min }
       end
     end
 
