@@ -109,12 +109,21 @@ describe "prefixes" do
       end
     end
 
-    context "with two integer prefixes" do
+    context "with two integer prefixes, the second an integer literal" do
       it "checks the first, modulo the second" do
         run "7> #4p, > #4p,"
 
         expect(@machine.tape[7]).to be == 0
         expect(@machine.tape[8]).to be == 1
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "6> 7#p, > 7#p,"
+
+        expect(@machine.tape[6]).to be == 0
+        expect(@machine.tape[7]).to be == 1
       end
     end
   end
@@ -153,12 +162,21 @@ describe "prefixes" do
       end
     end
 
-    context "with two integer prefixes" do
+    context "with two integer prefixes, the second an integer literal" do
       it "checks the first, modulo the second" do
         run "3> #4o, > #4o,"
 
         expect(@machine.tape[3]).to be == 1
         expect(@machine.tape[4]).to be == 0
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "6> 7#o, > 7#o,"
+
+        expect(@machine.tape[6]).to be == 1
+        expect(@machine.tape[7]).to be == 0
       end
     end
   end

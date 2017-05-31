@@ -43,13 +43,13 @@ module Braingasm
     def zero
       read_cell if @prefixes.empty?
 
-      push_prefix @prefixes.fix_params(->(n, m) { n.zero? ? 1 : 0 })
+      push_prefix eval_prefixes(1) { |_,n| n.zero? ? 1 : 0 }
     end
 
     def signed
       read_cell if @prefixes.empty?
 
-      push_prefix @prefixes.fix_params(->(n, m) { n < 0 ? 1 : 0 })
+      push_prefix eval_prefixes(1) { |_, n| n < 0 ? 1 : 0 }
     end
 
     def parity
@@ -57,6 +57,8 @@ module Braingasm
         x = @prefixes.pop
         read_cell if @prefixes.empty?
         push_prefix @prefixes.fix_params(->(n, m) { n % x == 0 ? 1 : 0 })
+      elsif @prefixes.length >= 2
+        push_prefix eval_prefixes(2) { |_, n, y| y % n == 0 ? 1 : 0 }
       else
         read_cell if @prefixes.empty?
         push_prefix @prefixes.fix_params(->(n, m) { (n % 2) ^ 1 })
@@ -64,14 +66,8 @@ module Braingasm
     end
 
     def oddity
-      if @prefixes.last.is_a?(Integer)
-        x = @prefixes.pop
-        read_cell if @prefixes.empty?
-        push_prefix @prefixes.fix_params(->(n, m) { n % x == 0 ? 0 : 1 })
-      else
-        read_cell if @prefixes.empty?
-        push_prefix @prefixes.fix_params(->(n, m) { n % 2 })
-      end
+      parity
+      push_prefix eval_prefixes(1) { |_, x| x ^ 1 }
     end
 
     def right
