@@ -12,6 +12,16 @@ describe "prefixes" do
     end
   end
 
+  describe "$" do
+    it "returns the value of the current cell" do
+      @machine.cell = 21
+
+      run "$+"
+
+      expect(@machine.cell).to be == 42
+    end
+  end
+
   describe "#" do
     it "returns the value of the data pointer (current position on the tape)" do
       @machine.tape[0] = 99
