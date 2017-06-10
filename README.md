@@ -52,12 +52,14 @@ Some prefixes can take prefixes themselves:
 
 * The parity prefix, `p`, alone returns `1` or `0` depending on whether the 
   value of the current cell is even.
+* If given an integer literal, `p` will rather check the parity in that "base": 
+  `3p:` will print `1` if the current data pointer is divisible by 3, or `0` 
+  otherwise.
 * If given another prefix which returns an integer, `p` will evaluate the result 
   of that prefix instead: `#p:` will print `1` if the current data pointer is an 
   even number.
-* If given an integer literal, `p` will rather check the parity in that "base": 
-  `#3:` will print `1` if the current data pointer is divisible by 3, or `0` 
-  otherwise.
+* Given two integers, `p` checks if the first integer is divisible by the second.
+
 
 More information about the different prefixes can be found in the 
 [docs](BRAINGASM.md#prefixes) or [specs](spec/features/prefixes_spec.rb).
