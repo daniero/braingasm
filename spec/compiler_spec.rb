@@ -202,31 +202,5 @@ module Braingasm
       include_examples "simple instruction generation", :pos, :pos
     end
 
-    describe "#random" do
-      include_examples "generated prefix", :random
-      let(:generated_proc) { subject.random() }
-
-      context "without prefix" do
-        it "returns a proc returning a random number below the current cell max value" do
-          Options[:cell_limit] = 100
-          expect(subject).to receive(:rand).with(100).and_return(52)
-          expect(generated_proc.call(machine)).to be(52)
-
-          Options[:cell_limit] = 256
-          expect(subject).to receive(:rand).with(256).and_return(18)
-          expect(generated_proc.call(machine)).to be(18)
-        end
-      end
-
-      context "with prefix" do
-        before { prefix_stack << 1000 }
-
-        it "returns a proc returning a random number below the given prefix" do
-          expect(subject).to receive(:rand).with(1000).and_return(7)
-          expect(generated_proc.call(machine)).to be(7)
-        end
-      end
-    end
-
   end
 end

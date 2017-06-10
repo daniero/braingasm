@@ -60,6 +60,8 @@ module Braingasm
         case token
         when Integer, String
           @compiler.push_prefix token
+        when :value
+          @compiler.read_cell
         when :position
           @compiler.pos
         when :random

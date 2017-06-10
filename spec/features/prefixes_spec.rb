@@ -12,6 +12,16 @@ describe "prefixes" do
     end
   end
 
+  describe "$" do
+    it "returns the value of the current cell" do
+      @machine.cell = 21
+
+      run "$+"
+
+      expect(@machine.cell).to be == 42
+    end
+  end
+
   describe "#" do
     it "returns the value of the data pointer (current position on the tape)" do
       @machine.tape[0] = 99
@@ -109,12 +119,21 @@ describe "prefixes" do
       end
     end
 
-    context "with two integer prefixes" do
+    context "with two integer prefixes, the second an integer literal" do
       it "checks the first, modulo the second" do
         run "7> #4p, > #4p,"
 
         expect(@machine.tape[7]).to be == 0
         expect(@machine.tape[8]).to be == 1
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "6> 7#p, > 7#p,"
+
+        expect(@machine.tape[6]).to be == 0
+        expect(@machine.tape[7]).to be == 1
       end
     end
   end
@@ -153,7 +172,7 @@ describe "prefixes" do
       end
     end
 
-    context "with two integer prefixes" do
+    context "with two integer prefixes, the second an integer literal" do
       it "checks the first, modulo the second" do
         run "3> #4o, > #4o,"
 
@@ -161,15 +180,66 @@ describe "prefixes" do
         expect(@machine.tape[4]).to be == 0
       end
     end
+
+    context "with two integer prefixes" do
+      it "checks the first, modulo the second" do
+        run "6> 7#o, > 7#o,"
+
+        expect(@machine.tape[6]).to be == 1
+        expect(@machine.tape[7]).to be == 0
+      end
+    end
   end
 
   describe "r" do
-    it "returns a random integer" do
-      srand 999 # Make sure rand returns the same each time for testing purposes
+    context "without prefix" do
+      it "returns a random integer between 0 inclusive and 256 exclusive" do
+        srand 999 # Seed the RNG to make sure we get the same each time, for testing purposes
 
-      run "r+"
+        run "r+ > r+ > r+"
 
-      expect(@machine.cell).to be == 192
+        expect(@machine.tape[0]).to be == 192
+        expect(@machine.tape[1]).to be == 92
+        expect(@machine.tape[2]).to be == 101
+      end
+    end
+
+    context "with one integer prefix" do
+      it "returns a random integer below that number" do
+        run "100[ 3r+ > ]"
+
+        expect(@machine.tape).to all(be < 3)
+        expect(@machine.tape).to include(0)
+        expect(@machine.tape).to include(1)
+        expect(@machine.tape).to include(2)
+      end
+
+      it "works with non-literal integers too" do
+        srand 3
+
+        run "50> #r+"
+
+        expect(@machine.cell).to be == 42
+      end
+    end
+
+    context "with two integer prefixes" do
+      it "returns a random integer between 0 and that number" do
+        run "999[ 2 5r+ > ]"
+
+        expect(@machine.tape[0...100]).to all(be >= 2)
+        expect(@machine.tape[0...100]).to all(be <= 5)
+        expect(@machine.tape).to include(2)
+        expect(@machine.tape).to include(5)
+      end
+
+      it "works with non-literal integers too" do
+        srand 100
+
+        run "25> 3#r+"
+
+        expect(@machine.cell).to be == 11
+      end
     end
   end
 
