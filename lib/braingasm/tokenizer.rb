@@ -62,6 +62,7 @@ module Braingasm
                         'p' => :parity,
                         'o' => :oddity,
                         'z' => :zero,
+                        'n' => :non_zero,
                         's' => :signed,
                         'C' => :compare,
                         'Q' => :quit,

@@ -59,6 +59,26 @@ describe "prefixes" do
     end
   end
 
+  describe "n" do
+    context "without prefix" do
+      it "returns 1 if the current cell is non-zero, 0 if its zero" do
+        @machine.tape = [1, 0, -1]
+
+        run "n+ > n+ > n+"
+
+        expect(@machine.tape[0..2]).to be == [2, 0, 0]
+      end
+    end
+
+    context "with integer prefix" do
+      it "checks the prefix instead" do
+        run "<#n+ >#n+ >#n+"
+
+        expect(@machine.tape[0..2]).to be == [1, 0, 1]
+      end
+    end
+  end
+
   describe "s" do
     context "without prefix" do
       it "returns 1 if the current cell is negative (signed), 0 otherwise" do

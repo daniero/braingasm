@@ -43,8 +43,15 @@ module Braingasm
     def zero
       read_cell if @prefixes.empty?
 
-      push_prefix eval_prefixes(1) { |_,n| n.zero? ? 1 : 0 }
+      push_prefix eval_prefixes(1) { |_, n| n.zero? ? 1 : 0 }
     end
+
+    def non_zero
+      zero
+
+      push_prefix eval_prefixes(1) { |_, n| n ^ 1 }
+    end
+
 
     def signed
       read_cell if @prefixes.empty?

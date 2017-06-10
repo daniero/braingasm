@@ -68,6 +68,8 @@ module Braingasm
           @compiler.random
         when :zero
           @compiler.zero
+        when :non_zero
+          @compiler.non_zero
         when :signed
           @compiler.signed
         when :parity
