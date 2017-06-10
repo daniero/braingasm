@@ -15,10 +15,11 @@ Increments the value of the current cell by one, or the given amount:
 * If the current cell is `2`, then
     * `+` will make it become `5`.
     * `5+` will make it `7`.
+    * `z+` will do nothing, because [`z`](#z-zero) evaluates to `0`.
 
 ### `-`: Decrement
 
-Like `+`, only opposite.
+Exactly like `+`, only decrementing instead of incrementing.
 
 ## Prefixes
 
