@@ -76,6 +76,8 @@ module Braingasm
           @compiler.parity
         when :oddity
           @compiler.oddity
+        when :prime
+          @compiler.prime
         end
         false
       end

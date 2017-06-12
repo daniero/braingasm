@@ -1,4 +1,5 @@
 require "braingasm/prefixes"
+require "prime"
 
 module Braingasm
   class Compiler
@@ -75,6 +76,12 @@ module Braingasm
     def oddity
       parity
       push_prefix eval_prefixes(1) { |_, x| x ^ 1 }
+    end
+
+    def prime
+      read_cell if @prefixes.empty?
+
+      push_prefix eval_prefixes(1) { |_, n| n.prime? ? 1 : 0 }
     end
 
     def right

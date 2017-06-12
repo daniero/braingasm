@@ -211,6 +211,26 @@ describe "prefixes" do
     end
   end
 
+  describe "q" do
+    context "without prefix" do
+      it "checks if the current cell value is a prime" do
+        @machine.tape = [ 2, 4, 7 ]
+
+        run "q, > q, > q,"
+
+        expect(@machine.tape).to be == [ 1, 0, 1 ]
+      end
+    end
+
+    context "given an integer" do
+      it "checks if it's s a prime" do
+        run "7q+ > 9q+"
+
+        expect(@machine.tape[0..1]).to be == [ 1, 0 ]
+      end
+    end
+  end
+
   describe "r" do
     context "without prefix" do
       it "returns a random integer between 0 inclusive and 256 exclusive" do

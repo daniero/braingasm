@@ -64,6 +64,7 @@ module Braingasm
                         'z' => :zero,
                         'n' => :non_zero,
                         's' => :signed,
+                        'q' => :prime,
                         'C' => :compare,
                         'Q' => :quit,
                         'L' => :tape_limit,
