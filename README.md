@@ -9,6 +9,27 @@ The original idea for the language was to combine *brainfuck* and assembly code
 
 braingasm is still under development and breaking changes may occur.
 
+### Sample code
+
+Here's an implementation of the famous FizzBuzz program written in braingasm:
+
+    100[>#3p["Fizz".+]#5p["Buzz".+]z[#:]10.]
+
+It works like this:
+
+    100[               One hundred times:
+        >                Go to the next cell.
+        #3p[             If current cell number is divisble by 3:
+            "Fizz".        Print "Fizz".
+            +              Increment current cell
+        ]
+        #5p["Buzz".+]    Same thing for 5 and "Buzz".
+        z[               If the current cell is 0 (hasn't been incremented):
+          #:               Print current cell number
+        ]
+        10.              Print a newline
+    ]
+
 ### The language
 As plain brainfuck, braingasm is a simple language that operates on an 
 arbitrarily long *tape*. The tape is continuous array of *cells* which hold an 
