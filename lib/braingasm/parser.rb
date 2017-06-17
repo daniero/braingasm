@@ -61,7 +61,7 @@ module Braingasm
         when Integer, String
           @compiler.push_prefix token
         when :value
-          @compiler.read_cell
+          @compiler.cell_value
         when :position
           @compiler.pos
         when :random

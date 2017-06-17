@@ -39,6 +39,10 @@ module Braingasm
       trigger_cell_updated
     end
 
+    def absolute_cell(position)
+      @tape[@dp + @data_offset + position]
+    end
+
     def pos
       @dp - @data_offset
     end

@@ -13,12 +13,34 @@ describe "prefixes" do
   end
 
   describe "$" do
-    it "returns the value of the current cell" do
-      @machine.cell = 21
+    describe "without a prefix" do
+      it "returns the value of the current cell" do
+        @machine.cell = 21
 
-      run "$+"
+        run "$+"
 
-      expect(@machine.cell).to be == 42
+        expect(@machine.cell).to be == 42
+      end
+    end
+
+    describe "given an integer" do
+      it "returns the value of the cell in that position" do
+        @machine.tape = [0, 0, 0, 99]
+
+        run "3$+"
+
+        expect(@machine.cell).to be == 99
+      end
+
+      it "works also when the tape is expanded backwards" do
+        @machine.cell = 2
+
+        run "6< 0$+ +"
+
+        expect(@machine.pos).to be == -6
+        expect(@machine.cell).to be == 3
+        expect(@machine.tape[6]).to be == 2
+      end
     end
   end
 
