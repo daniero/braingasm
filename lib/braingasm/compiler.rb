@@ -20,15 +20,17 @@ module Braingasm
       ->(m) { yield(m, *prefixes.map { |p| p.is_a?(Proc) ? p[m] : p }) }
     end
 
-    READ_CELL = ->(n, m) { m.cell }
+    READ_CELL = ->(_, m) { m.cell }
     def read_cell
       push_prefix @prefixes.fix_params(READ_CELL)
     end
 
     def cell_value
-      pos if @prefixes.empty?
-
-      push_prefix eval_prefixes(1) { |machine, cell_number| machine.absolute_cell(cell_number) }
+      if @prefixes.empty?
+        read_cell
+      else
+        push_prefix eval_prefixes(1) { |machine, cell_number| machine.absolute_cell(cell_number) }
+      end
     end
 
     def pos

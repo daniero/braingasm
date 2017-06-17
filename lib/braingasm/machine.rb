@@ -40,7 +40,7 @@ module Braingasm
     end
 
     def absolute_cell(position)
-      @tape[@dp + @data_offset + position]
+        @tape[@data_offset + position]
     end
 
     def pos

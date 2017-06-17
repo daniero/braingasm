@@ -21,6 +21,22 @@ describe "prefixes" do
 
         expect(@machine.cell).to be == 42
       end
+
+      it "returns negative values too" do
+        @machine.cell = -5
+
+        run "$+"
+
+        expect(@machine.cell).to be == -10
+      end
+    end
+
+    it "can be prefixed by itself" do
+      @machine.tape = [3, 0, 0, 42]
+
+      run "$$,"
+
+      expect(@machine.cell).to be == 42
     end
 
     describe "given an integer" do
@@ -41,6 +57,12 @@ describe "prefixes" do
         expect(@machine.cell).to be == 3
         expect(@machine.tape[6]).to be == 2
       end
+
+      it "works with negative indices" do
+        run "<<<+++++>>> --- $$,"
+
+        expect(@machine.cell).to be == 5
+      end
     end
   end
 
@@ -58,6 +80,13 @@ describe "prefixes" do
       run "7< #,"
 
       expect(@machine.cell).to be == -7
+    end
+
+    it "always returns zero on the original tape position" do
+      run "<<<+++>>> #,"
+
+      expect(@machine.pos).to be == 0
+      expect(@machine.cell).to be == 0
     end
   end
 
