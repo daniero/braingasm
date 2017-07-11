@@ -49,6 +49,15 @@ program *unless* the integer is `0`.
 
 TODO: Short something about prefixes in general here.
 
+### `$`: Cell value
+
+Returns the value of the current cell. If given an integer prefix, it returns
+the value of the cell with the given index of the tape.
+
+### `#`: Data pointer / tape position
+
+Returns the current position on the tape, relative to its start position.
+
 ### `z`: Zero
 
 Returns `1` if the current cell or given parameter is `0`, otherwise returns 
