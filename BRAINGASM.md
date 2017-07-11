@@ -2,7 +2,7 @@
 
 Work in progress!
 
-TODO: Some nice intro here.
+TODO: some nice intro here.
 
 ## Instructions
 
@@ -20,6 +20,30 @@ Increments the value of the current cell by one, or the given amount:
 ### `-`: Decrement
 
 Exactly like `+`, only decrementing instead of incrementing.
+
+### `*`: Double/Multiply
+
+Without a prefix, doubles the value of the current cell.
+With an integer prefix, multiplies the current cell by that much.
+
+### `/`: Half/divide
+
+Divides the current cell by two, or by the given amount.
+
+### `>`: Move right
+
+Moves one step to the right (to the next cell), or if an integer prefix is
+given, moves that many cells to the right.
+
+### `<`: Move left
+
+Moves one step to the left (to the previous cell), or if an integer prefix is
+given, moves that many cells to the left.
+
+### `Q`: Quit
+
+Without prefix, simply quits the program. If given an integer, it quits the
+program *unless* the integer is `0`.
 
 ## Prefixes
 
