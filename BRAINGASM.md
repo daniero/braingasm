@@ -57,3 +57,8 @@ Returns `1` if the current cell or given parameter is `0`, otherwise returns
 ### `n`: Non-zero
 
 Opposite of `z`.
+
+### `q`: Prime
+
+Returns `1` if the current cell or given parameter is a prime, otherwise returns
+`0`.
